@@ -3,3 +3,6 @@ When an employee at any company starts work, they first need to obtain the compu
 
 
 Download and install DVC version dvc-2.34.0
+
+run comand 
+to init dvc in the project. GO to project ternminal and type : dvc init
