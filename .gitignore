@@ -13,6 +13,11 @@ develop-eggs/
 dist/
 downloads/
 eggs/
+data/amazon-employee-access-challenge.zip
+notebooks/notebookcdde0b2cdb_backup_1.ipynb
+data/train.csv
+data/test.csv
+data/clean_train.csv
 .eggs/
 lib/
 lib64/

@@ -1,102 +1,90 @@
-import logging
 from sklearn.base import BaseEstimator, TransformerMixin
 from utils.exception import ModuleException
-import logs.logger as log
 import pandas as pd
-import sys
 
 #Frequency/Count Encoder
-class FrequencyEncoder(BaseEstimator, TransformerMixin):
+class FrequencyEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, targetcol):
+    def __init__(self, targetcol, min_group_size = 1):
 
-        super().__init__()
         self.targetcols = targetcol
+        self.min_group_size = min_group_size
         self.learned_values = {}
 
-    def fit(self, X, y = None):
+    def fit(self, X):
 
-        try:
-
-            for colname in self.targetcols:
+        for colname in self.targetcols:
             
-                msg = 'Target encoded columns \"'+ colname + '\" not avaliable in the dataframe.'
-                #assert(colname in X.columns, msg)            
-                if not colname in X.columns:
-                    raise ModuleException('Freq_Enc', msg, sys)
-                
-                #freq_grp = X.groupby(by = colname)[colname].count()
-                freq_grp = X.groupby(by = colname).size()
-                
-                self.learned_values[colname] = freq_grp
+            msg = f'Target encoded columns \"{colname}\" not avaliable in the dataframe.'
+            #assert(colname in X.columns, msg)            
+            if not colname in X.columns:
+                raise ModuleException('Freq_Enc', msg)
+            
+            #freq_grp = X.groupby(by = colname)[colname].count()
+            freq_grp = X.groupby(by = colname).size()
+            
+            if self.min_group_size != 1:
+                freq_grp[freq_grp < self.min_group_size] = freq_grp[freq_grp < self.min_group_size].sum()   
 
-        #except AssertionError as msg:
-        #    raise Exception(f'Module: Freq_Enc- {msg}')
-        
-        except ModuleException:
-            raise
-        #except Exception as ex:
-        #    log.write_log(f'Freq_Enc: {str(ex)}', log.logging.ERROR)
-        #    raise
+            self.learned_values[colname] = freq_grp
 
-    def transform(self, X, y = None):
 
-        try:
-
-            if len(self.learned_values) == 0:
-                raise ModuleException('Freq_Enc', 'Frequency Encoding instance is not ftted yet.', sys)
-
-            FreqEnc_col = []
-            for colname in self.targetcols:
-                
-                if not colname in X.columns:
-                    raise ModuleException('Freq_Enc', f'Target encoded columns \"{colname}\" not avaliable in the dataframe.', sys)
-
-                if X[colname].dtype != 'object':
-                    raise ModuleException('Freq_Enc', f'\"{colname}\" is not categorical type.', sys)
-
-                if colname in self.learned_values:
-                    raise ModuleException('Freq_Enc', f'Frequency Encoding of feature \"{colname}\" is not fitted.')
-
-                lr_value = self.learned_values[colname]
-                freq_enc_col_name = colname + '_FreqEnc'
-                X[freq_enc_col_name] = X[colname].map(lr_value)
-                FreqEnc_col.append(freq_enc_col_name)
-
-            return X[FreqEnc_col]
-
-        except ModuleException:
-            raise
-        #except Exception as ex:
-        #    log.write_log(f'Freq_Enc: {str(ex)}', log.logging.ERROR)
-        #    raise
-        
-
-    def fit_transform(self, X, y = None):
+    def transform(self, X):
 
         if len(self.learned_values) == 0:
-            self.fit(X,y)
+            raise ModuleException('Freq_Enc', 'Frequency Encoding instance is not fitted yet.')
 
-        X_return = self.transform(X, y)
+        #FreqEnc_col = []
+        transformed_X = pd.DataFrame()
+
+        for colname in self.targetcols:
+            
+            if not colname in X.columns:
+                raise ModuleException('Freq_Enc', f'Target encoded columns \"{colname}\" not avaliable in the dataframe.')
+
+            if X[colname].dtype != 'object':
+                raise ModuleException('Freq_Enc', f'\"{colname}\" is not categorical type.')
+
+            if not colname in self.learned_values:
+                raise ModuleException('Freq_Enc', f'Frequency Encoding of feature \"{colname}\" is not fitted.')
+
+            lr_value = self.learned_values[colname]
+            
+            freq_enc_col_name = colname + '_FreqEnc'
+            transformed_X[freq_enc_col_name] = X[colname]
+            transformed_X[freq_enc_col_name] = X[colname].map(lr_value)
+            
+            #FreqEnc_col.append(freq_enc_col_name)
+
+        #return X[FreqEnc_col] #default changes get made in the the origina input param
+        return transformed_X
+
+    def fit_transform(self, X):
+
+        if len(self.learned_values) == 0:
+            self.fit(X)
+
+        X_return = self.transform(X) 
         return X_return
 
 
-#=========================== Sample Codes
+#=========================== Sample Codes ===========================
 """
 #Trial Code
-from src.models.feature_eng.FreqEncoding import FrequencyEncoder
+from src.models.feature_eng.FreqEncoding import FrequencyEncoding
 import pandas as pd
 data = [10,20,30,10,40,30,20,10,50,60,10]
 X = pd.DataFrame({'data': data})
 X = X.astype(str)
-freq_obj = FrequencyEncoder(['data'])
-freq_obj.fit(X)
-freq_obj.transform(X)
+freq_obj = FrequencyEncoding(targetcol = ['data'], min_group_size = 1)
+#freq_obj.fit(X); freq_obj.transform(X)
+freq_obj.fit_transform(X)
+freq_obj.learned_values
 
 #Code to understand CountEncoder works
 import pandas as pd
 import category_encoders as ce
-data = [10,20,30,10,40,30,20,10,50,60,10]
+data = [10,20,30,20, 30, 10,40,30,40, 20,10,50,60,10]
 X = pd.DataFrame({'data': data})
 X = X.astype(str)
 cnt = ce.CountEncoder()
@@ -112,7 +100,7 @@ X_te
 #    In some case this nae become too long. If so name mention in this group is used 
 #2. min_group_size:
 #   Min size/len/data points with in each group.
-cnt_1 = ce.CountEncoder(min_group_size = 2, min_group_name = 'Min_grp' )
+cnt_1 = ce.CountEncoder(min_group_size = 3, min_group_name = 'Min_grp' )
 X_t = cnt_1.fit_transform(X)
 X_t = pd.concat([X, X_t], axis = 1)
 X_t #Output: all the group with size less then min value are grouped and there count is replaced
