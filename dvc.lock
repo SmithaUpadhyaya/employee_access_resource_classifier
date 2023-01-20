@@ -8,8 +8,8 @@ stages:
       size: 5926077
       nfiles: 3
     - path: src\data\clean_data.py
-      md5: 706c2d9599a0b745a0d1a1517a9a254d
-      size: 2277
+      md5: 1bf54ccc4526c5f309e23e21fd890f66
+      size: 2320
     params:
       params.yaml:
         data_source.data_folders: data
@@ -19,6 +19,6 @@ stages:
         data_source.training_data_folder.train: train.csv
     outs:
     - path: data\prepared
-      md5: 1a466b73fff7dd884a59e6ba3dfd5c7b.dir
-      size: 579687
+      md5: 2e7cc66824fef408d3cd52a5e2e05d25.dir
+      size: 595870
       nfiles: 1

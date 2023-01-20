@@ -43,6 +43,8 @@ if __name__ == '__main__':
     #db_train.shape
     #print(f'After droping duplicate records: {db_train.shape[0]}')
 
+    db_train = db_train.astype(str)
+    
     log.write_log(f'Clean data completed.', log.logging.DEBUG)
     
     #Save
