@@ -53,7 +53,7 @@ def read_yaml_file(file_path = None):
     with open(file_path, "rb") as yaml_file:
         return yaml.safe_load(yaml_file)
 
-def read_yaml_key(key, subkey = None, file_path = None):
+def read_yaml_key(keys, file_path = None):
 
     """
     read specify key from the yaml config file
@@ -65,10 +65,17 @@ def read_yaml_key(key, subkey = None, file_path = None):
         file_path = params_file_path
 
     config = read_yaml_file(file_path)
-    value = config[key]
+    value = None
 
-    if subkey != None:
-        value = value[subkey]
+    if keys != None:
+
+        key = keys.split(".")
+        for i, subkey in enumerate(key):
+
+            if i == 0:
+                value = config[subkey]
+            else:
+                value = value[subkey]
 
     return value    
 

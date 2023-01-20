@@ -16,8 +16,9 @@ if __name__ == '__main__':
     log.write_log(f'Clean data started.', log.logging.DEBUG)
 
     train_data = os.path.join( 
-                             hlpread.read_yaml_key('data_source', 'data_folders'),
-                             hlpread.read_yaml_key('data_source', 'train'), 
+                             hlpread.read_yaml_key('data_source.data_folders'),
+                             hlpread.read_yaml_key('data_source.training_data_folder.folder'),
+                             hlpread.read_yaml_key('data_source.training_data_folder.train'), 
                             )
 
     #train_data
@@ -45,8 +46,9 @@ if __name__ == '__main__':
     log.write_log(f'Clean data completed.', log.logging.DEBUG)
     
     #Save
-    save_path = os.path.join(hlpread.read_yaml_key('data_source','data_folders'), 
-                             hlpread.read_yaml_key('data_source','clean_train'),
+    save_path = os.path.join(hlpread.read_yaml_key('data_source.data_folders'),
+                             hlpread.read_yaml_key('data_source.prepared.folder'),
+                             hlpread.read_yaml_key('data_source.prepared.clean_train'),
                             )
     hlwrite.save_to_parquet(db_train, save_path)
 

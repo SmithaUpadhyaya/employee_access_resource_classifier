@@ -1,4 +1,4 @@
 /amazon-employee-access-challenge.zip
-/train.csv
-/test.csv
-/clean_train.csv
+/training/train.csv
+/training/test.csv
+/prepared/clean_train.csv

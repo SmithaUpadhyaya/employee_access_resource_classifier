@@ -1,5 +1,9 @@
 data_source:
-      data_folders: data      
-      train: train.csv
-      test: test.csv
-      clean_train: clean_train.csv
+      data_folders: data
+      training_data_folder:       
+                        folder: training
+                        train: train.csv
+                        test: test.csv
+      prepared:
+              folder: prepared
+              clean_train: clean_train.csv
