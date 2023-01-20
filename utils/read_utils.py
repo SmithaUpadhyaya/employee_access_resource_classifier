@@ -1,7 +1,10 @@
+import utils.paths as pth
 import pandas as pd
 import numpy as np
 import yaml
 import dill
+
+params_file_path = pth.get_configuration_path()
 
 def read_csv(file_path, **kargs):
 
@@ -31,9 +34,7 @@ def read_from_parquet(file_path):
     
     return pd.read_parquet(file_path)
     
-
-
-def read_yaml_file(file_path):
+def read_yaml_file(file_path = None):
     
     """
     read yaml file.
@@ -46,10 +47,13 @@ def read_yaml_file(file_path):
     #if not os.path.exists(file_path):
     #    raise Exception(f"The file: {file_path} does not exists.")
         
+    if file_path == None:
+        file_path = params_file_path
+
     with open(file_path, "rb") as yaml_file:
         return yaml.safe_load(yaml_file)
 
-def read_yaml_key(file_path, key, subkey = None):
+def read_yaml_key(key, subkey = None, file_path = None):
 
     """
     read specify key from the yaml config file
@@ -57,7 +61,9 @@ def read_yaml_key(file_path, key, subkey = None):
     key: str key to read from the yaml file
     subkey: str subkey to read from the key
     """
-    
+    if file_path == None:
+        file_path = params_file_path
+
     config = read_yaml_file(file_path)
     value = config[key]
 

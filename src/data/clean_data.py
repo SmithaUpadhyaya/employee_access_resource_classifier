@@ -1,24 +1,23 @@
 import os
-import argparse
+#import argparse
 import logs.logger as log
 import utils.read_utils as hlpread
 import utils.write_utils as hlwrite
 
 if __name__ == '__main__':    
 
-    args = argparse.ArgumentParser()
-    args.add_argument("--config", default = "config/config.yaml")
-    parsed_args = args.parse_args()
+    #args = argparse.ArgumentParser()
+    #args.add_argument("--config", default = "config/config.yaml")
+    #parsed_args = args.parse_args()
 
-    config = parsed_args.config
+    #config = parsed_args.config
 
-    log.write_log(f'Read configuration from path: {parsed_args.config}', log.logging.INFO)
+    #log.write_log(f'Read configuration from path: {parsed_args.config}', log.logging.INFO)
     log.write_log(f'Clean data started.', log.logging.DEBUG)
 
-
     train_data = os.path.join( 
-                            hlpread.read_yaml_key(config, 'data_source', 'data_folders'),
-                            hlpread.read_yaml_key(config, 'data_source', 'train'),
+                             hlpread.read_yaml_key('data_source', 'data_folders'),
+                             hlpread.read_yaml_key('data_source', 'train'), 
                             )
 
     #train_data
@@ -35,8 +34,8 @@ if __name__ == '__main__':
     #Drop the duplicate records from db_train
     #print(f'Before droping duplicate records: {db_train.shape[0]}')
     db_train.drop_duplicates(subset = ['ACTION', 'RESOURCE', 
-                                    'ROLE_ROLLUP_1', 'ROLE_ROLLUP_2', 'ROLE_DEPTNAME', 
-                                    'ROLE_TITLE', 'ROLE_FAMILY_DESC', 'ROLE_FAMILY','ROLE_CODE'],
+                                       'ROLE_ROLLUP_1', 'ROLE_ROLLUP_2', 'ROLE_DEPTNAME', 
+                                       'ROLE_TITLE', 'ROLE_FAMILY_DESC', 'ROLE_FAMILY','ROLE_CODE'],
                             inplace = True                         
                             )
 
@@ -46,8 +45,8 @@ if __name__ == '__main__':
     log.write_log(f'Clean data completed.', log.logging.DEBUG)
     
     #Save
-    save_path = os.path.join(hlpread.read_yaml_key(config, 'data_source','data_folders'),
-                             hlpread.read_yaml_key(config, 'data_source','clean_train'),
+    save_path = os.path.join(hlpread.read_yaml_key('data_source','data_folders'), 
+                             hlpread.read_yaml_key('data_source','clean_train'),
                             )
     hlwrite.save_to_parquet(db_train, save_path)
 

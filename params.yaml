@@ -1,14 +1,5 @@
-
 data_source:
       data_folders: data      
       train: train.csv
       test: test.csv
       clean_train: clean_train.csv
-
-      
-      
-
-
-
-      
-
