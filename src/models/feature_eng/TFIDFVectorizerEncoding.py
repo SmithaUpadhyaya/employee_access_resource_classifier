@@ -22,6 +22,8 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
             if (c1 == self.targetcol) | (c2 == self.targetcol):
                 continue
 
+            name = "{}_{}".format(c1, c2)
+
             #From EDA: 
             # 1: Skip combination of ROLE_FAMILY and ROLE_CODE
             #if (c1 in ['ROLE_FAMILY', 'ROLE_CODE']) & (c2 in ['ROLE_FAMILY', 'ROLE_CODE']):
@@ -31,9 +33,11 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
             ##if (c1 == "RESOURCE") | (c2 == "RESOURCE"):
             ##    continue
             
+            #3: skip all other combination which are not define in "use_column"  
+            if len(self.params['use_features']) > 0:
+                if name not in self.params['use_features']:
+                    continue               
             
-            name = "{}_{}".format(c1, c2)
-            #new_cols.append(name)
             dataset[name] = dataset[c1] + " " + dataset[c2]
 
         return dataset
@@ -82,8 +86,13 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
         
         col_no = self.params['dim_reduction']
         col_names = []
-        for i in range(col_no):
-            col_names.append(col1 + "_{}_svd_{}_{}".format(col2, 'cv', i))
+
+        if col_no == 1:
+            col_names.append(col1 + "_{}_svd_{}".format(col2, 'cv'))
+        else:  
+            for i in range(col_no):
+                col_names.append(col1 + "_{}_svd_{}_{}".format(col2, 'cv', i))
+        
         data_X = pd.DataFrame( data_X, columns = col_names)
         
         #Output: Will be for each unique values of col1 will have calculated vectorizer of interacted col2
