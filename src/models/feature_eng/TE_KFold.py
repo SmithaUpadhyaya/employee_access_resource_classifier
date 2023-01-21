@@ -24,86 +24,92 @@ class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
     def fit(self, X, y = None):        
         return self
 
+    def fit_transform(self, X, y = None):
+
+        #if len(self.learned_values) == 0:   
+
+        self.learned_values = {}
+        
+        if (not self.targetName in X.columns) & (type(y) == type(None)):
+            #assert(type(y) != type(None), 'Target y is NONE') #assert exception to rasied in the condition is not meet.
+            raise ModuleException('KFoldT_Enc', 'target y is None.')
+        
+        if not self.targetName in X.columns:
+            X[self.targetName] = y
+
+        if type(y) == type(None):
+            y = X[self.targetName]
+
+        self.global_mean_of_target = X[self.targetName].mean()
+        
+        KFold_TE_col = []
+        transformed_X = pd.DataFrame()
+
+        for colname in self.colnames:
+
+            #assert(colname in X.columns, 'Target encoded columns \"'+ colname + '\" not avaliable in the dataframe.')
+            if not colname in X.columns:
+                raise ModuleException('KFoldT_Enc', 'Target encoded columns \"'+ colname + '\" not avaliable in the dataframe.')
+
+            col_mean_name = colname + '_Kfold_TE'
+            KFold_TE_col.append(col_mean_name)
+
+            transformed_X[colname] = X[colname]
+            transformed_X[col_mean_name] = X[colname]
+            transformed_X[col_mean_name] = np.nan
+
+            for tr_ind, val_ind in self.stratkf.split(X, y): #This will return row position of records  
+
+                #Step 1: Fetch all the feature for records using train_index row index(tr_ind)
+                X_tr, X_val = X.iloc[tr_ind,:], X.iloc[val_ind,:] 
+                            
+                #Step 2: Compute TE on the train dataset and replace the value in validation dataset. 
+                transformed_X.loc[list(X_val.index), col_mean_name] = X_val[colname].map(X_tr.groupby(colname)[self.targetName].mean()) 
+
+                #Step 3: Calculate mean of target_col in X_tr dataset, and fill missing value in the X_val. 
+                X_tr_targetcol_mean = X_tr[self.targetName].mean()
+                transformed_X.loc[list(X_val[X_val.isna()].index), col_mean_name] = X_tr_targetcol_mean
+                    
+            
+            #Fill the missing value the global mean of the the target columns
+            transformed_X[col_mean_name].fillna(self.global_mean_of_target, inplace = True) 
+
+            #For test dataset consider the mean value of TE for each catagory in the groupby 
+            self.learned_values[colname] = transformed_X[[colname, col_mean_name]].groupby(colname)[col_mean_name].mean()
+
+            return transformed_X[KFold_TE_col]
+
     def transform(self, X, y = None):
-
-        if len(self.learned_values) == 0:   
-
-            if (not self.targetName in X.columns) & (type(y) == type(None)):
-                #assert(type(y) != type(None), 'Target y is NONE') #assert exception to rasied in the condition is not meet.
-                raise ModuleException('KFoldT_Enc', 'target y is None.')
+                       
+        #This is used when want to transfom test data
+        if len(self.learned_values) == 0:
+            raise ModuleException('KFoldT_Enc', 'KFold Target Encoding instance is not fitted yet. Try calling fit_transform first.')             
             
-            if not self.targetName in X.columns:
-                X[self.targetName] = y
+        #To use the global target mean in case of new catagory in the column 
+        col_mean = self.global_mean_of_target
+        KFold_TE_col = []
+        transformed_X = pd.DataFrame()
+        
+        for colname in self.colnames:
 
-            if type(y) == type(None):
-                y = X[self.targetName]
+            #assert(colname in X.columns, 'Target encoded feature '+ colname + ' not avaliable in the dataframe')
+            if not colname in X.columns:
+                raise ModuleException('KFoldT_Enc', 'Target encoded columns \"'+ colname + '\" not avaliable in the dataframe.')
 
-            self.global_mean_of_target = X[self.targetName].mean()
+            col_mean_name = colname + '_Kfold_TE'
+            transformed_X[col_mean_name] = X[colname]
+
+            KFold_TE_col.append(col_mean_name)
+
+            #Replace the mean value of each groupby column value
+            #mean =  X[[colname, col_mean_name]].groupby(colname)[col_mean_name].mean()#.reset_index() #Get the mean of each catagory of the column
+            mean = self.learned_values[colname]
+            transformed_X[col_mean_name] = X[colname].map(mean)
             
-            KFold_TE_col = []
-            transformed_X = pd.DataFrame()
+            #Fill the missing value the global mean of the the column
+            transformed_X[col_mean_name].fillna(col_mean, inplace = True) 
 
-            for colname in self.colnames:
-
-                #assert(colname in X.columns, 'Target encoded columns \"'+ colname + '\" not avaliable in the dataframe.')
-                if not colname in X.columns:
-                    raise ModuleException('KFoldT_Enc', 'Target encoded columns \"'+ colname + '\" not avaliable in the dataframe.')
-
-                col_mean_name = colname + '_Kfold_TE'
-                KFold_TE_col.append(col_mean_name)
-
-                transformed_X[colname] = X[colname]
-                transformed_X[col_mean_name] = X[colname]
-                transformed_X[col_mean_name] = np.nan
-
-                for tr_ind, val_ind in self.stratkf.split(X, y): #This will return row position of records  
-
-                    #Step 1: Fetch all the feature for records using train_index row index(tr_ind)
-                    X_tr, X_val = X.iloc[tr_ind,:], X.iloc[val_ind,:] 
-                                
-                    #Step 2: Compute TE on the train dataset and replace the value in validation dataset. 
-                    transformed_X.loc[list(X_val.index), col_mean_name] = X_val[colname].map(X_tr.groupby(colname)[self.targetName].mean()) 
-
-                    #Step 3: Calculate mean of target_col in X_tr dataset, and fill missing value in the X_val. 
-                    X_tr_targetcol_mean = X_tr[self.targetName].mean()
-                    transformed_X.loc[list(X_val[X_val.isna()].index), col_mean_name] = X_tr_targetcol_mean
-                     
-                
-                #Fill the missing value the global mean of the the target columns
-                transformed_X[col_mean_name].fillna(self.global_mean_of_target, inplace = True) 
-
-                #For test dataset consider the mean value of TE for each catagory in the groupby 
-                self.learned_values[colname] = transformed_X[[colname, col_mean_name]].groupby(colname)[col_mean_name].mean()
-
-                return transformed_X[KFold_TE_col]
-               
-        else:               
-            
-            #To use the global target mean in case of new catagory in the column 
-            col_mean = self.global_mean_of_target
-            KFold_TE_col = []
-            transformed_X = pd.DataFrame()
-            
-            for colname in self.colnames:
-
-                #assert(colname in X.columns, 'Target encoded feature '+ colname + ' not avaliable in the dataframe')
-                if not colname in X.columns:
-                    raise ModuleException('KFoldT_Enc', 'Target encoded columns \"'+ colname + '\" not avaliable in the dataframe.')
-
-                col_mean_name = colname + '_Kfold_TE'
-                transformed_X[col_mean_name] = X[colname]
-
-                KFold_TE_col.append(col_mean_name)
-
-                #Replace the mean value of each groupby column value
-                #mean =  X[[colname, col_mean_name]].groupby(colname)[col_mean_name].mean()#.reset_index() #Get the mean of each catagory of the column
-                mean = self.learned_values[colname]
-                transformed_X[col_mean_name] = X[colname].map(mean)
-                
-                #Fill the missing value the global mean of the the column
-                transformed_X[col_mean_name].fillna(col_mean, inplace = True) 
-
-                return transformed_X
+            return transformed_X
 
 #===================================================================================
 #Code to test the logic

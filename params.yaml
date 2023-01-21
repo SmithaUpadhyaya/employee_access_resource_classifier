@@ -7,3 +7,23 @@ data_source:
       prepared:
               folder: prepared
               clean_train: clean_train.csv
+
+featurize:
+      tfidf:
+            #max_nunique: -1 #5000
+            random_seed: 2023
+            dim_reduction: 1
+            output:
+                  folder: feature\tfidf
+                  filename: tfidf.parquet
+            use_features: []
+      
+      count_vector:
+            random_seed: 2023
+            dim_reduction: 1
+            output:
+                  folder: feature\cntvector
+                  filename: count_vectorizer.parquet
+            use_features: []
+      
+      
