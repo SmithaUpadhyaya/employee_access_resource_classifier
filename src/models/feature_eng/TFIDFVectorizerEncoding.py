@@ -11,14 +11,14 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
 
         self.targetcol = targetcol
         self.params = params
-        self.combine_cols = combine_cols
+        self.combine_columns_required = combine_cols
 
         self.dict_Vectorizer = {}
         self.dict_dim_reduction = {}
         
     def combine_cols(self, dataset, columns):
 
-        if self.combine_cols == True:
+        if self.combine_columns_required == True:
 
             for c1,c2 in combinations(columns, 2): #permutations #Number of unique count where same i.e col1_col2 == col2_col1
             

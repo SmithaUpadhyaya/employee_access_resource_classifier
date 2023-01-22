@@ -11,14 +11,14 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
 
         self.targetcol = targetcol
         self.params = params
-        self.combine_cols = combine_cols
+        self.combine_columns_required = combine_cols
 
         self.dict_Vectorizer = {}
         self.dict_dim_reduction = {}
         
     def combine_cols(self, dataset, columns):
 
-        if self.combine_cols == True:
+        if self.combine_columns_required == True:
 
             for c1,c2 in combinations(columns, 2): #permutations #Number of unique count where same i.e col1_col2 == col2_col1
             
@@ -141,13 +141,13 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
         self.dict_Vectorizer = {}
         self.dict_dim_reduction = {}
 
-        return self.encode(X, istraining = True)
+        return self.encode(X, True)
 
     def transform(self, X, y = None):
 
         if (len(self.dict_Vectorizer) == 0) | (len(self.dict_dim_reduction) == 0):
             raise ModuleException('CountVect', 'Count Vectorizer instance is not fitted yet. Try calling fit_transform first.')
         
-        return self.encode(X, istraining = False) 
+        return self.encode(X, False) 
 
         
