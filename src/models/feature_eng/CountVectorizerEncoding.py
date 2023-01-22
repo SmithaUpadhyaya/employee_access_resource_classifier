@@ -52,7 +52,7 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
 
             data = self.extract_col_interaction(dataset, col1, col2, istraining)
 
-            if data == None:
+            if type(data) == type(None):
                 continue
 
             col_name = [x for x in data.columns if "svd" in x] #[0]
