@@ -7,42 +7,45 @@ import pandas as pd
 
 class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, targetcol, params):
+    def __init__(self, targetcol, params, combine_cols = True):
 
         self.targetcol = targetcol
         self.params = params
+        self.combine_cols = combine_cols
 
         self.dict_Vectorizer = {}
         self.dict_dim_reduction = {}
         
     def combine_cols(self, dataset, columns):
 
-        for c1,c2 in combinations(columns, 2): #permutations #Number of unique count where same i.e col1_col2 == col2_col1
-        
-            if (c1 == self.targetcol) | (c2 == self.targetcol):
-                continue
+        if self.combine_cols == True:
 
-            name = "{}_{}".format(c1, c2)
+            for c1,c2 in combinations(columns, 2): #permutations #Number of unique count where same i.e col1_col2 == col2_col1
+            
+                if (c1 == self.targetcol) | (c2 == self.targetcol):
+                    continue
 
-            #From EDA: 
-            # 1: Skip combination of ROLE_FAMILY and ROLE_CODE
-            #if (c1 in ['ROLE_FAMILY', 'ROLE_CODE']) & (c2 in ['ROLE_FAMILY', 'ROLE_CODE']):
-            #    continue
-            
-            ### 2: Skip any combination of feature with  RESOURCE
-            ##if (c1 == "RESOURCE") | (c2 == "RESOURCE"):
-            ##    continue
-            
-            #3: skip all other combination which are not define in "use_column"  
-            if len(self.params['use_features']) > 0:
-                if name not in self.params['use_features']:
-                    continue               
-            
-            dataset[name] = dataset[c1] + " " + dataset[c2]
+                name = "{}_{}".format(c1, c2)
+
+                #From EDA: 
+                # 1: Skip combination of ROLE_FAMILY and ROLE_CODE
+                #if (c1 in ['ROLE_FAMILY', 'ROLE_CODE']) & (c2 in ['ROLE_FAMILY', 'ROLE_CODE']):
+                #    continue
+                
+                ### 2: Skip any combination of feature with  RESOURCE
+                ##if (c1 == "RESOURCE") | (c2 == "RESOURCE"):
+                ##    continue
+                
+                #3: skip all other combination which are not define in "use_column"  
+                #if len(self.params['use_features']) > 0:
+                #    if name not in self.params['use_features']:
+                #        continue               
+                
+                dataset[name] = dataset[c1] + " " + dataset[c2]
 
         return dataset
 
-    def get_col_interactions_svd(self, dataset):
+    def get_col_interactions_svd(self, dataset, istraining):
 
         new_dataset = pd.DataFrame()
 
@@ -51,7 +54,10 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
             if (col1 == self.targetcol) | (col2 == self.targetcol):
                 continue
 
-            data = self.extract_col_interaction(dataset, col1, col2)
+            data = self.extract_col_interaction(dataset, col1, col2, istraining)
+
+            if data == None:
+                continue
 
             col_name = [x for x in data.columns if "svd" in x] #[0]
             
@@ -61,7 +67,7 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
 
         return new_dataset    
 
-    def extract_col_interaction(self, dataset, col1, col2):
+    def extract_col_interaction(self, dataset, col1, col2, istraining):
 
         key = col1 + "_" + col2
         
@@ -69,8 +75,14 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
         data = dataset.groupby([col1])[col2].agg(lambda x: " ".join(x))
 
         if key in self.dict_Vectorizer:
+
             vectorizer = self.dict_Vectorizer[key]
+
         else:
+
+            if istraining == False:
+                return None
+
             vectorizer = TfidfVectorizer(lowercase = False)            
             self.dict_Vectorizer[key] = vectorizer.fit(data) #Save the fitted vectorizer obj, which will be used in the transform stage
         
@@ -80,8 +92,20 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
             dim_red = self.dict_dim_reduction[key] 
         else:
             dim_red = TruncatedSVD(n_components = self.params['dim_reduction'], random_state = self.params['random_seed'])
-            self.dict_dim_reduction[key] = dim_red.fit(data_X) #Save the fitted dimension reduction obj, which will be used in the transform stage
-        
+
+            #Save the fitted dimension reduction obj, which will be used in the transform stage
+            dim_red = dim_red.fit(data_X) 
+
+            if dim_red.explained_variance_ratio_[0] >= self.params['var_explained']:
+
+                self.dict_dim_reduction[key] = dim_red.fit(data_X) 
+
+            #Save only those combination that explain the varaince more then 90%
+            else:
+            
+                del [self.dict_Vectorizer[key]]
+                return None
+
         data_X = dim_red.transform(data_X)
         
         col_no = self.params['dim_reduction']
@@ -103,14 +127,14 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
 
         return result
 
-    def encode(self, X):
+    def encode(self, X, istraining):
 
         col_use = [x for x in X.columns if not x in ['ROLE_TITLE', 'MGR_ID']]
         X = X[col_use]
 
         X = self.combine_cols(X, col_use)
 
-        new_dataset = self.get_col_interactions_svd(X)
+        new_dataset = self.get_col_interactions_svd(X, istraining)
 
         return new_dataset
 
@@ -121,13 +145,13 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
         self.dict_Vectorizer = {}
         self.dict_dim_reduction = {}
 
-        return self.encode(X)
+        return self.encode(X, istraining = True)
 
     def transform(self, X, y = None):
 
         if (len(self.dict_Vectorizer) == 0) | (len(self.dict_dim_reduction) == 0):
             raise ModuleException('TFIDFVector', 'TFIDF Vectorizer instance is not fitted yet. Try calling fit_transform first.')
         
-        return self.encode(X) 
+        return self.encode(X, istraining = False) 
 
         

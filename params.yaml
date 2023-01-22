@@ -13,30 +13,46 @@ featurize:
             #max_nunique: -1 #5000
             random_seed: 2023
             dim_reduction: 1
+            var_explained: 0.2
             output:
                   folder: feature\tfidf
                   filename: tfidf.parquet
-            #use_features: [] #Case when we want to compute for every possible combination. Used when doing eda
-            use_features: ['RESOURCE', 'RESOURCE_ROLE_CODE', 'RESOURCE_ROLE_DEPTNAME', 'RESOURCE_ROLE_FAMILY', 'RESOURCE_ROLE_FAMILY_DESC', 
-                           'RESOURCE_ROLE_ROLLUP_1', 'RESOURCE_ROLE_ROLLUP_2', 'ROLE_CODE', 'ROLE_DEPTNAME','ROLE_DEPTNAME_ROLE_CODE', 
-                           'ROLE_DEPTNAME_ROLE_FAMILY', 'ROLE_DEPTNAME_ROLE_FAMILY_DESC', 'ROLE_FAMILY', 'ROLE_FAMILY_DESC', 'ROLE_FAMILY_DESC_ROLE_CODE', 
-                           'ROLE_FAMILY_DESC_ROLE_FAMILY', 'ROLE_FAMILY_ROLE_CODE', 'ROLE_ROLLUP_1', 'ROLE_ROLLUP_1_ROLE_DEPTNAME', 
-                           'ROLE_ROLLUP_1_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_FAMILY_DESC', 'ROLE_ROLLUP_2', 'ROLE_ROLLUP_2_ROLE_CODE', 
-                           'ROLE_ROLLUP_2_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_FAMILY_DESC']
-      
+            #use_features: {} #Case when we want to compute for every possible combination. Used when doing eda
+
+            #use_features: {'RESOURCE', 'RESOURCE_ROLE_CODE', 'RESOURCE_ROLE_DEPTNAME', 'RESOURCE_ROLE_FAMILY', 'RESOURCE_ROLE_FAMILY_DESC', 
+            #               'RESOURCE_ROLE_ROLLUP_1', 'RESOURCE_ROLE_ROLLUP_2', 'ROLE_CODE', 'ROLE_DEPTNAME', 'ROLE_DEPTNAME_ROLE_CODE', 
+            #               'ROLE_DEPTNAME_ROLE_FAMILY', 'ROLE_DEPTNAME_ROLE_FAMILY_DESC', 'ROLE_FAMILY', 'ROLE_FAMILY_DESC', 'ROLE_FAMILY_DESC_ROLE_CODE', 
+            #               'ROLE_FAMILY_DESC_ROLE_FAMILY', 'ROLE_FAMILY_ROLE_CODE', 'ROLE_ROLLUP_1', 'ROLE_ROLLUP_1_ROLE_DEPTNAME', 'ROLE_ROLLUP_1_ROLE_FAMILY',
+            #               'ROLE_ROLLUP_1_ROLE_FAMILY_DESC', 'ROLE_ROLLUP_2', 'ROLE_ROLLUP_2_ROLE_CODE','ROLE_ROLLUP_2_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_FAMILY', 
+            #               'ROLE_ROLLUP_2_ROLE_FAMILY_DESC'}
+            
+
       count_vector:
             random_seed: 2023
             dim_reduction: 1
+            var_explained: 0.90
             output:
                   folder: feature\cntvector
                   filename: count_vectorizer.parquet
-            #use_features: [] #Case when we want to compute for every possible combination. Used when doing eda
-            use_features: ['RESOURCE',  'RESOURCE_ROLE_CODE',  'RESOURCE_ROLE_DEPTNAME',  'RESOURCE_ROLE_FAMILY', 'RESOURCE_ROLE_FAMILY_DESC',  
-                           'RESOURCE_ROLE_ROLLUP_1',  'RESOURCE_ROLE_ROLLUP_2', 'ROLE_CODE',  'ROLE_DEPTNAME',  'ROLE_DEPTNAME_ROLE_CODE', 
-                           'ROLE_DEPTNAME_ROLE_FAMILY', 'ROLE_DEPTNAME_ROLE_FAMILY_DESC', 'ROLE_FAMILY', 'ROLE_FAMILY_DESC', 'ROLE_FAMILY_DESC_ROLE_CODE', 
-                           'ROLE_FAMILY_DESC_ROLE_FAMILY', 'ROLE_FAMILY_ROLE_CODE', 'ROLE_ROLLUP_1', 'ROLE_ROLLUP_1_ROLE_DEPTNAME',
-                           'ROLE_ROLLUP_1_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_FAMILY_DESC', 'ROLE_ROLLUP_2', 'ROLE_ROLLUP_2_ROLE_CODE',
-                           'ROLE_ROLLUP_2_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_FAMILY_DESC',
-                           'ROLE_ROLLUP_1_ROLE_CODE', 'ROLE_ROLLUP_1_ROLE_ROLLUP_2']
+            #use_features: {} #Case when we want to compute for every possible combination. Used when doing eda
+            #use_features: {'RESOURCE', 'RESOURCE_ROLE_CODE',  'RESOURCE_ROLE_DEPTNAME',  'RESOURCE_ROLE_FAMILY', 'RESOURCE_ROLE_FAMILY_DESC',  
+            #               'RESOURCE_ROLE_ROLLUP_1',  'RESOURCE_ROLE_ROLLUP_2', 'ROLE_CODE',  'ROLE_DEPTNAME',  'ROLE_DEPTNAME_ROLE_CODE', 
+            #               'ROLE_DEPTNAME_ROLE_FAMILY', 'ROLE_DEPTNAME_ROLE_FAMILY_DESC', 'ROLE_FAMILY', 'ROLE_FAMILY_DESC', 'ROLE_FAMILY_DESC_ROLE_CODE', 
+            #               'ROLE_FAMILY_DESC_ROLE_FAMILY', 'ROLE_FAMILY_ROLE_CODE', 'ROLE_ROLLUP_1', 'ROLE_ROLLUP_1_ROLE_DEPTNAME','ROLE_ROLLUP_1_ROLE_FAMILY', 
+            #               'ROLE_ROLLUP_1_ROLE_FAMILY_DESC', 'ROLE_ROLLUP_2', 'ROLE_ROLLUP_2_ROLE_CODE','ROLE_ROLLUP_2_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_FAMILY', 
+            #               'ROLE_ROLLUP_2_ROLE_FAMILY_DESC',
+            #               'ROLE_ROLLUP_1_ROLE_CODE', 'ROLE_ROLLUP_1_ROLE_ROLLUP_2'}
       
-      
+            #permutation_features_col1: {'RESOURCE',  'RESOURCE_ROLE_FAMILY', 'RESOURCE_ROLE_ROLLUP_1', 'ROLE_CODE', 'ROLE_FAMILY',
+            #                           'ROLE_FAMILY_DESC', 'ROLE_FAMILY_DESC_ROLE_CODE', 'ROLE_FAMILY_DESC_ROLE_FAMILY', 'ROLE_FAMILY_ROLE_CODE', 
+            #                           'ROLE_ROLLUP_1', 'ROLE_ROLLUP_1_ROLE_CODE', 'ROLE_ROLLUP_1_ROLE_DEPTNAME', 'ROLE_ROLLUP_1_ROLE_FAMILY', 
+            #                           'ROLE_ROLLUP_1_ROLE_FAMILY_DESC', 'ROLE_ROLLUP_1_ROLE_ROLLUP_2', 'ROLE_ROLLUP_2', 'ROLE_ROLLUP_2_ROLE_CODE', 
+            #                           'ROLE_ROLLUP_2_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_FAMILY_DESC'}
+
+            #permutation_features_col2: {'RESOURCE', 'RESOURCE_ROLE_CODE', 'RESOURCE_ROLE_DEPTNAME', 'RESOURCE_ROLE_FAMILY',
+            #                            'RESOURCE_ROLE_FAMILY_DESC', 'RESOURCE_ROLE_ROLLUP_1', 'RESOURCE_ROLE_ROLLUP_2', 'ROLE_CODE',
+            #                            'ROLE_DEPTNAME', 'ROLE_DEPTNAME_ROLE_CODE', 'ROLE_DEPTNAME_ROLE_FAMILY', 'ROLE_DEPTNAME_ROLE_FAMILY_DESC',
+            #                            'ROLE_FAMILY', 'ROLE_FAMILY_DESC', 'ROLE_FAMILY_DESC_ROLE_CODE', 'ROLE_FAMILY_DESC_ROLE_FAMILY',
+            #                            'ROLE_FAMILY_ROLE_CODE', 'ROLE_ROLLUP_1', 'ROLE_ROLLUP_1_ROLE_CODE', 'ROLE_ROLLUP_1_ROLE_DEPTNAME',
+            #                            'ROLE_ROLLUP_1_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_FAMILY_DESC', 'ROLE_ROLLUP_1_ROLE_ROLLUP_2','ROLE_ROLLUP_2',
+            #                            'ROLE_ROLLUP_2_ROLE_CODE', 'ROLE_ROLLUP_2_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_FAMILY_DESC'}
