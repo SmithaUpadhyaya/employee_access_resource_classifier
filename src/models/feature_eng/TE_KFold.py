@@ -96,9 +96,13 @@ class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
            
             X = pd.concat([X, transformed_X[KFold_TE_col]], axis = 1)
             log.write_log(f'TEKFold-fit: Total number of feature after target encode: {len(X.columns)}...', log.logging.DEBUG)
-           
+            
+            X.reset_index(drop = True, inplace = True)
+            
             return X
         else:
+            
+            transformed_X.reset_index(drop = True, inplace = True)
             
             return transformed_X[KFold_TE_col]
 
@@ -139,8 +143,13 @@ class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
             X = pd.concat([X, transformed_X], axis = 1)
             log.write_log(f'TEKFold-transform: Total number of feature after target encode: {len(X.columns)}...', log.logging.DEBUG)
             
+            X.reset_index(drop = True, inplace = True)
+            
             return X        
         else:
+            
+            transformed_X.reset_index(drop = True, inplace = True)
+            
             return transformed_X
 
 #===================================================================================

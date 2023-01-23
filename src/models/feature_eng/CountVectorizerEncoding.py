@@ -146,9 +146,12 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
             X = pd.concat([X, new_dataset], axis = 1)
             log.write_log(f'CountVector: Total number of feature after encode: {len(X.columns)}...', log.logging.DEBUG)
             
+            X.reset_index(drop = True, inplace = True)
             return X
             
         else:
+
+            new_dataset.reset_index(drop = True, inplace = True)
             return new_dataset
 
 #==============================================================================================================
