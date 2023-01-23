@@ -42,8 +42,9 @@ if __name__ == '__main__':
 
     #db_train.shape
     #print(f'After droping duplicate records: {db_train.shape[0]}')
-
-    db_train = db_train.astype(str)
+    
+    #Convert all feature except 'ACTION' to object type
+    db_train[['RESOURCE', 'ROLE_ROLLUP_1', 'ROLE_ROLLUP_2', 'ROLE_DEPTNAME', 'ROLE_TITLE', 'ROLE_FAMILY_DESC', 'ROLE_FAMILY','ROLE_CODE']] = db_train[['RESOURCE', 'ROLE_ROLLUP_1', 'ROLE_ROLLUP_2', 'ROLE_DEPTNAME', 'ROLE_TITLE', 'ROLE_FAMILY_DESC', 'ROLE_FAMILY','ROLE_CODE']].astype(str)
     
     log.write_log(f'Clean data completed.', log.logging.DEBUG)
     

@@ -13,7 +13,7 @@ db_train = hlpread.read_from_parquet(clean_train_data)
 params = hlpread.read_yaml_key('featurize.tfidf')
 target_col = 'ACTION'
 
-tfidf_obj = TFIDFVectorizerEncoding(target_col, params)
+tfidf_obj = TFIDFVectorizerEncoding(target_col, combine_cols = True)
 new_dataset = tfidf_obj.fit_transform(db_train)
 
 #Save Model

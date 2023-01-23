@@ -14,7 +14,7 @@ db_train = hlpread.read_from_parquet(clean_train_data)
 params = hlpread.read_yaml_key('featurize.count_vector')
 target_col = 'ACTION'
 
-count_obj = CountVectorizerEncoding(target_col, params)
+count_obj = CountVectorizerEncoding(targetcol = target_col, combine_cols = True)
 new_dataset = count_obj.fit_transform(db_train)
 
 save_file_path = os.path.join(

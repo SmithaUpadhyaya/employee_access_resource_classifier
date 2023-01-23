@@ -8,8 +8,8 @@ stages:
       size: 5926077
       nfiles: 3
     - path: src\data\clean_data.py
-      md5: 1bf54ccc4526c5f309e23e21fd890f66
-      size: 2320
+      md5: 446fefd52294d288399ab790a42b6388
+      size: 2633
     params:
       params.yaml:
         data_source.data_folders: data
@@ -19,15 +19,15 @@ stages:
         data_source.training_data_folder.train: train.csv
     outs:
     - path: data\prepared
-      md5: 2e7cc66824fef408d3cd52a5e2e05d25.dir
-      size: 595870
+      md5: 15682c488e4b458bdc8b68fb97c82852.dir
+      size: 591595
       nfiles: 1
   feature_tfidf_vectorizer:
     cmd: python -W ignore src\data\tfidf_feature_vectorizer.py
     deps:
     - path: data\prepared
-      md5: 2e7cc66824fef408d3cd52a5e2e05d25.dir
-      size: 595870
+      md5: 15682c488e4b458bdc8b68fb97c82852.dir
+      size: 591595
       nfiles: 1
     - path: src\data\tfidf_feature_vectorizer.py
       md5: 2bcaa601c813b070aa334093b2235115
@@ -56,8 +56,8 @@ stages:
     cmd: python -W ignore src\data\count_feature_vectorizer.py
     deps:
     - path: data\prepared
-      md5: 2e7cc66824fef408d3cd52a5e2e05d25.dir
-      size: 595870
+      md5: 15682c488e4b458bdc8b68fb97c82852.dir
+      size: 591595
       nfiles: 1
     - path: src\data\count_feature_vectorizer.py
       md5: 8c169322aeb9e060360aaa1b76bce69d

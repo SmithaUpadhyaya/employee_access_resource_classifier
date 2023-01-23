@@ -1,6 +1,7 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 from utils.exception import ModuleException
 from sklearn.model_selection import KFold
+import logs.logger as log
 import pandas as pd
 import numpy as np
 
@@ -8,17 +9,20 @@ import numpy as np
 # Will be assigning different Encoder of same group value 
 class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, targetcol, min_group_size = 1, n_fold = 5, random_seed = 2023):
+    def __init__(self, colnames = [], targetcol = 'ACTION' ,min_group_size = 1, n_fold = 5, random_seed = 2023, concat_result_X = True):
 
-        self.targetcols = targetcol
+        self.colnames = colnames
+        self.targetcol = targetcol
         self.min_group_size = min_group_size
+        self.merge_result = concat_result_X
         self.learned_values = {}
+
         self.kf = KFold(n_splits = n_fold, shuffle = True, random_state = random_seed)
    
-    def fit(self, X):
+    def fit(self, X, y = None):
         return self
 
-    def fit_transform(self, X):
+    def fit_transform(self, X, y = None):
 
         #Fit train data and transform them.        
         #if len(self.learned_values) == 0: 
@@ -27,12 +31,17 @@ class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
         transformed_X = pd.DataFrame()
         KFold_FE_col = []
 
-        for colname in self.targetcols:
+        if len(self.colnames ) == 0:
+            self.colnames = [x for x in X.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
+
+        log.write_log(f'KFreqEncode-fit: Number of features to encode: {len(self.colnames)}...', log.logging.DEBUG)
+
+        for colname in self.colnames:
             
             if not colname in X.columns:
                 raise ModuleException('KFoldFreq_Enc', f'Encoder columns \"{colname}\" not avaliable in the DataFrame.')
 
-            if X[colname].dtype != 'object':
+            if X[colname].dtype != 'object': #type('object')
                 raise ModuleException('KFoldFreq_Enc', f'\"{colname}\" is not categorical type.')
 
             freq_enc_col_name = colname + '_KFoldFreqEnc'
@@ -65,10 +74,20 @@ class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
             transformed_X[KFold_FE_col] = transformed_X[KFold_FE_col].astype(int)  #Change the dtype to int
             #self.temp = transformed_X[[colname, freq_enc_col_name]]
             self.learned_values[colname] = transformed_X[[colname, freq_enc_col_name]].groupby(colname)[freq_enc_col_name].agg(lambda x: pd.Series.mode(x)[0])
+        
+        log.write_log(f'KFreqEncode-fit: Number of feature after kfold encoded: {len(KFold_FE_col)}...', log.logging.DEBUG)
+
+        if self.merge_result == True:
+
+            X = pd.concat([X, transformed_X[KFold_FE_col]], axis = 1)
+            log.write_log(f'KFreqEncode-fit: Total number of feature after kfold encode: {len(X.columns)}...', log.logging.DEBUG)
+
+            return X
+        else:    
             return transformed_X[KFold_FE_col]        
     
 
-    def transform(self, X):
+    def transform(self, X, y = None):
 
         #This is used when want to transfom test data
         if len(self.learned_values) == 0:
@@ -76,7 +95,7 @@ class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
             
         transformed_X = pd.DataFrame()
 
-        for colname in self.targetcols:
+        for colname in self.colnames:
 
             if not colname in X.columns:
                 raise ModuleException('KFoldFreq_Enc', f'Encoded columns \"{colname}\" not avaliable in the dataframe.')
@@ -90,7 +109,17 @@ class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
             transformed_X[freq_enc_col_name] = X[colname]
             transformed_X[freq_enc_col_name] = X[colname].map(lr_value)
         
-        return transformed_X
+        log.write_log(f'KFreqEncode-transform: Number of feature after target encoded: {len(transformed_X.columns)}...', log.logging.DEBUG)
+
+        if self.merge_result == True:
+
+            X = pd.concat([X, transformed_X], axis = 1)
+            log.write_log(f'KFreqEncode-transform: Total number of feature after target encode: {len(X.columns)}...', log.logging.DEBUG)
+            
+            return X        
+        else:
+
+            return transformed_X
 
 #=========================== Sample Codes
 """
@@ -100,7 +129,7 @@ import pandas as pd
 data = [10,20,30,10,40,30,20,10,50,60,10]
 X = pd.DataFrame({'data': data})
 X = X.astype(str)
-Kfreq_obj = KFoldFrequencyEncoding(targetcol = ['data'], min_group_size = 1)
+Kfreq_obj = KFoldFrequencyEncoding(colnames = ['data'], min_group_size = 1)
 Kfreq_obj.fit_transform(X)
 Kfreq_obj.learned_values
 

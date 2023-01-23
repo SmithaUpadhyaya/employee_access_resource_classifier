@@ -1,19 +1,27 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 from utils.exception import ModuleException
+import logs.logger as log
 import pandas as pd
 
 #Frequency/Count Encoder
 class FrequencyEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, targetcol, min_group_size = 1):
+    def __init__(self, targetcol = 'ACTION', colnames = [], min_group_size = 1, concat_result_X = True):
 
-        self.targetcols = targetcol
+        self.colnames = colnames
+        self.targetcol = targetcol
         self.min_group_size = min_group_size
+        self.merge_result = concat_result_X
         self.learned_values = {}
 
-    def fit(self, X):
+    def fit(self, X, y = None):
 
-        for colname in self.targetcols:
+        if len(self.colnames) == 0:
+            self.colnames = [x for x in X.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
+
+        log.write_log(f'FreqEncode-fit: Number of features to encode: {len(self.colnames)}...', log.logging.DEBUG)
+
+        for colname in self.colnames:
             
             msg = f'Target encoded columns \"{colname}\" not avaliable in the dataframe.'
             #assert(colname in X.columns, msg)            
@@ -29,20 +37,20 @@ class FrequencyEncoding(BaseEstimator, TransformerMixin):
             self.learned_values[colname] = freq_grp
 
 
-    def transform(self, X):
+    def transform(self, X, y = None):
 
         if len(self.learned_values) == 0:
             raise ModuleException('Freq_Enc', 'Frequency Encoding instance is not fitted yet.')
-
+        
         #FreqEnc_col = []
         transformed_X = pd.DataFrame()
 
-        for colname in self.targetcols:
+        for colname in self.colnames:
             
             if not colname in X.columns:
                 raise ModuleException('Freq_Enc', f'Target encoded columns \"{colname}\" not avaliable in the dataframe.')
 
-            if X[colname].dtype != 'object':
+            if X[colname].dtype != 'object': #type('object')
                 raise ModuleException('Freq_Enc', f'\"{colname}\" is not categorical type.')
 
             if not colname in self.learned_values:
@@ -57,9 +65,19 @@ class FrequencyEncoding(BaseEstimator, TransformerMixin):
             #FreqEnc_col.append(freq_enc_col_name)
 
         #return X[FreqEnc_col] #default changes get made in the the origina input param
-        return transformed_X
 
-    def fit_transform(self, X):
+        log.write_log(f'FreqEncode-transform: Number of feature after encoded: {len(transformed_X.columns)}...', log.logging.DEBUG)
+
+        if self.merge_result == True:
+
+            X = pd.concat([X, transformed_X], axis = 1)
+            log.write_log(f'FreqEncode-transform: Total number of feature after encode: {len(X.columns)}...', log.logging.DEBUG)
+            
+            return X
+        else:
+            return transformed_X
+
+    def fit_transform(self, X, y = None):
 
         if len(self.learned_values) == 0:
             self.fit(X)
@@ -76,7 +94,7 @@ import pandas as pd
 data = [10,20,30,10,40,30,20,10,50,60,10]
 X = pd.DataFrame({'data': data})
 X = X.astype(str)
-freq_obj = FrequencyEncoding(targetcol = ['data'], min_group_size = 1)
+freq_obj = FrequencyEncoding(colnames = ['data'], min_group_size = 1)
 #freq_obj.fit(X); freq_obj.transform(X)
 freq_obj.fit_transform(X)
 freq_obj.learned_values

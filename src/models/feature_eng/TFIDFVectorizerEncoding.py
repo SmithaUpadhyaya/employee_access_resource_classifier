@@ -3,16 +3,21 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from itertools import permutations, combinations
 from sklearn.decomposition import TruncatedSVD
 from utils.exception import ModuleException
+from utils.read_utils import read_yaml_key
+import logs.logger as log
 import pandas as pd
 
 class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, targetcol, params, combine_cols = True):
+    def __init__(self, targetcol = 'ACTION', combine_cols = False, concat_result_X = True):
 
         self.targetcol = targetcol
-        self.params = params
         self.combine_columns_required = combine_cols
+        self.merge_result = concat_result_X
 
+        params = read_yaml_key('featurize.tfidf')
+        self.params = params
+        
         self.dict_Vectorizer = {}
         self.dict_dim_reduction = {}
         
@@ -20,7 +25,7 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
 
         if self.combine_columns_required == True:
 
-            for c1,c2 in combinations(columns, 2): #permutations #Number of unique count where same i.e col1_col2 == col2_col1
+            for c1, c2 in combinations(columns, 2): #permutations #Number of unique count where same i.e col1_col2 == col2_col1
             
                 if (c1 == self.targetcol) | (c2 == self.targetcol):
                     continue
@@ -49,7 +54,11 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
 
         new_dataset = pd.DataFrame()
 
-        for col1, col2 in permutations(dataset.columns, 2):
+        colnames = [x for x in dataset.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
+
+        log.write_log(f'TFIDF-fit: Number of features to consider for vectorize: {len(colnames)}...', log.logging.DEBUG)
+
+        for col1, col2 in permutations(colnames, 2): #dataset.columns
         
             if (col1 == self.targetcol) | (col2 == self.targetcol):
                 continue
@@ -136,7 +145,15 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
 
         new_dataset = self.get_col_interactions_svd(X, istraining)
 
-        return new_dataset
+        if self.merge_result == True:
+
+            X = pd.concat([X, new_dataset], axis = 1)
+            log.write_log(f'TDIDFVector: Total number of feature after encode: {len(X.columns)}...', log.logging.DEBUG)
+            
+            return X
+            
+        else:
+            return new_dataset
 
 #==============================================================================================================
 
