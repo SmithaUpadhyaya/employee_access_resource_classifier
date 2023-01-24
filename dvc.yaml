@@ -30,3 +30,16 @@ stages:
             - pipeline_type
     outs:
       - ${data_source.data_folders}\feature\
+
+
+  train_model:
+    cmd: python src\data\train_model.py
+    deps:
+      - src\data\train_model.py
+      - ${data_source.data_folders}\feature\
+    params:
+      - data_source.data_folders # track specific param (from params.yaml)
+      - src\data\train_params.yaml:
+          - model
+    outs:
+      - ${data_source.data_folders}\model

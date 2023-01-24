@@ -25,7 +25,7 @@ class CombineFeatures(BaseEstimator, TransformerMixin):
             transform_X[name] = transform_X[c1] + " " + transform_X[c2]
 
         #transform_X.reset_index(drop = True, inplace = True)
-        log.write_log(f'CombineFeature: Total number of after combine: {len(X.columns)}...', log.logging.DEBUG)
+        log.write_log(f'CombineFeature: Total number of after combine: {len(transform_X.columns)}...', log.logging.DEBUG)
         return transform_X
 
     def fit(self, X, y = None):

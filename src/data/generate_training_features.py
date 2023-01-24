@@ -62,11 +62,10 @@ if __name__ == '__main__':
     log.write_log(f'generate_training_features: Fit_transform pipeline completed...', log.logging.DEBUG)
 
     #Drop all the orginal feature after transform
-    X.drop(columns = X.columns[29:], inplace = True)
-
+    log.write_log(f'generate_training_features: Feature counts after transform: {X.shape}.', log.logging.DEBUG)
     Y = X[['ACTION']]
-    X.drop(columns = ['ACTION'], inplace = True)
-
+    X.drop(columns = X.columns[:31], inplace = True)
+    log.write_log(f'generate_training_features: Feature counts after drop: {X.shape}.', log.logging.DEBUG)
 
     #Split train and test data
     log.write_log(f'generate_training_features: Split train and test data...', log.logging.DEBUG)
@@ -90,7 +89,7 @@ if __name__ == '__main__':
     X_train = pd.concat([X_train, Y_train], axis = 1 )
     X_test = pd.concat([X_test, Y_test], axis = 1 )
 
-    log.write_log(f'generate_training_features: Split train and test data completed...', log.logging.DEBUG)
+    log.write_log(f'generate_training_features: Split train and test data completed. Shape of train dataset: {X_train.shape}, shape of test dataset: {X_test.shape}', log.logging.DEBUG)
 
     #Save train data
     log.write_log(f'generate_training_features: Save train and test split data to files...', log.logging.DEBUG)
@@ -101,7 +100,6 @@ if __name__ == '__main__':
                                     train_data_param['output']['folder'],
                                     train_data_param['output']['filename'],                                  
                                 )
-
     hlpwrite.save_to_parquet(X_train, train_filepath, True)
 
 
