@@ -1,0 +1,30 @@
+feature:
+      output:
+            folder: feature\train
+            filename: train_feature.parquet
+
+train_test_split:
+      test_size: 0.01
+      random_seed: 45
+      output_folder: feature\train
+
+pipeline_type:
+            #combine_feature: True
+            KFoldTE: True
+            frequency_encoding: True
+            KFold_frequency_encoding: False
+            tfidf_vectorizer_encoding: False
+            count_vectorizer_encoding: False
+
+model_type: logistic_reg
+trained_model_output: model\model.pkl
+
+training_data: 
+            output:
+                  folder: feature\train
+                  filename: train_data.parquet
+
+test_data:
+            output:
+                  folder: feature\test
+                  filename: test_data.parquet

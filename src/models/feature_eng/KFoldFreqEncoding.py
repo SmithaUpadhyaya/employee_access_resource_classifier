@@ -9,7 +9,7 @@ import numpy as np
 # Will be assigning different Encoder of same group value 
 class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, colnames = [], targetcol = 'ACTION' ,min_group_size = 1, n_fold = 5, random_seed = 2023, concat_result_X = True):
+    def __init__(self, colnames = [], targetcol = 'ACTION', min_group_size = 1, n_fold = 5, random_seed = 2023, concat_result_X = True):
 
         self.colnames = colnames
         self.targetcol = targetcol

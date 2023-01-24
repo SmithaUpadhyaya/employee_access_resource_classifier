@@ -7,13 +7,9 @@ data_source:
       prepared:
               folder: prepared
               clean_train: clean_train.csv
+              
+featurize:    
 
-      feature:
-            output:
-                  folder: feature\train
-                  filename: train_feature.parquet
-
-featurize:
       tfidf:
             #max_nunique: -1 #5000
             random_seed: 2023

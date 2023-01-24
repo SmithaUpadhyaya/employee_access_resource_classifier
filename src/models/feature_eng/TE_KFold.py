@@ -90,15 +90,11 @@ class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
             #For test dataset consider the mean value of TE for each catagory in the groupby 
             self.learned_values[colname] = transformed_X[[colname, col_mean_name]].groupby(colname)[col_mean_name].mean()
 
-            #Merge the result with main table
-            if self.merge_result == True:
-                X[col_mean_name] = transformed_X[[colname, col_mean_name]].merge(X, on = colname, how = 'left')[col_mean_name]
-
         log.write_log(f'TEKFold-fit: Number of feature after target encoded: {len(KFold_TE_col)}...', log.logging.DEBUG)
         
         if self.merge_result == True:
            
-            #X = pd.concat([X, transformed_X[KFold_TE_col]], axis = 1)
+            X = pd.concat([X, transformed_X[KFold_TE_col]], axis = 1)
             log.write_log(f'TEKFold-fit: Total number of feature after target encode: {len(X.columns)}...', log.logging.DEBUG)            
            
             #X.reset_index(drop = True, inplace = True)            
