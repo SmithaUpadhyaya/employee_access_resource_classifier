@@ -8,6 +8,11 @@ data_source:
               folder: prepared
               clean_train: clean_train.csv
 
+      feature:
+            output:
+                  folder: feature\train
+                  filename: train_feature.parquet
+
 featurize:
       tfidf:
             #max_nunique: -1 #5000

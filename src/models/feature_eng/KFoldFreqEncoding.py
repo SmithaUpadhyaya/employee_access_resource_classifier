@@ -82,10 +82,11 @@ class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
             X = pd.concat([X, transformed_X[KFold_FE_col]], axis = 1)
             log.write_log(f'KFreqEncode-fit: Total number of feature after kfold encode: {len(X.columns)}...', log.logging.DEBUG)
 
-            X.reset_index(drop = True, inplace = True)
+            #X.reset_index(drop = True, inplace = True)
             return X
-        else:    
-            transformed_X.reset_index(drop = True, inplace = True)
+        else: 
+               
+            #transformed_X.reset_index(drop = True, inplace = True)
             return transformed_X[KFold_FE_col]        
     
 
@@ -117,11 +118,12 @@ class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
 
             X = pd.concat([X, transformed_X], axis = 1)
             log.write_log(f'KFreqEncode-transform: Total number of feature after target encode: {len(X.columns)}...', log.logging.DEBUG)
-            X.reset_index(drop = True, inplace = True)
+            
+            #X.reset_index(drop = True, inplace = True)
             return X        
         else:
             
-            transformed_X.reset_index(drop = True, inplace = True)
+            #transformed_X.reset_index(drop = True, inplace = True)
             return transformed_X
 
 #=========================== Sample Codes

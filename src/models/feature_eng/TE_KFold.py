@@ -34,7 +34,7 @@ class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
 
     def fit_transform(self, X, y = None):
 
-        #if len(self.learned_values) == 0:   
+        #if len(self.learned_values) == 0:  
 
         self.learned_values = {}
         
@@ -90,20 +90,23 @@ class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
             #For test dataset consider the mean value of TE for each catagory in the groupby 
             self.learned_values[colname] = transformed_X[[colname, col_mean_name]].groupby(colname)[col_mean_name].mean()
 
+            #Merge the result with main table
+            if self.merge_result == True:
+                X[col_mean_name] = transformed_X[[colname, col_mean_name]].merge(X, on = colname, how = 'left')[col_mean_name]
+
         log.write_log(f'TEKFold-fit: Number of feature after target encoded: {len(KFold_TE_col)}...', log.logging.DEBUG)
         
         if self.merge_result == True:
            
-            X = pd.concat([X, transformed_X[KFold_TE_col]], axis = 1)
-            log.write_log(f'TEKFold-fit: Total number of feature after target encode: {len(X.columns)}...', log.logging.DEBUG)
-            
-            X.reset_index(drop = True, inplace = True)
-            
+            #X = pd.concat([X, transformed_X[KFold_TE_col]], axis = 1)
+            log.write_log(f'TEKFold-fit: Total number of feature after target encode: {len(X.columns)}...', log.logging.DEBUG)            
+           
+            #X.reset_index(drop = True, inplace = True)            
             return X
-        else:
-            
-            transformed_X.reset_index(drop = True, inplace = True)
-            
+
+        else:   
+                     
+            #transformed_X.reset_index(drop = True, inplace = True)            
             return transformed_X[KFold_TE_col]
 
     def transform(self, X, y = None):
@@ -143,13 +146,11 @@ class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
             X = pd.concat([X, transformed_X], axis = 1)
             log.write_log(f'TEKFold-transform: Total number of feature after target encode: {len(X.columns)}...', log.logging.DEBUG)
             
-            X.reset_index(drop = True, inplace = True)
-            
+            #X.reset_index(drop = True, inplace = True)            
             return X        
         else:
             
-            transformed_X.reset_index(drop = True, inplace = True)
-            
+            #transformed_X.reset_index(drop = True, inplace = True)            
             return transformed_X
 
 #===================================================================================

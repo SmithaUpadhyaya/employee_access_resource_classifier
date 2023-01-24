@@ -1,7 +1,6 @@
 stages:
   clean_data:
-    cmd:  
-        python src\data\clean_data.py
+    cmd: python src\data\clean_data.py
     deps:
     - data\training
     - src\data\clean_data.py
@@ -13,34 +12,5 @@ stages:
     - data_source.prepared.clean_train
     outs:
     - data\prepared
-  
-  feature_count_vectorizer:
-    cmd:
-        python -W ignore src\data\count_feature_vectorizer.py #-W ignore: ignore all warning when executing the script
-    deps:
-    - data\prepared
-    - src\data\count_feature_vectorizer.py
-    - src\models\feature_eng\CountVectorizerEncoding.py
-    params:
-    - data_source.data_folders
-    - data_source.prepared.folder
-    - data_source.prepared.clean_train
-    - featurize.count_vector
-    outs:
-    - data\feature\cntvector
 
-  feature_tfidf_vectorizer:
-    cmd:
-        python -W ignore src\data\tfidf_feature_vectorizer.py #-W ignore: ignore all warning when executing the script
-    deps:
-    - data\prepared
-    - src\data\tfidf_feature_vectorizer.py
-    - src\models\feature_eng\TFIDFVectorizerEncoding.py
-    params:
-    - data_source.data_folders
-    - data_source.prepared.folder
-    - data_source.prepared.clean_train
-    - featurize.tfidf
-    outs:
-    - data\feature\tfidf
-
+ 

@@ -72,12 +72,12 @@ class FrequencyEncoding(BaseEstimator, TransformerMixin):
 
             X = pd.concat([X, transformed_X], axis = 1)
             log.write_log(f'FreqEncode-transform: Total number of feature after encode: {len(X.columns)}...', log.logging.DEBUG)
-            X.reset_index(drop = True, inplace = True)
 
+            #X.reset_index(drop = True, inplace = True)
             return X
         else:
 
-            transformed_X.reset_index(drop = True, inplace = True)
+            #transformed_X.reset_index(drop = True, inplace = True)
             return transformed_X
 
     def fit_transform(self, X, y = None):

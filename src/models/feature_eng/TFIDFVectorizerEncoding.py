@@ -68,8 +68,13 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
             if type(data) == type(None):
                 continue
 
+            #new_dataset will return the encoding for unique value for the combination. 
+            #Will use merge to merge them to the X train dataset.
+
+            #Step 1: Get all the transformed columns
             col_name = [x for x in data.columns if "svd" in x] #[0]
             
+            #Step 2: Merge records with main X dataset
             #Merge the extracted interaction data about col1 to main dataset by joining them with there key.
             #Reason to do this is we want to merge the calculated interaction data to respective col1 in main dataset
             new_dataset[col_name] = dataset[[col1]].merge(data, on = col1, how = 'left')[col_name]
@@ -157,6 +162,9 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
 
 #==============================================================================================================
 
+    #def fit(self, X):
+    #    return self
+        
     def fit_transform(self, X, y = None):
 
         self.dict_Vectorizer = {}
@@ -170,5 +178,8 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
             raise ModuleException('TFIDFVector', 'TFIDF Vectorizer instance is not fitted yet. Try calling fit_transform first.')
         
         return self.encode(X, istraining = False) 
+
+
+
 
         
