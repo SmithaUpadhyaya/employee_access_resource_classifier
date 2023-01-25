@@ -30,7 +30,7 @@ def eval(Y, Y_predictions_by_class):
     #Precision and Recall Curve
     pr_auc_score = average_precision_score(Y, Y_hat)
     summary["pr_auc"] = pr_auc_score 
-    dvc_live.log_sklearn_plot("precision_recall", Y, Y_hat, name = 'Precision Recall Curve')
+    dvc_live.log_sklearn_plot("precision_recall", Y, Y_hat, name = 'Precision_Recall_Curve')
     
     #ROC
     auc_score = roc_auc_score(Y, Y_hat)
@@ -38,13 +38,29 @@ def eval(Y, Y_predictions_by_class):
     dvc_live.log_sklearn_plot("roc", Y, Y_hat, name = "ROC")
 
     #Confusion_matric
-    dvc_live.log_sklearn_plot("confusion_matrix", Y, Y_hat, name = "Confusion Matrix")
+    dvc_live.log_sklearn_plot("confusion_matrix", Y, Y_hat, name = "Confusion_Matrix")
     
-    #Compute False and True Positive rate from confusion matrix
-    Y_pred = Y_predictions_by_class.argmax(-1)  
+    #Compute False and True Positive rate from confusion matrix and plot Confusion matrix.png
+    confusion_file = os.path.join(
+                                  hlpread.read_yaml_key('data_source.data_folders'),
+                                  eval_metric['evals'],
+                                  eval_metric['eval_plots'],
+                                  )
+    os.makedirs(confusion_file, exist_ok = True)
+    confusion_matx_file = os.path.join(confusion_file, "confusion_matrix.png")
+
+    #Compute matrix
+    Y_pred = Y_predictions_by_class.argmax(-1)   # This will return index of max value. # In our case it will return column index which has max value in a row.
     conf_matrix = confusion_matrix(Y, Y_pred)
+
+    #Plot
+    fig, ax = plt.subplots(figsize = (7.5, 7.5))
+    ax.matshow(conf_matrix, cmap = plt.cm.Blues, alpha=0.3)
+    
     for i in range(conf_matrix.shape[0]):
         for j in range(conf_matrix.shape[1]):
+            ax.text(x = j, y = i,s = conf_matrix[i, j], va = 'center', ha = 'center', size = 'xx-large')
+
             if (i == 0) & (j == 0):
                 tn = conf_matrix[i, j]
             elif (i == 0) & (j == 1):
@@ -53,6 +69,14 @@ def eval(Y, Y_predictions_by_class):
                 fn = conf_matrix[i, j]
             else:
                 tp = conf_matrix[i, j]
+
+            
+
+    plt.ylabel('Actuals', fontsize = 8)
+    plt.xlabel('Predictions', fontsize = 8)
+    plt.title(f'Confusion Matrix', fontsize = 8)
+    plt.savefig(confusion_matx_file)
+    
     #False Positive Rate    
     summary["fpr"] = fp / (fp + tn)
     #True Positive Rate
@@ -126,9 +150,6 @@ def eval(Y, Y_predictions_by_class):
         )
 
     #Plot confusion_matric
-    # This will return index of max value. 
-    # In our case it will return column index which has max value in a row.
-
     confusion_file = os.path.join(
                                   hlpread.read_yaml_key('data_source.data_folders'),
                                   eval_metric['evals'],
@@ -139,7 +160,7 @@ def eval(Y, Y_predictions_by_class):
     confusion_matx_file = os.path.join(confusion_file, "confusion_matrix.png")
 
     #Compute matrix
-    Y_pred = Y_predictions_by_class.argmax(-1)  
+    Y_pred = Y_predictions_by_class.argmax(-1)   # This will return index of max value. # In our case it will return column index which has max value in a row.
     conf_matrix = confusion_matrix(Y, Y_pred)
 
     #Plot

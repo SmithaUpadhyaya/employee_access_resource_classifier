@@ -50,22 +50,28 @@ stages:
     cmd: python src\data\eval.py
     deps:
       - ${data_source.data_folders}\model
-    outs:
-      - ${data_source.data_folders}\eval\plots:
-          cache: false
+      - src\data\eval.py
+    #outs:
+    #  - ${data_source.data_folders}\eval\plots:
+    #      cache: false
     metrics:
       - ${data_source.data_folders}\eval\metrics\metrics.json:
           cache: false #With cache: false, DVC skips caching the output under DVC, if we want we can track its versioned by Git.
-    
-plots:
-    - Confusion-Matrix:
-        template: confusion
-        x: actual
-        y: predicted
-    - ROC:
-        x: fpr
-        y: tpr
-    - Precision-Recall:
-        x: recall
-        y: precision
+               
+    plots:
+        - ${data_source.data_folders}\eval\plots\sklearn\confusion_matrix.png:
+            cache: false
+        - ${data_source.data_folders}\eval\plots\sklearn\Confusion_Matrix.json:
+            template: confusion
+            x: actual
+            y: predicted
+            cache: false
+        - ${data_source.data_folders}\eval\plots\sklearn\ROC.json:
+            x: fpr
+            y: tpr
+            cache: false
+        - ${data_source.data_folders}\eval\plots\sklearn\Precision_Recall_Curve.json:
+            x: recall
+            y: precision
+            cache: false
       

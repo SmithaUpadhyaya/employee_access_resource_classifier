@@ -14,7 +14,7 @@ pipeline_type:
 model: 
       model_type: logistic_reg
       params:
-            max_iter: 1000
+            max_iter: 2000
             penalty: 'l2'
             class_weight: 'balanced'
       trained_model: model\model.pkl
@@ -22,7 +22,7 @@ model:
 eval:
       evals: eval
       eval_metrics: metrics
-      eval_plots: plots
+      eval_plots: plots\sklearn
       
 training_data: 
             output:
