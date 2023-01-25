@@ -4,9 +4,11 @@ import logs.logger as log
 import utils.read_utils as hlpread
 import utils.write_utils as hlpwrite
 from sklearn.pipeline import Pipeline
+#from dvclive.keras import DVCLiveCallback #This will work with keras library and not with model sklearn. Since this require to define Callback 
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
+
 
 def define_model(param_filepath):
 
@@ -15,14 +17,18 @@ def define_model(param_filepath):
 
     if model_type == 'logistic_reg':
     
-        log.write_log(f'train_model: Train model type {model_type}...', log.logging.DEBUG)
+        log.write_log(f'train_model: Train model type: \"{model_type}\"...', log.logging.DEBUG)
         model = LogisticRegression()
         model.set_params(**model_param['params'])
-
+    else:
+        raise Exception('Unsupported model_type.')
+        
     return model, model_param
 
 
 if __name__ == '__main__':
+
+    log.write_log(f'train_model: Model training started.', log.logging.DEBUG)
 
     train_params_file = os.path.join("src", "data", "train_params.yaml")
 
@@ -47,6 +53,7 @@ if __name__ == '__main__':
     #For LogReg model we need to standarize the freq_cnt feature as can range from 0 to +ve inf
     if model_param['model_type'] == 'logistic_reg':        
 
+        log.write_log(f'train_model: Adding standard scaler transformer for freq enc feature...', log.logging.DEBUG)
         freq_enc_cols = [x for x in X_train.columns if 'FreqEnc'.lower() in x.lower()]
         
         # ColumnTransformer which applies transformers to a specified set of columns of an array or pandas DataFrame
@@ -57,9 +64,15 @@ if __name__ == '__main__':
     
     
     #Step 3: Fit Model
-    model.fit(X_train, Y_train)
+    log.write_log(f'train_model: Fit model started...', log.logging.DEBUG)
+    model.fit(X_train, 
+              Y_train, 
+              #callbacks = [DVCLiveCallback(save_dvc_exp=True)]
+              )
+    log.write_log(f'train_model: Fit model completed...', log.logging.DEBUG)
 
-    #Step 4: Save trained model to picel file
+    #Step 4: Save trained model to pickel file.
+    log.write_log(f'train_model: Save trained mode to pickel file.', log.logging.DEBUG)
     save_model_path = os.path.join(
                                     hlpread.read_yaml_key('data_source.data_folders'),
                                     model_param['trained_model']                               
@@ -67,5 +80,8 @@ if __name__ == '__main__':
     hlpwrite.save_object(save_model_path, model)
     #with open(save_model_path, "wb") as fd:
     #    pickle.dump(model, fd)
+
+
+    log.write_log(f'train_model: Model training completed.', log.logging.DEBUG)
 
 

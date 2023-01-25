@@ -89,8 +89,8 @@ stages:
       size: 1472092
       nfiles: 2
     - path: src\data\train_model.py
-      md5: 16fc4a3daaf576becbce434775a274d1
-      size: 3040
+      md5: 4a7d48a1ac740bb937e6d6ca598ee072
+      size: 3892
     params:
       params.yaml:
         data_source.data_folders: data
@@ -107,3 +107,23 @@ stages:
       md5: ea589a0c7e0837f1e165780052332d76.dir
       size: 5297
       nfiles: 1
+  evaluate_model:
+    cmd: python src\data\eval.py
+    deps:
+    - path: data\model
+      md5: ea589a0c7e0837f1e165780052332d76.dir
+      size: 5297
+      nfiles: 1
+    outs:
+    - path: data\eval\metrics\metrics.json
+      md5: d954dba513cc6fc5497b6e55e970fc17
+      size: 142
+    - path: data\eval\plots\cm\confusion_matrix.png
+      md5: ebe9762a08045ca8d9814a9620fbb729
+      size: 16123
+    - path: data\eval\plots\pr_rc\pr_rc_curve.json
+      md5: 5961e4704782c037155d539c9c4923c7
+      size: 4274677
+    - path: data\eval\plots\roc\roc_curve.json
+      md5: 10d6c0ca0a4b3aa2ae573d4bdea30e8d
+      size: 760625

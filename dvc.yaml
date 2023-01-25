@@ -43,3 +43,23 @@ stages:
           - model
     outs:
       - ${data_source.data_folders}\model
+
+  evaluate_model:
+    cmd: python src\data\eval.py
+    deps:
+      - ${data_source.data_folders}\model
+    metrics:
+      - ${data_source.data_folders}\eval\metrics\metrics.json:
+          cache: false #With cache: false, DVC skips caching the output under DVC, if we want we can track its versioned by Git.
+    plots:
+      - ${data_source.data_folders}\eval\plots\cm\confusion_matrix.png:
+          cache: false
+      - ${data_source.data_folders}\eval\plots\roc\roc_curve.json:
+          cache: false
+          x: fpr
+          y: tpr
+      - ${data_source.data_folders}\eval\plots\pr_rc\pr_rc_curve.json:
+          cache: false
+          x: recall
+          y: precision
+      
