@@ -44,7 +44,7 @@ class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
             if X[colname].dtype != 'object': #type('object')
                 raise ModuleException('KFoldFreq_Enc', f'\"{colname}\" is not categorical type.')
 
-            freq_enc_col_name = colname + '_KFoldFreqEnc'
+            freq_enc_col_name = colname + '_KfoldFreqEnc'
             KFold_FE_col.append(freq_enc_col_name)
             
             transformed_X[colname] = X[colname]
@@ -108,7 +108,7 @@ class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
 
             lr_value = self.learned_values[colname]
                 
-            freq_enc_col_name = colname + '_KFoldFreqEnc'
+            freq_enc_col_name = colname + '_KfoldFreqEnc'
             transformed_X[freq_enc_col_name] = X[colname]
             transformed_X[freq_enc_col_name] = X[colname].map(lr_value)
         

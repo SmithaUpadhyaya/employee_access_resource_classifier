@@ -30,11 +30,11 @@ stages:
       size: 591595
       nfiles: 1
     - path: src\data\generate_training_features.py
-      md5: 88772f2e552232944bc378b871977c39
+      md5: a6167aa6a67064b54af5fd7da413b192
       size: 5885
     - path: src\models\feature_eng
-      md5: b4f5683dcad9940a56832dae0adc4784.dir
-      size: 35665
+      md5: 4e377e53668b228b0f8c41ba8a22edba.dir
+      size: 35675
       nfiles: 7
     params:
       params.yaml:
@@ -78,6 +78,32 @@ stages:
             filename: train_data.parquet
     outs:
     - path: data\feature\
-      md5: 5c3d26194036333755c8390df0e66433.dir
-      size: 1586822
+      md5: 6a07d6919f9958517530e7b55ad5c944.dir
+      size: 1472092
       nfiles: 2
+  train_model:
+    cmd: python src\data\train_model.py
+    deps:
+    - path: data\feature\
+      md5: 6a07d6919f9958517530e7b55ad5c944.dir
+      size: 1472092
+      nfiles: 2
+    - path: src\data\train_model.py
+      md5: 16fc4a3daaf576becbce434775a274d1
+      size: 3040
+    params:
+      params.yaml:
+        data_source.data_folders: data
+      src/data/train_params.yaml:
+        model:
+          model_type: logistic_reg
+          params:
+            max_iter: 1500
+            penalty: l2
+            class_weight: balanced
+          trained_model: model\model.pkl
+    outs:
+    - path: data\model
+      md5: ea589a0c7e0837f1e165780052332d76.dir
+      size: 5297
+      nfiles: 1
