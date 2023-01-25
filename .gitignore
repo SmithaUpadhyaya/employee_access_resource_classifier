@@ -37,6 +37,6 @@ ipython_config.py
 __pypackages__/
 
 # Environments
-env/
+.env/
 
 

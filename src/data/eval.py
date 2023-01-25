@@ -1,5 +1,6 @@
 import os
 import json
+from dvclive import Live 
 import logs.logger as log
 import matplotlib.pyplot as plt
 import utils.read_utils as hlpread
@@ -9,15 +10,66 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import average_precision_score
 
-#Due to some version issue wan not able to install required version 1.3.3(latest as on Jan 2023)
-#It was installing 0.9.0 which did not have the required methods that i wanted to use
-#from dvclive import Live 
-
-
 train_params_file = os.path.join("src", "data", "train_params.yaml")
 
 def eval(Y, Y_predictions_by_class):
 
+    #Folder where the eval metric will be store
+    eval_metric = hlpread.read_yaml_key('eval', train_params_file)
+    dvc_live_path = os.path.join(hlpread.read_yaml_key('data_source.data_folders'),
+                                 eval_metric['evals'])
+    os.makedirs(dvc_live_path, exist_ok = True)
+    dvc_live = Live(dvc_live_path)
+
+
+    Y_hat = Y_predictions_by_class[:,1] #Y_hat return 2d array where it provide probality of item belong to either of two class. First col is for "0" lable and Second col is for "1"
+    
+    #Stored the summary value of the eval. 
+    summary = {} #Init to empty dict
+
+    #Precision and Recall Curve
+    pr_auc_score = average_precision_score(Y, Y_hat)
+    summary["pr_auc"] = pr_auc_score 
+    dvc_live.log_sklearn_plot("precision_recall", Y, Y_hat, name = 'Precision Recall Curve')
+    
+    #ROC
+    auc_score = roc_auc_score(Y, Y_hat)
+    summary["roc_auc"] = auc_score
+    dvc_live.log_sklearn_plot("roc", Y, Y_hat, name = "ROC")
+
+    #Confusion_matric
+    dvc_live.log_sklearn_plot("confusion_matrix", Y, Y_hat, name = "Confusion Matrix")
+    
+    #Compute False and True Positive rate from confusion matrix
+    Y_pred = Y_predictions_by_class.argmax(-1)  
+    conf_matrix = confusion_matrix(Y, Y_pred)
+    for i in range(conf_matrix.shape[0]):
+        for j in range(conf_matrix.shape[1]):
+            if (i == 0) & (j == 0):
+                tn = conf_matrix[i, j]
+            elif (i == 0) & (j == 1):
+                fp = conf_matrix[i, j]
+            elif (i == 1) & (j == 0):
+                fn = conf_matrix[i, j]
+            else:
+                tp = conf_matrix[i, j]
+    #False Positive Rate    
+    summary["fpr"] = fp / (fp + tn)
+    #True Positive Rate
+    summary["tpr"] = tp / (fn + tp)
+    
+    #To save the summary updated to metric.json file in the folder define when init dvcLive()
+    metric_file = os.path.join(dvc_live_path, eval_metric['eval_metrics'],)
+    os.makedirs(metric_file, exist_ok = True)
+    metric_file = os.path.join(metric_file, "metrics.json")
+    json.dump(
+        obj = summary,
+        fp = open(metric_file, 'w'),
+        indent = 4, 
+        sort_keys = True
+    )
+
+    """Old code to manully created the eval json file
     #Folder where the eval metric will be store
     eval_metric = hlpread.read_yaml_key('eval', train_params_file)
 
@@ -38,12 +90,12 @@ def eval(Y, Y_predictions_by_class):
     
     with open(prc_file, "w") as fd:
         json.dump(
-            {
-                "prc": [
+            [
+                #"prc": [
                     {"precision": p, "recall": r, "threshold": t}
                     for p, r, t in zip(precision, recall, prc_thresholds)
-                ]
-            },
+                #]
+            ],
             fd,
             indent = 4,
         )
@@ -63,12 +115,12 @@ def eval(Y, Y_predictions_by_class):
  
     with open(roc_file, "w") as fd:
         json.dump(
-            {
-                "roc": [
+            [
+                #"roc": [
                         {"fpr": fp, "tpr": tp, "threshold": t}
                         for fp, tp, t in zip(fpr, tpr, thresholds)
-                        ]
-            },
+                #]
+            ],
             fd,
             indent = 4,
         )
@@ -141,36 +193,12 @@ def eval(Y, Y_predictions_by_class):
         indent = 4, 
         sort_keys = True
     )
-
-    
     """
-    #When tried to install dvclive it only install 0.9.0. All the required method that i jave used are there 1.3.1. Fail to install this version. 
-    #So later decided to write manual code and let dvc track the changes within these file
-    #Folder where the eval metric will be store
-    dvc_live_path = os.path.join(hlpread.read_yaml_key('data_source.data_folders'),
-                                 hlpread.read_yaml_key('eval.evals', train_params_file))
-    os.makedirs(dvc_live_path, exist_ok = True)
-
-    dvc_live = Live(dvc_live_path)
     
-    #Stored the summary value of the eval. 
-    if not dvc_live.summary:
-        dvc_live.summary = {} #Init to empty dict
-
-    #Precision and Recall Curve
-    pr_rc_curve_df = ev_metric.precision_recall(Y, Y_hat)
-    dvc_live.summary["pr_rc_auc"] = pr_rc_curve_df.loc[0,'auc']
-    dvc_live.log_sklearn_plot("precision_recall", Y, Y_hat, 'Precision Recall Curve')
-    dvc_live.log_plot()
     
-    #ROC
-    roc_auc_curve_df = ev_metric.roc(Y, Y_hat)
-    dvc_live.summary["roc_auc"] = roc_auc_curve_df.loc[0, 'auc']
-    dvc_live.log_sklearn_plot("roc", Y, Y_hat, name="ROC")
-
-    #To save the summary updated to metric.json file in the folder define when init dvcLive()
-    dvc_live.make_summary()
-    """
+    
+    
+   
 
 if __name__ == '__main__':
 
