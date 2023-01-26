@@ -6,7 +6,7 @@ train_test_split:
 pipeline_type:
             #combine_feature: True
   KFoldTE: true
-  frequency_encoding: true
+  frequency_encoding: false
   KFold_frequency_encoding: false
   tfidf_vectorizer_encoding: false
   count_vectorizer_encoding: true
@@ -16,6 +16,7 @@ model:
   params:
     max_iter: 2000
     penalty: l2
+    C: 5
     class_weight: balanced
   trained_model: model\model.pkl
 
