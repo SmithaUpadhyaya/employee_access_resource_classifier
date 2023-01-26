@@ -59,23 +59,13 @@ stages:
           cache: false #With cache: false, DVC skips caching the output under DVC, if we want we can track its versioned by Git.
                
     plots:
-        - ${data_source.data_folders}\eval\plots\sklearn\confusion_matrix.png:
-            cache: false
-        
-        - ${data_source.data_folders}\eval\plots\sklearn\Confusion_Matrix.json:
-            template: confusion
-            x: actual
-            y: predicted
+        - ${data_source.data_folders}\eval\plots\confusion_matrix.png:
             cache: false
 
-        - ${data_source.data_folders}\eval\plots\sklearn\ROC.json:
-            x: fpr
-            y: tpr
+        - ${data_source.data_folders}\eval\plots\roc_curve.png:           
             cache: false
 
-        - ${data_source.data_folders}\eval\plots\sklearn\Precision_Recall_Curve.json:
-            x: recall
-            y: precision
+        - ${data_source.data_folders}\eval\plots\pr_rc_curve.png:           
             cache: false
       
     

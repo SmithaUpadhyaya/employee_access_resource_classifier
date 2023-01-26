@@ -51,12 +51,14 @@ if __name__ == '__main__':
     model, model_param = define_model(train_params_file)
 
     #For LogReg model we need to standarize the freq_cnt feature as can range from 0 to +ve inf
-    if model_param['model_type'] == 'logistic_reg':        
-
-        log.write_log(f'train_model: Adding standard scaler transformer for freq enc feature...', log.logging.DEBUG)
+    if model_param['model_type'] == 'logistic_reg':     
+        
         freq_enc_cols = [x for x in X_train.columns if 'FreqEnc'.lower() in x.lower()]
         
-        if len(freq_enc_cols) == 0:
+        if len(freq_enc_cols) != 0:
+
+            log.write_log(f'train_model: Adding standard scaler transformer for freq enc feature: {freq_enc_cols}...', log.logging.DEBUG)
+
             # ColumnTransformer which applies transformers to a specified set of columns of an array or pandas DataFrame
             preprocessor = ColumnTransformer(transformers = [("standard_scaler_freq_enc", StandardScaler(), freq_enc_cols)])
 

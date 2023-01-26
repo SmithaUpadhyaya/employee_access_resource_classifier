@@ -49,7 +49,7 @@ stages:
       src/data/train_params.yaml:
         pipeline_type:
           KFoldTE: true
-          frequency_encoding: true
+          frequency_encoding: false
           KFold_frequency_encoding: false
           tfidf_vectorizer_encoding: false
           count_vectorizer_encoding: true
@@ -59,56 +59,54 @@ stages:
           output_folder: feature\train
     outs:
     - path: data\feature\
-      md5: 279beafd92badacff02a3f3cf8554695.dir
-      size: 1438186
+      md5: ab26c97fc55002e5617d589e87ab1a66.dir
+      size: 636972
       nfiles: 2
   train_model:
     cmd: python src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: 279beafd92badacff02a3f3cf8554695.dir
-      size: 1438186
+      md5: ab26c97fc55002e5617d589e87ab1a66.dir
+      size: 636972
       nfiles: 2
     - path: src\data\train_model.py
-      md5: 4a7d48a1ac740bb937e6d6ca598ee072
-      size: 3892
+      md5: 8755acbceb6d31c6ae94bda5f07313e8
+      size: 3975
     params:
       src/data/train_params.yaml:
         model:
           model_type: logistic_reg
           params:
-            max_iter: 2000
+            max_iter: 500
             penalty: l2
+            C: 1
             class_weight: balanced
           trained_model: model\model.pkl
     outs:
     - path: data\model
-      md5: 676336982b7bef8d396b58897330d446.dir
-      size: 5564
+      md5: b388b0b21be77ddc81fabe114c976883.dir
+      size: 1954
       nfiles: 1
   evaluate_model:
     cmd: python src\data\eval.py
     deps:
     - path: data\model
-      md5: 676336982b7bef8d396b58897330d446.dir
-      size: 5564
+      md5: b388b0b21be77ddc81fabe114c976883.dir
+      size: 1954
       nfiles: 1
     - path: src\data\eval.py
-      md5: 44adae0058e038cc40db2c4af28f8981
-      size: 10064
+      md5: c20819e314851d93767b886327ebebb3
+      size: 11693
     outs:
     - path: data\eval\metrics\metrics.json
-      md5: caddae0d38f0f01fc68f3aa008fe6e06
-      size: 136
-    - path: data\eval\plots\sklearn\Confusion_Matrix.json
-      md5: e06d16bc596b9baa761e74c9cb80bf69
-      size: 2530919
-    - path: data\eval\plots\sklearn\Precision_Recall_Curve.json
-      md5: 1fe69bb3bd3381f51caccfab82705e9c
-      size: 4274567
-    - path: data\eval\plots\sklearn\ROC.json
-      md5: f8e073a60dd88720ee70e2b14fe783a4
-      size: 760570
-    - path: data\eval\plots\sklearn\confusion_matrix.png
-      md5: ebe9762a08045ca8d9814a9620fbb729
-      size: 16123
+      md5: a6812823c2615e9f53c79de3cce93c75
+      size: 52
+    - path: data\eval\plots\confusion_matrix.png
+      md5: 9e21737b198831f19ad6f5ec83095b6f
+      size: 14762
+    - path: data\eval\plots\pr_rc_curve.png
+      md5: e7bc0859487e488d6a5182d7d79e542e
+      size: 19317
+    - path: data\eval\plots\roc_curve.png
+      md5: bcb09688a29f24b4f3682d49cb6cbe23
+      size: 29384

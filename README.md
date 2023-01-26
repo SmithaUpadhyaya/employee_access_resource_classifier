@@ -18,3 +18,11 @@ or excute command after dvc init.
     pip install --upgrade pip
     pip install -r requirements.txt
 
+
+To reproduce any stage
+dvc repro
+dvc repro --force: to force all the stage
+Run the experiant with the value in param: dvc exp run
+On the fly chnage value of param: dvc exp run -S src\data\train_params.yaml:model.params.C=1.5  -S  src\data\train_params.yaml:model.params.max_iter=1000
+Note: No need to specify "src\data\train_params.yaml" if the param.yaml is the default param. this is used in case of custom param 
+
