@@ -56,11 +56,12 @@ if __name__ == '__main__':
         log.write_log(f'train_model: Adding standard scaler transformer for freq enc feature...', log.logging.DEBUG)
         freq_enc_cols = [x for x in X_train.columns if 'FreqEnc'.lower() in x.lower()]
         
-        # ColumnTransformer which applies transformers to a specified set of columns of an array or pandas DataFrame
-        preprocessor = ColumnTransformer(transformers = [("standard_scaler_freq_enc", StandardScaler(), freq_enc_cols)])
+        if len(freq_enc_cols) == 0:
+            # ColumnTransformer which applies transformers to a specified set of columns of an array or pandas DataFrame
+            preprocessor = ColumnTransformer(transformers = [("standard_scaler_freq_enc", StandardScaler(), freq_enc_cols)])
 
-        #Pipeline to perform standarization of freq enc feature before fitting the model
-        model = Pipeline(steps=[("preprocessor", preprocessor), ("logreg_model", model)] )
+            #Pipeline to perform standarization of freq enc feature before fitting the model
+            model = Pipeline(steps=[("preprocessor", preprocessor), ("logreg_model", model)] )
     
     
     #Step 3: Fit Model
