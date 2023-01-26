@@ -1,35 +1,35 @@
 train_test_split:
-      test_size: 0.01
-      random_seed: 45
-      output_folder: feature\train
+  test_size: 0.01
+  random_seed: 45
+  output_folder: feature\train
 
 pipeline_type:
             #combine_feature: True
-            KFoldTE: True
-            frequency_encoding: True
-            KFold_frequency_encoding: False
-            tfidf_vectorizer_encoding: False
-            count_vectorizer_encoding: False
+  KFoldTE: true
+  frequency_encoding: true
+  KFold_frequency_encoding: false
+  tfidf_vectorizer_encoding: false
+  count_vectorizer_encoding: true
 
-model: 
-      model_type: logistic_reg
-      params:
-            max_iter: 2000
-            penalty: 'l2'
-            class_weight: 'balanced'
-      trained_model: model\model.pkl
+model:
+  model_type: logistic_reg
+  params:
+    max_iter: 2000
+    penalty: l2
+    class_weight: balanced
+  trained_model: model\model.pkl
 
 eval:
-      evals: eval
-      eval_metrics: metrics
-      eval_plots: plots\sklearn
-      
-training_data: 
-            output:
-                  folder: feature\train
-                  filename: train_data.parquet
+  evals: eval
+  eval_metrics: metrics
+  eval_plots: plots\sklearn
+
+training_data:
+  output:
+    folder: feature\train
+    filename: train_data.parquet
 
 test_data:
-            output:
-                  folder: feature\test
-                  filename: test_data.parquet
+  output:
+    folder: feature\test
+    filename: test_data.parquet

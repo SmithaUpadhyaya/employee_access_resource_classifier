@@ -23,8 +23,8 @@ stages:
       size: 591595
       nfiles: 1
     - path: src\data\generate_training_features.py
-      md5: a6167aa6a67064b54af5fd7da413b192
-      size: 5885
+      md5: f049d0dc8194b0e2b27ea765d00cbfa8
+      size: 5891
     - path: src\models\feature_eng
       md5: 4e377e53668b228b0f8c41ba8a22edba.dir
       size: 35675
@@ -52,22 +52,22 @@ stages:
           frequency_encoding: true
           KFold_frequency_encoding: false
           tfidf_vectorizer_encoding: false
-          count_vectorizer_encoding: false
+          count_vectorizer_encoding: true
         train_test_split:
           test_size: 0.01
           random_seed: 45
           output_folder: feature\train
     outs:
     - path: data\feature\
-      md5: 6a07d6919f9958517530e7b55ad5c944.dir
-      size: 1472092
+      md5: 279beafd92badacff02a3f3cf8554695.dir
+      size: 1438186
       nfiles: 2
   train_model:
     cmd: python src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: 6a07d6919f9958517530e7b55ad5c944.dir
-      size: 1472092
+      md5: 279beafd92badacff02a3f3cf8554695.dir
+      size: 1438186
       nfiles: 2
     - path: src\data\train_model.py
       md5: 4a7d48a1ac740bb937e6d6ca598ee072
@@ -83,15 +83,15 @@ stages:
           trained_model: model\model.pkl
     outs:
     - path: data\model
-      md5: 490288318d1cc3bf3a00e889b2ef2cb5.dir
-      size: 5613
+      md5: 676336982b7bef8d396b58897330d446.dir
+      size: 5564
       nfiles: 1
   evaluate_model:
     cmd: python src\data\eval.py
     deps:
     - path: data\model
-      md5: 490288318d1cc3bf3a00e889b2ef2cb5.dir
-      size: 5613
+      md5: 676336982b7bef8d396b58897330d446.dir
+      size: 5564
       nfiles: 1
     - path: src\data\eval.py
       md5: 44adae0058e038cc40db2c4af28f8981

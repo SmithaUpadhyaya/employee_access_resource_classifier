@@ -42,6 +42,12 @@ if __name__ == '__main__':
     #if pipeline_params['combine_feature'] == True:
     #    feature_engg.steps.append(['combine_feature', CombineFeatures()])
 
+    if pipeline_params['tfidf_vectorizer_encoding'] == True:
+        feature_engg.steps.append(('tfidf_vectorizer_encoding', TFIDFVectorizerEncoding()))
+
+    if pipeline_params['count_vectorizer_encoding'] == True:
+        feature_engg.steps.append(('count_vectorizer_encoding', CountVectorizerEncoding()))
+
     if pipeline_params['KFoldTE'] == True:
         feature_engg.steps.append(('KFoldTE', KFoldTargetEncoder()))
 
@@ -51,12 +57,7 @@ if __name__ == '__main__':
     if pipeline_params['KFold_frequency_encoding'] == True:
         feature_engg.steps.append(('KFold_frequency_encoding', KFoldFrequencyEncoding(min_group_size = 1)))
 
-    if pipeline_params['tfidf_vectorizer_encoding'] == True:
-        feature_engg.steps.append(('tfidf_vectorizer_encoding', TFIDFVectorizerEncoding()))
-
-    if pipeline_params['count_vectorizer_encoding'] == True:
-        feature_engg.steps.append(('count_vectorizer_encoding', CountVectorizerEncoding()))
-
+    
     log.write_log(f'generate_training_features: Fit_transform pipeline started...', log.logging.DEBUG)
     X = feature_engg.fit_transform(db_train) 
     log.write_log(f'generate_training_features: Fit_transform pipeline completed...', log.logging.DEBUG)

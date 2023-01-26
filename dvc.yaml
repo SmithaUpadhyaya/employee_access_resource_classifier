@@ -61,17 +61,21 @@ stages:
     plots:
         - ${data_source.data_folders}\eval\plots\sklearn\confusion_matrix.png:
             cache: false
+        
         - ${data_source.data_folders}\eval\plots\sklearn\Confusion_Matrix.json:
             template: confusion
             x: actual
             y: predicted
             cache: false
+
         - ${data_source.data_folders}\eval\plots\sklearn\ROC.json:
             x: fpr
             y: tpr
             cache: false
+
         - ${data_source.data_folders}\eval\plots\sklearn\Precision_Recall_Curve.json:
             x: recall
             y: precision
             cache: false
       
+    

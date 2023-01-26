@@ -1,23 +1,23 @@
 data_source:
-      data_folders: data
-      training_data_folder:       
-                        folder: training
-                        train: train.csv
-                        test: test.csv
-      prepared:
-              folder: prepared
-              clean_train: clean_train.csv
-              
-featurize:    
+  data_folders: data
+  training_data_folder:
+    folder: training
+    train: train.csv
+    test: test.csv
+  prepared:
+    folder: prepared
+    clean_train: clean_train.csv
 
-      tfidf:
+featurize:
+
+  tfidf:
             #max_nunique: -1 #5000
-            random_seed: 2023
-            dim_reduction: 1
-            var_explained: 0.2
-            output:
-                  folder: feature\tfidf
-                  filename: tfidf.parquet
+    random_seed: 2023
+    dim_reduction: 1
+    var_explained: 0.2
+    output:
+      folder: feature\tfidf
+      filename: tfidf.parquet
             #use_features: {} #Case when we want to compute for every possible combination. Used when doing eda
 
             #use_features: {'RESOURCE', 'RESOURCE_ROLE_CODE', 'RESOURCE_ROLE_DEPTNAME', 'RESOURCE_ROLE_FAMILY', 'RESOURCE_ROLE_FAMILY_DESC', 
@@ -26,15 +26,14 @@ featurize:
             #               'ROLE_FAMILY_DESC_ROLE_FAMILY', 'ROLE_FAMILY_ROLE_CODE', 'ROLE_ROLLUP_1', 'ROLE_ROLLUP_1_ROLE_DEPTNAME', 'ROLE_ROLLUP_1_ROLE_FAMILY',
             #               'ROLE_ROLLUP_1_ROLE_FAMILY_DESC', 'ROLE_ROLLUP_2', 'ROLE_ROLLUP_2_ROLE_CODE','ROLE_ROLLUP_2_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_FAMILY', 
             #               'ROLE_ROLLUP_2_ROLE_FAMILY_DESC'}
-            
 
-      count_vector:
-            random_seed: 2023
-            dim_reduction: 1
-            var_explained: 0.90
-            output:
-                  folder: feature\cntvector
-                  filename: count_vectorizer.parquet
+  count_vector:
+    random_seed: 2023
+    dim_reduction: 1
+    var_explained: 0.9
+    output:
+      folder: feature\cntvector
+      filename: count_vectorizer.parquet
             #use_features: {} #Case when we want to compute for every possible combination. Used when doing eda
             #use_features: {'RESOURCE', 'RESOURCE_ROLE_CODE',  'RESOURCE_ROLE_DEPTNAME',  'RESOURCE_ROLE_FAMILY', 'RESOURCE_ROLE_FAMILY_DESC',  
             #               'RESOURCE_ROLE_ROLLUP_1',  'RESOURCE_ROLE_ROLLUP_2', 'ROLE_CODE',  'ROLE_DEPTNAME',  'ROLE_DEPTNAME_ROLE_CODE', 
@@ -43,7 +42,6 @@ featurize:
             #               'ROLE_ROLLUP_1_ROLE_FAMILY_DESC', 'ROLE_ROLLUP_2', 'ROLE_ROLLUP_2_ROLE_CODE','ROLE_ROLLUP_2_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_FAMILY', 
             #               'ROLE_ROLLUP_2_ROLE_FAMILY_DESC',
             #               'ROLE_ROLLUP_1_ROLE_CODE', 'ROLE_ROLLUP_1_ROLE_ROLLUP_2'}
-      
             #permutation_features_col1: {'RESOURCE',  'RESOURCE_ROLE_FAMILY', 'RESOURCE_ROLE_ROLLUP_1', 'ROLE_CODE', 'ROLE_FAMILY',
             #                           'ROLE_FAMILY_DESC', 'ROLE_FAMILY_DESC_ROLE_CODE', 'ROLE_FAMILY_DESC_ROLE_FAMILY', 'ROLE_FAMILY_ROLE_CODE', 
             #                           'ROLE_ROLLUP_1', 'ROLE_ROLLUP_1_ROLE_CODE', 'ROLE_ROLLUP_1_ROLE_DEPTNAME', 'ROLE_ROLLUP_1_ROLE_FAMILY', 
