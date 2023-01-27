@@ -7,6 +7,7 @@ from sklearn.pipeline import Pipeline
 #from dvclive.keras import DVCLiveCallback #This will work with keras library and not with model sklearn. Since this require to define Callback 
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 
 
@@ -15,13 +16,18 @@ def define_model(param_filepath):
     model_param = hlpread.read_yaml_key('model', param_filepath)
     model_type = model_param['model_type']
 
+    log.write_log(f'train_model: Train model type: \"{model_type}\"...', log.logging.DEBUG)
+    hyper_param = model_param[model_type]['hyper_params']
+
     if model_type == 'logistic_reg':
-        
-        log.write_log(f'train_model: Train model type: \"{model_type}\"...', log.logging.DEBUG)
-        
-        hyper_param = model_param[model_type]['hyper_params']
+
         model = LogisticRegression(random_state = 42)
         model.set_params(**hyper_param)
+
+    elif model_type == 'decision_tree':
+        
+        model = DecisionTreeClassifier(criterion = 'gini', random_state = 42)
+        model.set_params(**hyper_param)   
         
     else:
         raise Exception('Unsupported model_type.')

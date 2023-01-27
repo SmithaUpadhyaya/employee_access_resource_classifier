@@ -24,6 +24,45 @@ print(f'Working directory: {wrk_dir}')
 
 for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
+    #Hyper-paramters for Decision Tree
+    params = {
+        "max_depth": random.choice([3,5,7,9]),
+        "splitter": random.choice(['best', 'random']), #'l1': 
+        "min_samples_leaf":  random.choice([0.01, 0.05, 0.001, 0.002, 0.005]),
+        "max_features":  random.choice([0.3, 0.5, 0.6, 0.7, 0.95, 1]),
+        #"min_samples_split":  random.choice([]),
+
+        #Select the featurization techinique
+        "KFoldTE": random.choice([True, False]), 
+        "frequency_encoding": random.choice([True, False]),
+        "KFold_frequency_encoding": random.choice([True, False]),
+        "tfidf_vectorizer_encoding": random.choice([True, False]),
+        "count_vectorizer_encoding": random.choice([True, False]),
+    }
+
+
+    subprocess.run(["dvc", "exp", "run", #"--queue",
+                    "--set-param", f"model.decision_tree.hyper_params.max_depth={params['max_depth']}",
+                    "--set-param", f"model.decision_tree.hyper_params.splitter={params['splitter']}",
+                    "--set-param", f"model.decision_tree.hyper_params.min_samples_leaf={params['min_samples_leaf']}",
+                     "--set-param", f"model.decision_tree.hyper_params.max_features={params['max_features']}",
+                  
+
+                    #Select the featurization techinique
+                    "--set-param", f"pipeline_type.KFoldTE={params['KFoldTE']}",
+                    "--set-param", f"pipeline_type.frequency_encoding={params['frequency_encoding']}",
+                    "--set-param", f"pipeline_type.KFold_frequency_encoding={params['KFold_frequency_encoding']}",
+                    "--set-param", f"pipeline_type.tfidf_vectorizer_encoding={params['tfidf_vectorizer_encoding']}",
+                    "--set-param", f"pipeline_type.count_vectorizer_encoding={params['count_vectorizer_encoding']}",
+
+                    ]
+                  #This did not help
+                  #, cwd = get_project_root()
+                  #, cwd = wrk_dir 
+                  )
+
+
+    """Hyper paramater tuning for Logistic Regression 
     #Hyper-paramters for LogRegression
     params = {
         "max_iter": random.choice([50, 100, 120, 130, 150, 200, 250]),
@@ -58,6 +97,7 @@ for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
                   #, cwd = get_project_root()
                   #, cwd = wrk_dir 
                   )
+    """
 
 print("Queued Experiement to run.")
 #=============================================================

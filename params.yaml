@@ -78,6 +78,17 @@ model:
       penalty: l2
       C: 1.0
       class_weight: balanced
+
+  decision_tree:
+    hyper_params:
+        max_depth: 3
+        splitter: 'random'
+        min_samples_leaf: 0.01
+        max_features: 0.5
+        #min_samples_split: 0.01
+        class_weight: 'balanced'
+
+
   trained_model: model\model.pkl
   eval:
     evals: eval
