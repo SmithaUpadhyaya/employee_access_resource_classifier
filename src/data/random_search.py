@@ -7,7 +7,7 @@ import os
 
 
 # Automated random search experiments
-num_exps = 20 #Number of experiments to run to generate 
+num_exps = 50 #Number of experiments to run to generate
 random.seed(0)
 
 
@@ -26,18 +26,33 @@ for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
     #Hyper-paramters for LogRegression
     params = {
-        "max_iter": random.choice([50, 100, 120, 130, 150]),
-        "penalty": random.choice(['l1', 'l2']),
+        "max_iter": random.choice([50, 100, 120, 130, 150, 200, 250]),
+        "penalty": random.choice(['l2']), #'l1': 
         "C":  random.choice([100, 10, 1.0, 0.1, 0.01]),
+
+        #Select the featurization techinique
+        "KFoldTE": random.choice([True, False]), 
+        "frequency_encoding": random.choice([True, False]),
+        "KFold_frequency_encoding": random.choice([True, False]),
+        "tfidf_vectorizer_encoding": random.choice([True, False]),
+        "count_vectorizer_encoding": random.choice([True, False]),
     }
 
     #This will generate the experiment and wait for instruction to execute 
     #--temp : did not help. Continue to run from ".dvc\tmp\exps\"
-    # Initial thought to use --queue, since they will run ".dvc\tmp\exps\" environment it alwasy gave error when finding the datafile. This is usefull when using remort storage systems
+    # Initial thought to use --queue, since they will run ".dvc\tmp\exps\" environment it alwasy gave error when finding the data file. This is usefull when using remort storage systems
     subprocess.run(["dvc", "exp", "run", #"--queue",
                     "--set-param", f"model.logistic_reg.hyper_params.max_iter={params['max_iter']}",
                     "--set-param", f"model.logistic_reg.hyper_params.penalty={params['penalty']}",
                     "--set-param", f"model.logistic_reg.hyper_params.C={params['C']}",
+
+                    #Select the featurization techinique
+                    "--set-param", f"pipeline_type.KFoldTE={params['KFoldTE']}",
+                    "--set-param", f"pipeline_type.frequency_encoding={params['frequency_encoding']}",
+                    "--set-param", f"pipeline_type.KFold_frequency_encoding={params['KFold_frequency_encoding']}",
+                    "--set-param", f"pipeline_type.tfidf_vectorizer_encoding={params['tfidf_vectorizer_encoding']}",
+                    "--set-param", f"pipeline_type.count_vectorizer_encoding={params['count_vectorizer_encoding']}",
+
                     ]
                   #This did not help
                   #, cwd = get_project_root()

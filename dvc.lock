@@ -26,9 +26,9 @@ stages:
       md5: 0925fdb9bfeba3fb2feb1d4ea61436d0
       size: 6515
     - path: src\models\feature_eng
-      md5: b25f97ffaaba6017036f743133f7b36d.dir
-      size: 56865
-      nfiles: 14
+      md5: 0c2e990a040f8c4e6b968a51d9657d52.dir
+      size: 35637
+      nfiles: 7
     params:
       params.yaml:
         featurize:
@@ -47,11 +47,11 @@ stages:
               folder: feature\cntvector
               filename: count_vectorizer.parquet
         pipeline_type:
-          KFoldTE: true
-          frequency_encoding: false
-          KFold_frequency_encoding: false
-          tfidf_vectorizer_encoding: true
-          count_vectorizer_encoding: false
+          KFoldTE: false
+          frequency_encoding: true
+          KFold_frequency_encoding: true
+          tfidf_vectorizer_encoding: false
+          count_vectorizer_encoding: true
         train_test_split:
           test_size: 0.01
           random_seed: 45
@@ -59,15 +59,15 @@ stages:
           test_data: feature\test\test_data.parquet
     outs:
     - path: data\feature\
-      md5: c935d1745364dbd3ff41d3a881ed5fea.dir
-      size: 1847066
+      md5: 0c044522e2de906863d596c2324e47e7.dir
+      size: 10193333
       nfiles: 2
   train_model:
     cmd: python src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: c935d1745364dbd3ff41d3a881ed5fea.dir
-      size: 1847066
+      md5: 0c044522e2de906863d596c2324e47e7.dir
+      size: 10193333
       nfiles: 2
     - path: src\data\train_model.py
       md5: 7ae8cfdc37bd7d7bce01e79a1ccedc6d
@@ -80,7 +80,7 @@ stages:
             hyper_params:
               max_iter: 50
               penalty: l2
-              C: 0.1
+              C: 1.0
               class_weight: balanced
           trained_model: model\model.pkl
           eval:
@@ -89,29 +89,29 @@ stages:
             eval_plots: plots
     outs:
     - path: data\model
-      md5: 345390972b7664dc6a7e302f20b30ae9.dir
-      size: 3730
+      md5: b8017b59399ac6c4b4960165319cffb1.dir
+      size: 17527
       nfiles: 1
   evaluate_model:
     cmd: python src\data\eval.py
     deps:
     - path: data\model
-      md5: 92dd97e97afa7a2d658a03d32e11a9f7.dir
-      size: 4133
+      md5: b8017b59399ac6c4b4960165319cffb1.dir
+      size: 17527
       nfiles: 1
     - path: src\data\eval.py
       md5: 70169681883d3b066b20b7a067319f0e
       size: 12188
     outs:
     - path: data\eval\metrics\metrics.json
-      md5: 26a188542fec2bedce76ad165f53b020
+      md5: 10d9972458ab0aa3dfe5de31f6147380
       size: 80
     - path: data\eval\plots\confusion_matrix.png
-      md5: 4b313d057afebc63dbf86ce5c5e9e9fa
-      size: 15861
+      md5: bfb6f2b3afd64ab401f8350bfa9be038
+      size: 15589
     - path: data\eval\plots\pr_rc_curve.png
-      md5: 7803727de2e504e0c861b3dc74c154c6
-      size: 23279
+      md5: 6352f07b395423b7000429a12fa2c335
+      size: 23843
     - path: data\eval\plots\roc_curve.png
-      md5: 55d52ebdbfcf6fbd8a958ffaa1f79f0f
-      size: 26040
+      md5: b2961d7d74a0faec07f11c549f6d3929
+      size: 26226

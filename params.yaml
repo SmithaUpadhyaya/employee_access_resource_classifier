@@ -64,11 +64,11 @@ train_test_split:
 
 pipeline_type:
             #combine_feature: True
-  KFoldTE: true
-  frequency_encoding: false
-  KFold_frequency_encoding: false
-  tfidf_vectorizer_encoding: true
-  count_vectorizer_encoding: false
+  KFoldTE: false
+  frequency_encoding: true
+  KFold_frequency_encoding: true
+  tfidf_vectorizer_encoding: false
+  count_vectorizer_encoding: true
 
 model:
   model_type: logistic_reg
@@ -76,7 +76,7 @@ model:
     hyper_params:
       max_iter: 50
       penalty: l2
-      C: 0.1
+      C: 1.0
       class_weight: balanced
   trained_model: model\model.pkl
   eval:
