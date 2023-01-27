@@ -1,0 +1,52 @@
+from tqdm import tqdm
+import subprocess
+import itertools
+import random
+
+
+
+# Automated random search experiments
+num_exps = 20 #Number of experiments to run to generate 
+random.seed(0)
+
+print(f"Generating {num_exps} experiement.")
+
+for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
+
+    #Hyper-paramters for LogRegression
+    params = {
+        "max_iter": random.choice([50, 100, 120, 130, 150]),
+        "penalty": random.choice(['l1', 'l2']),
+        "C":  random.choice([100, 10, 1.0, 0.1, 0.01]),
+    }
+
+    #This will generate the experiment and wait for instruction to execute 
+    subprocess.run(["dvc", "exp", "run", "--queue",
+                    "--set-param", f"model.logistic_reg.hyper_params.max_iter={params['max_iter']}",
+                    "--set-param", f"model.logistic_reg.hyper_params.penalty={params['penalty']}",
+                    "--set-param", f"model.logistic_reg.hyper_params.C={params['C']}",
+                    ])
+
+print("Queued Experiement to run.")
+
+#=============================================================
+
+#Step 1: Run the file to generate the exp queue
+#       python src\data\random_search.py
+#Step 2: Either you can selected the exp from the dvc studio to run or execute cmd to run all the queue exp
+#       dvc exp run --run-all
+
+"""
+#Example
+# Automated grid search experiments
+max_iter = [250, 300, 350, 400, 450, 500]
+penalty = [8, 16, 32, 64, 128, 256]
+
+# Iterate over all combinations of hyperparameter values.
+for n_est, min_split in itertools.product(n_est_values, min_split_values):
+    # Execute "dvc exp run --queue --set-param train.n_est=<n_est> --set-param train.min_split=<min_split>".
+    subprocess.run(["dvc", "exp", "run", "--queue",
+                    "--set-param", f"train.n_est={n_est}",
+                    "--set-param", f"train.min_split={min_split}"])
+
+"""

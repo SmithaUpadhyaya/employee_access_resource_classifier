@@ -64,14 +64,14 @@ stages:
     plots:
         #- ${data_source.data_folders}\eval\plots\confusion_matrix.png:
         - data\eval\plots\confusion_matrix.png:        
-            cache: false
+            cache: true
 
         #- ${data_source.data_folders}\eval\plots\roc_curve.png:           
         - data\eval\plots\roc_curve.png:
-            cache: false
+            cache: true
 
         #- ${data_source.data_folders}\eval\plots\pr_rc_curve.png:  
         - data\eval\plots\pr_rc_curve.png:       
-            cache: false
+            cache: true
       
     

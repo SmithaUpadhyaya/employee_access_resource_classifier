@@ -20,8 +20,9 @@ def define_model(param_filepath):
         log.write_log(f'train_model: Train model type: \"{model_type}\"...', log.logging.DEBUG)
         
         hyper_param = model_param[model_type]['hyper_params']
-        model = LogisticRegression()
+        model = LogisticRegression(random_state = 42)
         model.set_params(**hyper_param)
+        
     else:
         raise Exception('Unsupported model_type.')
         
