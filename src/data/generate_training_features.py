@@ -15,7 +15,9 @@ from src.models.feature_eng.TFIDFVectorizerEncoding import TFIDFVectorizerEncodi
 
 if __name__ == '__main__':
 
-    train_params_file = os.path.join("src", "data", "train_params.yaml")
+    train_params_file = None
+    #train_params_file = os.path.join("src", "data", "train_params.yaml")
+    
 
     #Step 1: Load Cleaned data 
     log.write_log(f'generate_training_features: Loading clean data started...', log.logging.DEBUG)
@@ -95,22 +97,32 @@ if __name__ == '__main__':
     #Save train data
     log.write_log(f'generate_training_features: Save train and test split data to files...', log.logging.DEBUG)
     
-    train_data_param = hlpread.read_yaml_key('training_data', train_params_file)
+    #train_data_param = hlpread.read_yaml_key('training_data', train_params_file)
+    #train_filepath = os.path.join(
+    #                                hlpread.read_yaml_key('data_source.data_folders'),
+    #                                train_data_param['output']['folder'],
+    #                                train_data_param['output']['filename'],                                  
+    #                            )
     train_filepath = os.path.join(
                                     hlpread.read_yaml_key('data_source.data_folders'),
-                                    train_data_param['output']['folder'],
-                                    train_data_param['output']['filename'],                                  
+                                    split_params['train_data']
                                 )
+    os.makedirs(os.path.dirname(train_filepath), exist_ok = True)
     hlpwrite.save_to_parquet(X_train, train_filepath, True)
 
 
     #Save test data
-    test_data_param = hlpread.read_yaml_key('test_data', train_params_file)
+    #test_data_param = hlpread.read_yaml_key('test_data', train_params_file)
+    #test_filepath = os.path.join(
+    #                                hlpread.read_yaml_key('data_source.data_folders'),
+    #                                test_data_param['output']['folder'],
+    #                                test_data_param['output']['filename'],                                  
+    #                            )
     test_filepath = os.path.join(
-                                    hlpread.read_yaml_key('data_source.data_folders'),
-                                    test_data_param['output']['folder'],
-                                    test_data_param['output']['filename'],                                  
+                                 hlpread.read_yaml_key('data_source.data_folders'),
+                                 split_params['test_data']
                                 )
+    os.makedirs(os.path.dirname(test_filepath), exist_ok = True)
     hlpwrite.save_to_parquet(X_test, test_filepath, True)
-
+    
     log.write_log(f'generate_training_features: Generated features for training...', log.logging.DEBUG)

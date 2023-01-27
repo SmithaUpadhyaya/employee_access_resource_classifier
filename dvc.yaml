@@ -5,7 +5,7 @@ stages:
     - ${data_source.data_folders}\training
     - src\data\clean_data.py
     #Commented path dependenc from all the stage as when we run the experiment and see in experiment dashbaord we see too many path dependence 
-    #which do not change. Found it to be too dificuelty to check the actual param that we do changes    
+    #We can filter. BUt generally person might change the base folder and keep the inside prject structure same.   
     #params: 
     #- data_source.data_folders
     #- data_source.training_data_folder.folder
@@ -25,11 +25,13 @@ stages:
         #- data_source.data_folders # track specific param (from params.yaml)
         #- data_source.prepared    # track specific param (from params.yaml)
         - featurize   # track specific param (from params.yaml)
-        - src\data\train_params.yaml: # track specific params from custom file
-            - train_test_split
-            #- training_data
-            #- test_data
-            - pipeline_type
+        #- src\data\train_params.yaml: # track specific params from custom file
+        #    - train_test_split
+        #    #- training_data
+        #    #- test_data
+        #    - pipeline_type
+        - train_test_split
+        - pipeline_type
     outs:
       - ${data_source.data_folders}\feature\
 
@@ -41,8 +43,9 @@ stages:
       - ${data_source.data_folders}\feature\
     params:
       #- data_source.data_folders # track specific param (from params.yaml)
-      - src\data\train_params.yaml:
-          - model
+      #- src\data\train_params.yaml:
+      #    - model
+      - model
     outs:
       - ${data_source.data_folders}\model
 
@@ -59,13 +62,16 @@ stages:
           cache: false #With cache: false, DVC skips caching the output under DVC, if we want we can track its versioned by Git.
                
     plots:
-        - ${data_source.data_folders}\eval\plots\confusion_matrix.png:
+        #- ${data_source.data_folders}\eval\plots\confusion_matrix.png:
+        - data\eval\plots\confusion_matrix.png:        
             cache: false
 
-        - ${data_source.data_folders}\eval\plots\roc_curve.png:           
+        #- ${data_source.data_folders}\eval\plots\roc_curve.png:           
+        - data\eval\plots\roc_curve.png
             cache: false
 
-        - ${data_source.data_folders}\eval\plots\pr_rc_curve.png:           
+        #- ${data_source.data_folders}\eval\plots\pr_rc_curve.png:  
+        - data\eval\plots\pr_rc_curve.png         
             cache: false
       
     

@@ -55,3 +55,31 @@ featurize:
             #                            'ROLE_FAMILY_ROLE_CODE', 'ROLE_ROLLUP_1', 'ROLE_ROLLUP_1_ROLE_CODE', 'ROLE_ROLLUP_1_ROLE_DEPTNAME',
             #                            'ROLE_ROLLUP_1_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_FAMILY_DESC', 'ROLE_ROLLUP_1_ROLE_ROLLUP_2','ROLE_ROLLUP_2',
             #                            'ROLE_ROLLUP_2_ROLE_CODE', 'ROLE_ROLLUP_2_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_FAMILY_DESC'}
+
+train_test_split:
+  test_size: 0.01
+  random_seed: 45
+  train_data: feature\train\train_data.parquet
+  test_data: feature\test\test_data.parquet
+
+pipeline_type:
+            #combine_feature: True
+  KFoldTE: true
+  frequency_encoding: false
+  KFold_frequency_encoding: false
+  tfidf_vectorizer_encoding: true
+  count_vectorizer_encoding: false
+
+model:
+  model_type: logistic_reg
+  params:
+    max_iter: 50
+    penalty: l2
+    C: 1
+    class_weight: balanced
+  trained_model: model\model.pkl
+  eval:
+    evals: eval
+    eval_metrics: metrics
+    eval_plots: plots
+

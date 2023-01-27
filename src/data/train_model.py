@@ -30,14 +30,19 @@ if __name__ == '__main__':
 
     log.write_log(f'train_model: Model training started.', log.logging.DEBUG)
 
-    train_params_file = os.path.join("src", "data", "train_params.yaml")
+    train_params_file = None
+    #train_params_file = os.path.join("src", "data", "train_params.yaml")
 
     #Step 1: Load training data    
-    train_params = hlpread.read_yaml_key('training_data', train_params_file)    
+    #train_params = hlpread.read_yaml_key('training_data', train_params_file)    
+    #train_filepath = os.path.join(
+    #                                hlpread.read_yaml_key('data_source.data_folders'),
+    #                                train_params['output']['folder'],
+    #                                train_params['output']['filename'],                                  
+    #                            )
     train_filepath = os.path.join(
                                     hlpread.read_yaml_key('data_source.data_folders'),
-                                    train_params['output']['folder'],
-                                    train_params['output']['filename'],                                  
+                                    hlpread.read_yaml_key('train_test_split.train_data', train_params_file)                                   
                                 )
 
     log.write_log(f'train_model: Loading training data from \"{train_filepath}\" started...', log.logging.DEBUG)

@@ -12,7 +12,8 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import average_precision_score
 
-train_params_file = os.path.join("src", "data", "train_params.yaml")
+train_params_file = None
+#train_params_file = os.path.join("src", "data", "train_params.yaml")
 
 def save_roc_courve(Y, Y_hat, eval_metric):
 
@@ -43,6 +44,8 @@ def save_roc_courve(Y, Y_hat, eval_metric):
     roc_file = os.path.join(roc_file, "roc_curve.png")
     plt.savefig(roc_file)
 
+    return auc_score
+
 def save_precision_recall_curve(Y, Y_hat, eval_metric):
 
     pr_auc_score = average_precision_score(Y, Y_hat)
@@ -71,11 +74,14 @@ def save_precision_recall_curve(Y, Y_hat, eval_metric):
     prc_file = os.path.join(prc_file, "pr_rc_curve.png")
     plt.savefig(prc_file)
 
+    return pr_auc_score
+
 
 def eval(Y, Y_predictions_by_class):
 
-     #Folder where the eval metric will be store
-    eval_metric = hlpread.read_yaml_key('eval', train_params_file)
+    #Folder where the eval metric will be store
+    eval_metric = hlpread.read_yaml_key('model.eval', train_params_file)
+    
     Y_hat = Y_predictions_by_class[:,1] #Y_hat return 2d array where it provide probality of item belong to either of two class. First col is for "0" lable and Second col is for "1"
     
     #pr_rc curve
@@ -271,7 +277,7 @@ def eval(Y, Y_predictions_by_class):
 if __name__ == '__main__':
 
     log.write_log(f'train_model: Evaluate trained model started.', log.logging.DEBUG)
-    eval_param = hlpread.read_yaml_key('eval', train_params_file)
+    eval_param = hlpread.read_yaml_key('model.eval', train_params_file)
 
     #Step 1: Load trained model
     log.write_log(f'train_model: Load trained model...', log.logging.DEBUG)
@@ -283,10 +289,14 @@ if __name__ == '__main__':
     
     #Step 2: Load the training data
     log.write_log(f'train_model: Loading training data from started...', log.logging.DEBUG)
+    #X = hlpread.read_from_parquet(os.path.join(
+    #                                          hlpread.read_yaml_key('data_source.data_folders'),
+    #                                          hlpread.read_yaml_key('training_data.output.folder', train_params_file),
+    #                                          hlpread.read_yaml_key('training_data.output.filename', train_params_file)                                                                             
+    #                                         ))
     X = hlpread.read_from_parquet(os.path.join(
                                               hlpread.read_yaml_key('data_source.data_folders'),
-                                              hlpread.read_yaml_key('training_data.output.folder', train_params_file),
-                                              hlpread.read_yaml_key('training_data.output.filename', train_params_file)                                                                             
+                                              hlpread.read_yaml_key('train_test_split.train_data', train_params_file)                                                                                
                                              ))
     Y = X['ACTION']
     X.drop(columns = ['ACTION'], inplace = True)

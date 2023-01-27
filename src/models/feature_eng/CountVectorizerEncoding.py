@@ -77,8 +77,6 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
 
     def get_col_interactions_svd(self, dataset, istraining):
 
-        new_dataset = pd.DataFrame()
-
         colnames = [x for x in dataset.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
 
         log.write_log(f'CountVector-fit: Number of features to consider for vectorize: {len(colnames)}...', log.logging.DEBUG)
@@ -95,16 +93,13 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
 
             #new_dataset will return the encoding for unique value for the combination. 
             #Will use merge to merge them to the X train dataset.
-
-            #Step 1: Get all the transformed columns
-            col_name = [x for x in new_dataset.columns if "svd" in x] #[0]
-            
-            #Step 2: Merge records with main X dataset
+                     
+            #Merge records with main X dataset
             #Merge the extracted interaction data about col1 to main dataset by joining them with there key.
             #Reason to do this is we want to merge the calculated interaction data to respective col1 in main dataset
-            new_dataset[col_name] = dataset[[col1]].merge(data, on = col1, how = 'left')[col_name]
+            dataset = dataset.merge(data, on = col1, how = 'inner')
 
-        return new_dataset 
+        return dataset 
 
     def combine_cols(self, dataset, columns):
 
@@ -139,17 +134,16 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
         X = self.combine_cols(X, col_use)
 
         new_dataset = self.get_col_interactions_svd(X, istraining)
+        log.write_log(f'CountVector-fit: Total number of feature after encode: {len(new_dataset.columns)}...', log.logging.DEBUG)
 
-        if self.merge_result == True:
+        if self.merge_result == False:
 
-            X = pd.concat([X, new_dataset], axis = 1)
-
-            #X.reset_index(drop = True, inplace = True)
-            return X
+            #Get all the transformed columns
+            col_name = [x for x in new_dataset.columns if "svd" in x] #[0]
+            log.write_log(f'CountVector-fit: Feature to retrun encode: {len(col_name)}...', log.logging.DEBUG) 
+            return new_dataset[col_name] 
             
         else:
-
-            #new_dataset.reset_index(drop = True, inplace = True)
             return new_dataset
 
 #==============================================================================================================
@@ -167,7 +161,7 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
     def transform(self, X, y = None):
 
         if (len(self.dict_Vectorizer) == 0) | (len(self.dict_dim_reduction) == 0):
-            raise ModuleException('CountVect', 'Count Vectorizer instance is not fitted yet. Try calling fit_transform first.')
+            raise ModuleException('CountVect-transform', 'Count Vectorizer instance is not fitted yet. Try calling fit_transform first.')
         
         return self.encode(X, False) 
 
