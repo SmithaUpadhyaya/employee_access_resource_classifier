@@ -67,11 +67,11 @@ stages:
             cache: false
 
         #- ${data_source.data_folders}\eval\plots\roc_curve.png:           
-        - data\eval\plots\roc_curve.png
+        - data\eval\plots\roc_curve.png:
             cache: false
 
         #- ${data_source.data_folders}\eval\plots\pr_rc_curve.png:  
-        - data\eval\plots\pr_rc_curve.png         
+        - data\eval\plots\pr_rc_curve.png:       
             cache: false
       
     

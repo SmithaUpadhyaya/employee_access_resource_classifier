@@ -16,10 +16,12 @@ def define_model(param_filepath):
     model_type = model_param['model_type']
 
     if model_type == 'logistic_reg':
-    
+        
         log.write_log(f'train_model: Train model type: \"{model_type}\"...', log.logging.DEBUG)
+        
+        hyper_param = model_param[model_type]['hyper_params']
         model = LogisticRegression()
-        model.set_params(**model_param['params'])
+        model.set_params(**hyper_param)
     else:
         raise Exception('Unsupported model_type.')
         

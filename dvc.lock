@@ -70,17 +70,18 @@ stages:
       size: 1847066
       nfiles: 2
     - path: src\data\train_model.py
-      md5: cf1d055ebf454844b9601cbe3f227ecb
-      size: 4315
+      md5: 8ff664124d52ac1052ad329fd8ddf5ec
+      size: 4382
     params:
       params.yaml:
         model:
           model_type: logistic_reg
-          params:
-            max_iter: 50
-            penalty: l2
-            C: 1
-            class_weight: balanced
+          logistic_reg:
+            hyper_params:
+              max_iter: 50
+              penalty: l2
+              C: 1
+              class_weight: balanced
           trained_model: model\model.pkl
           eval:
             evals: eval
@@ -88,29 +89,29 @@ stages:
             eval_plots: plots
     outs:
     - path: data\model
-      md5: 061dd1ae8c7e8acdeb5ee11a8467a491.dir
-      size: 4126
+      md5: 578b38aaf292fee859ce6e0f23c2e128.dir
+      size: 3722
       nfiles: 1
   evaluate_model:
     cmd: python src\data\eval.py
     deps:
     - path: data\model
-      md5: 061dd1ae8c7e8acdeb5ee11a8467a491.dir
-      size: 4126
+      md5: 578b38aaf292fee859ce6e0f23c2e128.dir
+      size: 3722
       nfiles: 1
     - path: src\data\eval.py
       md5: 70169681883d3b066b20b7a067319f0e
       size: 12188
     outs:
     - path: data\eval\metrics\metrics.json
-      md5: efb4c4cffd995dc23b9fe1ec5d7fc45f
-      size: 80
+      md5: 0fe98a22d0392b963204eda4a87dbfa5
+      size: 78
     - path: data\eval\plots\confusion_matrix.png
       md5: 8036bac69f2102c72ab709dbc0b8b3d7
       size: 17114
     - path: data\eval\plots\pr_rc_curve.png
-      md5: 86cde7789af89920f7a0fff345cd7c70
-      size: 23527
+      md5: 260dbf1c0eedb0c8f48a2796055f8cb6
+      size: 23512
     - path: data\eval\plots\roc_curve.png
-      md5: acc4cad64e624827338a759cd12aa468
-      size: 26245
+      md5: b511025d886b26a1fda0f041e57cdb1c
+      size: 26241

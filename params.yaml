@@ -72,11 +72,12 @@ pipeline_type:
 
 model:
   model_type: logistic_reg
-  params:
-    max_iter: 50
-    penalty: l2
-    C: 1
-    class_weight: balanced
+  logistic_reg:
+      hyper_params:
+              max_iter: 50
+              penalty: l2
+              C: 1
+              class_weight: balanced
   trained_model: model\model.pkl
   eval:
     evals: eval
