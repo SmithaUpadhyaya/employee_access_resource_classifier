@@ -1,15 +1,26 @@
+from utils.paths import get_project_root
 from tqdm import tqdm
 import subprocess
 import itertools
 import random
-
+import os
 
 
 # Automated random search experiments
 num_exps = 20 #Number of experiments to run to generate 
 random.seed(0)
 
-print(f"Generating {num_exps} experiement.")
+
+"""
+i = 3 #Since in my project structure are max at 3 level
+wrk_dir = os.getcwd()
+while i > 0:  
+    if not os.path.exists(os.path.join(wrk_dir, 'params.yaml')):       
+        wrk_dir = os.path.abspath(os.path.join(wrk_dir, os.pardir))        
+    i = i - 1
+
+print(f'Working directory: {wrk_dir}')
+"""
 
 for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
@@ -21,21 +32,26 @@ for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
     }
 
     #This will generate the experiment and wait for instruction to execute 
-    subprocess.run(["dvc", "exp", "run", "--queue",
+    #--temp : did not help. Continue to run from ".dvc\tmp\exps\"
+    # Initial thought to use --queue, since they will run ".dvc\tmp\exps\" environment it alwasy gave error when finding the datafile. This is usefull when using remort storage systems
+    subprocess.run(["dvc", "exp", "run", #"--queue",
                     "--set-param", f"model.logistic_reg.hyper_params.max_iter={params['max_iter']}",
                     "--set-param", f"model.logistic_reg.hyper_params.penalty={params['penalty']}",
                     "--set-param", f"model.logistic_reg.hyper_params.C={params['C']}",
-                    ])
+                    ]
+                  #This did not help
+                  #, cwd = get_project_root()
+                  #, cwd = wrk_dir 
+                  )
 
 print("Queued Experiement to run.")
-
 #=============================================================
 
 #Step 1: Run the file to generate the exp queue
 #       python src\data\random_search.py
 #Step 2: Either you can selected the exp from the dvc studio to run or execute cmd to run all the queue exp
-#       dvc exp run --run-all
-
+#       dvc exp run --run-all #This will cause to run the expirement from ".dvc\tmp\exps\" dir of the current workspace
+# To run within environment use: dvc queue start
 """
 #Example
 # Automated grid search experiments
