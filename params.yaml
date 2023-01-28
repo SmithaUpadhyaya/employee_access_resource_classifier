@@ -64,14 +64,14 @@ train_test_split:
 
 pipeline_type:
             #combine_feature: True
-  KFoldTE: false
-  frequency_encoding: true
-  KFold_frequency_encoding: true
+  KFoldTE: true
+  frequency_encoding: false
+  KFold_frequency_encoding: false
   tfidf_vectorizer_encoding: false
   count_vectorizer_encoding: true
 
 model:
-  model_type: logistic_reg
+  model_type: decision_tree
   logistic_reg:
     hyper_params:
       max_iter: 50
@@ -81,12 +81,12 @@ model:
 
   decision_tree:
     hyper_params:
-        max_depth: 3
-        splitter: 'random'
-        min_samples_leaf: 0.01
-        max_features: 0.5
+      max_depth: 14
+      splitter: best
+      min_samples_leaf: 0.001
+      max_features: 0.3
         #min_samples_split: 0.01
-        class_weight: 'balanced'
+      class_weight: balanced
 
 
   trained_model: model\model.pkl
