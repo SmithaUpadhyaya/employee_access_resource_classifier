@@ -48,16 +48,16 @@ for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
 
     subprocess.run(["dvc", "exp", "run", 
-                    "--set-param", f"model.extra_decision_tree.hyper_params.n_estimators={params['n_estimators']}",
-                    "--set-param", f"model.extra_decision_tree.hyper_params.max_depth={params['max_depth']}",
+                    "--set-param", f"model.random_forest.hyper_params.n_estimators={params['n_estimators']}",
+                    "--set-param", f"model.random_forest.hyper_params.max_depth={params['max_depth']}",
 
-                    "--set-param", f"model.extra_decision_tree.hyper_params.bootstrap={params['bootstrap']}",
-                    "--set-param", f"model.extra_decision_tree.hyper_params.max_samples={params['max_samples']}",
+                    "--set-param", f"model.random_forest.hyper_params.bootstrap={params['bootstrap']}",
+                    "--set-param", f"model.random_forest.hyper_params.max_samples={params['max_samples']}",
 
-                    "--set-param", f"model.extra_decision_tree.hyper_params.max_features={params['max_features']}",
-                    "--set-param", f"model.extra_decision_tree.hyper_params.min_samples_leaf={params['min_samples_leaf']}",
+                    "--set-param", f"model.random_forest.hyper_params.max_features={params['max_features']}",
+                    "--set-param", f"model.random_forest.hyper_params.min_samples_leaf={params['min_samples_leaf']}",
 
-                    "--set-param", f"model.extra_decision_tree.hyper_params.class_weight={params['class_weight']}",
+                    "--set-param", f"model.random_forest.hyper_params.class_weight={params['class_weight']}",
 
 
                     #Select the featurization techinique
