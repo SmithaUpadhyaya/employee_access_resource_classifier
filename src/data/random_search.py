@@ -25,6 +25,52 @@ print(f'Working directory: {wrk_dir}')
 
 for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
+    #Hyperparamter tunn=ing for Random Forest
+    params = {
+        "n_estimators": random.choice([20, 25, 30, 40, 50]),
+        "max_depth": random.choice([4, 5, 6]),
+
+        "bootstrap": True,
+        "max_samples": random.choice([0.5, 0.6, 0.7, 0.8, 0.95]),
+        
+        "max_features":  random.choice([0.2, 0.3, 0.5, 0.6, 0.95]),
+        "min_samples_leaf":  random.choice([0.01, 0.05, 0.001, 0.002, 0.005]),
+
+        "class_weight": random.choice(['balanced', 'balanced_subsample']),
+
+        #Select the featurization techinique
+        "KFoldTE": random.choice([True, False]), 
+        "frequency_encoding": random.choice([True, False]),
+        "KFold_frequency_encoding": random.choice([True, False]),
+        "tfidf_vectorizer_encoding": random.choice([True, False]),
+        "count_vectorizer_encoding": random.choice([True, False]),
+    }
+
+
+    subprocess.run(["dvc", "exp", "run", 
+                    "--set-param", f"model.extra_decision_tree.hyper_params.n_estimators={params['n_estimators']}",
+                    "--set-param", f"model.extra_decision_tree.hyper_params.max_depth={params['max_depth']}",
+
+                    "--set-param", f"model.extra_decision_tree.hyper_params.bootstrap={params['bootstrap']}",
+                    "--set-param", f"model.extra_decision_tree.hyper_params.max_samples={params['max_samples']}",
+
+                    "--set-param", f"model.extra_decision_tree.hyper_params.max_features={params['max_features']}",
+                    "--set-param", f"model.extra_decision_tree.hyper_params.min_samples_leaf={params['min_samples_leaf']}",
+
+                    "--set-param", f"model.extra_decision_tree.hyper_params.class_weight={params['class_weight']}",
+
+
+                    #Select the featurization techinique
+                    "--set-param", f"pipeline_type.KFoldTE={params['KFoldTE']}",
+                    "--set-param", f"pipeline_type.frequency_encoding={params['frequency_encoding']}",
+                    "--set-param", f"pipeline_type.KFold_frequency_encoding={params['KFold_frequency_encoding']}",
+                    "--set-param", f"pipeline_type.tfidf_vectorizer_encoding={params['tfidf_vectorizer_encoding']}",
+                    "--set-param", f"pipeline_type.count_vectorizer_encoding={params['count_vectorizer_encoding']}",
+
+                    ]
+                  )
+
+    """
     #Hyperparamater tuning for ExtraTreeClassifier
     #After 1st iteration
     params = {
@@ -69,7 +115,7 @@ for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
                     ]
                   )
-
+    """
     """
     #Hyper-paramters tuning for Decision Tree
     #Modify the hyper paramter after 1 round of random search

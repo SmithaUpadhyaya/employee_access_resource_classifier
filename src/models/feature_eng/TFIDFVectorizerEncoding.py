@@ -122,10 +122,10 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
         col_names = []
 
         if col_no == 1:
-            col_names.append(col1 + "_{}_svd_{}".format(col2, 'cv'))
+            col_names.append(col1 + "_{}_svd_{}".format(col2, 'tf'))
         else:  
             for i in range(col_no):
-                col_names.append(col1 + "_{}_svd_{}_{}".format(col2, 'cv', i))
+                col_names.append(col1 + "_{}_svd_{}_{}".format(col2, 'tf', i))
         
         data_X = pd.DataFrame( data_X, columns = col_names)
         

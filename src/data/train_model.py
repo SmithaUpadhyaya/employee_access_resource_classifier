@@ -1,3 +1,4 @@
+import imp
 import os
 import pickle
 import logs.logger as log
@@ -7,8 +8,9 @@ from sklearn.pipeline import Pipeline
 #from dvclive.keras import DVCLiveCallback #This will work with keras library and not with model sklearn. Since this require to define Callback 
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 
 
@@ -35,6 +37,11 @@ def define_model(param_filepath):
         model = ExtraTreesClassifier(criterion = 'gini', random_state = 42)
         model.set_params(**hyper_param)
 
+    elif model_type == 'random_forest':
+
+        model = RandomForestClassifier(criterion='gini', random_state = 42)
+        model.set_params(**hyper_param)
+        
     else:
         raise Exception('Unsupported model_type.')
         
@@ -73,7 +80,7 @@ if __name__ == '__main__':
     #For LogReg model we need to standarize the freq_cnt feature as can range from 0 to +ve inf
     if model_param['model_type'] == 'logistic_reg':     
         
-        freq_enc_cols = [x for x in X_train.columns if 'FreqEnc'.lower() in x.lower()]
+        freq_enc_cols = [x for x in X_train.columns if ('FreqEnc'.lower() in x.lower()) | ('cv'.lower() in x.lower())]
         
         if len(freq_enc_cols) != 0:
 
