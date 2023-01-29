@@ -1,5 +1,6 @@
 from utils.paths import get_project_root
 from tqdm import tqdm
+import numpy as np
 import subprocess
 import itertools
 import random
@@ -25,15 +26,16 @@ print(f'Working directory: {wrk_dir}')
 for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
     #Hyperparamater tuning for ExtraTreeClassifier
+    #After 1st iteration
     params = {
-        "n_estimators": random.choice([5, 10, 15, 20, 25]),
-        "max_depth": random.choice([5,6]),
+        "n_estimators": random.choice(range(26, 100, 1)),#random.choice([5, 10, 15, 20, 25]),
+        "max_depth": random.choice([4, 5, 6]), #random.choice([5,6]),
 
         "bootstrap": True, #random.choice([True, False]),
-        "max_samples": random.choice([0.01, 0.3, 0.5, 0.6, 0.7, 0.8, 0.95, 1]),
+        "max_samples": random.choice(np.arange(0.65, 1, 0.01)), #random.choice([0.01, 0.3, 0.5, 0.6, 0.7, 0.8, 0.95, 1]),
         
-        "max_features":  random.choice([0.3, 0.5, 0.6, 0.7, 0.8, 0.95, 1]),
-        "min_samples_leaf":  random.choice([0.01, 0.05, 0.001, 0.002, 0.005]),
+        "max_features":  random.choice(np.arange(0.9,1 ,0.01)),#random.choice([0.3, 0.5, 0.6, 0.7, 0.8, 0.95, 1]),
+        "min_samples_leaf":  random.choice(np.arange(0.05, 0.9 ,0.01)), #random.choice([0.01, 0.05, 0.001, 0.002, 0.005]),
 
         "class_weight": random.choice(['balanced', 'balanced_subsample']),
 

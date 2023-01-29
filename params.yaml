@@ -64,15 +64,15 @@ train_test_split:
 
 pipeline_type:
             #combine_feature: True
-  KFoldTE: true
-  frequency_encoding: false
-  KFold_frequency_encoding: false
-  tfidf_vectorizer_encoding: false
+  KFoldTE: false
+  frequency_encoding: true
+  KFold_frequency_encoding: true
+  tfidf_vectorizer_encoding: true
   count_vectorizer_encoding: true
 
 model:
   model_type: extra_decision_tree
-  
+
   logistic_reg:
     hyper_params:
       max_iter: 50
@@ -91,13 +91,12 @@ model:
 
   extra_decision_tree:
     hyper_params:
-      n_estimators: 1000
+      n_estimators: 30
       max_depth: 5
 
       bootstrap: true
-      max_samples: 0.01 #Max sample to consider for bootstrap
-      
-      max_features: 0.3      
+      max_samples: 0.95 #Max sample to consider for bootstrap
+      max_features: 0.5
       min_samples_leaf: 0.001
 
       class_weight: balanced_subsample #balanced
