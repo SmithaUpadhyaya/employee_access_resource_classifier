@@ -71,7 +71,8 @@ pipeline_type:
   count_vectorizer_encoding: true
 
 model:
-  model_type: decision_tree
+  model_type: extra_decision_tree
+  
   logistic_reg:
     hyper_params:
       max_iter: 50
@@ -85,9 +86,21 @@ model:
       splitter: best
       min_samples_leaf: 0.001
       max_features: 0.3
-        #min_samples_split: 0.01
+      #min_samples_split: 0.01
       class_weight: balanced
 
+  extra_decision_tree:
+    hyper_params:
+      n_estimators: 1000
+      max_depth: 5
+
+      bootstrap: true
+      max_samples: 0.01 #Max sample to consider for bootstrap
+      
+      max_features: 0.3      
+      min_samples_leaf: 0.001
+
+      class_weight: balanced_subsample #balanced
 
   trained_model: model\model.pkl
   eval:

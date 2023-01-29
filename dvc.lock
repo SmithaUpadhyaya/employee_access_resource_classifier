@@ -70,12 +70,12 @@ stages:
       size: 8984869
       nfiles: 2
     - path: src\data\train_model.py
-      md5: 60a2571340a62bd15fb7ef91756094c3
-      size: 4610
+      md5: 08fbae7b257e9c8b0b95a6fd9ded7326
+      size: 4822
     params:
       params.yaml:
         model:
-          model_type: decision_tree
+          model_type: extra_decision_tree
           logistic_reg:
             hyper_params:
               max_iter: 50
@@ -89,6 +89,15 @@ stages:
               min_samples_leaf: 0.001
               max_features: 0.3
               class_weight: balanced
+          extra_decision_tree:
+            hyper_params:
+              n_estimators: 1000
+              max_depth: 5
+              bootstrap: true
+              max_samples: 0.01
+              max_features: 0.3
+              min_samples_leaf: 0.001
+              class_weight: balanced_subsample
           trained_model: model\model.pkl
           eval:
             evals: eval
@@ -96,29 +105,29 @@ stages:
             eval_plots: plots
     outs:
     - path: data\model
-      md5: f5d7d84781adf38d9e75b3b12e11b2f8.dir
-      size: 79621
+      md5: 107886f282fe86ffe255a2c080e1f7e6.dir
+      size: 1285279
       nfiles: 1
   evaluate_model:
     cmd: python src\data\eval.py
     deps:
     - path: data\model
-      md5: f5d7d84781adf38d9e75b3b12e11b2f8.dir
-      size: 79621
+      md5: 107886f282fe86ffe255a2c080e1f7e6.dir
+      size: 1285279
       nfiles: 1
     - path: src\data\eval.py
       md5: 70169681883d3b066b20b7a067319f0e
       size: 12188
     outs:
     - path: data\eval\metrics\metrics.json
-      md5: 5ff2e67892e19fa09a229b9c52b372c1
+      md5: a2ae8feb6f3ea74d15b7ccf225fa6e02
       size: 80
     - path: data\eval\plots\confusion_matrix.png
-      md5: 4f721af14676cb3992de13ea4800c1d0
-      size: 16763
+      md5: 17d2a2c6ed9b6f6c76a9946d594e8dfb
+      size: 15898
     - path: data\eval\plots\pr_rc_curve.png
-      md5: 7faef03c7510c031c9df7964650daf86
-      size: 20359
+      md5: cf67f194b19127c4357f081d1f59273f
+      size: 21162
     - path: data\eval\plots\roc_curve.png
-      md5: 3b426ee161569c8571ceb54a810a98a6
-      size: 22884
+      md5: 9e9b4ed47982ee47f82e59eb6714c9cc
+      size: 26221

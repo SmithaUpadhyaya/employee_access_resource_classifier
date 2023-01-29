@@ -7,6 +7,7 @@ from sklearn.pipeline import Pipeline
 #from dvclive.keras import DVCLiveCallback #This will work with keras library and not with model sklearn. Since this require to define Callback 
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 
@@ -28,7 +29,12 @@ def define_model(param_filepath):
         
         model = DecisionTreeClassifier(criterion = 'gini', random_state = 42)
         model.set_params(**hyper_param)   
-        
+
+    elif model_type == 'extra_decision_tree':
+
+        model = ExtraTreesClassifier(criterion = 'gini', random_state = 42)
+        model.set_params(**hyper_param)
+
     else:
         raise Exception('Unsupported model_type.')
         
