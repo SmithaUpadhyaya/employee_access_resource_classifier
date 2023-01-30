@@ -63,15 +63,15 @@ train_test_split:
   test_data: feature\test\test_data.parquet
 
 pipeline_type:
-            #combine_feature: True
+  #combine_feature: True
   KFoldTE: true
-  frequency_encoding: true
+  frequency_encoding: false
   KFold_frequency_encoding: false
-  tfidf_vectorizer_encoding: true
-  count_vectorizer_encoding: false
+  tfidf_vectorizer_encoding: false
+  count_vectorizer_encoding: true
 
 model:
-  model_type: random_forest
+  model_type: decision_tree
 
   logistic_reg:
     hyper_params:
@@ -119,4 +119,23 @@ model:
     evals: eval
     eval_metrics: metrics
     eval_plots: plots
+
+trained_model:
+  model_path: model\model.pkl
+   
+  params:
+    max_depth: 14
+    splitter: best
+    min_samples_leaf: 0.001
+    max_features: 0.3
+    #min_samples_split: 0.01
+    class_weight: balanced
+
+  pipeline_type:
+    KFoldTE: true
+    frequency_encoding: false
+    KFold_frequency_encoding: false
+    tfidf_vectorizer_encoding: false
+    count_vectorizer_encoding: true
+
 

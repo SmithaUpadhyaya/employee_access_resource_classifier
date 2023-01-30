@@ -41,9 +41,21 @@ def save_roc_courve(Y, Y_hat, eval_metric):
                             #'roc' #To keep reproducibility, outputs should be in separate tracked directories 
                            )
     os.makedirs(roc_file, exist_ok = True)
-    roc_file = os.path.join(roc_file, "roc_curve.png")
-    plt.savefig(roc_file)
-
+    plt.savefig(os.path.join(roc_file, "roc_curve.png"))
+    
+    """
+    with open(os.path.join(roc_file, "roc_curve.json"), "w") as fd:
+        json.dump(
+            [
+                #"roc": [
+                        {"fpr": fp, "tpr": tp, "threshold": t}
+                        for fp, tp, t in zip(fpr, tpr, thresholds)
+                #]
+            ],
+            fd,
+            indent = 4,
+        )    
+    """
     return auc_score
 
 def save_precision_recall_curve(Y, Y_hat, eval_metric):
@@ -71,11 +83,23 @@ def save_precision_recall_curve(Y, Y_hat, eval_metric):
                             eval_metric['eval_plots'],
                             )
     os.makedirs(prc_file, exist_ok = True) 
-    prc_file = os.path.join(prc_file, "pr_rc_curve.png")
-    plt.savefig(prc_file)
+    plt.savefig(os.path.join(prc_file, "pr_rc_curve.png"))
+
+    """
+    with open(os.path.join(prc_file, "pr_rc_curve.json"), "w") as fd:
+        json.dump(
+            [
+                #"prc": [
+                    {"precision": p, "recall": r, "threshold": t}
+                    for p, r, t in zip(pr, rc, thresholds)
+                #]
+            ],
+            fd,
+            indent = 4,
+        )
+    """
 
     return pr_auc_score
-
 
 def eval(Y, Y_predictions_by_class):
 
@@ -87,38 +111,8 @@ def eval(Y, Y_predictions_by_class):
     #pr_rc curve
     pr_auc_score = save_precision_recall_curve(Y, Y_hat, eval_metric)
 
-    """
-    prc_file = os.path.join(prc_file, "pr_rc_curve.json")
-    with open(prc_file, "w") as fd:
-        json.dump(
-            [
-                #"prc": [
-                    {"precision": p, "recall": r, "threshold": t}
-                    for p, r, t in zip(precision, recall, prc_thresholds)
-                #]
-            ],
-            fd,
-            indent = 4,
-        )
-    """
-
     #roc curve
-    auc_score = save_roc_courve(Y, Y_hat, eval_metric)
-    """
-    roc_file = os.path.join(roc_file, "roc_curve.json")
- 
-    with open(roc_file, "w") as fd:
-        json.dump(
-            [
-                #"roc": [
-                        {"fpr": fp, "tpr": tp, "threshold": t}
-                        for fp, tp, t in zip(fpr, tpr, thresholds)
-                #]
-            ],
-            fd,
-            indent = 4,
-        )
-    """
+    auc_score = save_roc_courve(Y, Y_hat, eval_metric)    
 
     #Plot confusion_matric
     confusion_file = os.path.join(
