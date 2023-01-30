@@ -23,8 +23,8 @@ stages:
       size: 591595
       nfiles: 1
     - path: src\data\generate_training_features.py
-      md5: 0925fdb9bfeba3fb2feb1d4ea61436d0
-      size: 6515
+      md5: ea144f24d25d1dff76a72024c640b5a9
+      size: 6456
     - path: src\models\feature_eng
       md5: d63e6516d9447075728507dec7c0dbe0.dir
       size: 35637
@@ -46,59 +46,64 @@ stages:
             output:
               folder: feature\cntvector
               filename: count_vectorizer.parquet
-        pipeline_type:
-          KFoldTE: true
-          frequency_encoding: false
-          KFold_frequency_encoding: false
-          tfidf_vectorizer_encoding: false
-          count_vectorizer_encoding: true
-        train_test_split:
-          test_size: 0.01
-          random_seed: 45
-          train_data: feature\train\train_data.parquet
-          test_data: feature\test\test_data.parquet
-    outs:
-    - path: data\feature\
-      md5: 781a8ed6213f1948c39b7a03b499062e.dir
-      size: 8984869
-      nfiles: 2
-  train_model:
-    cmd: python src\data\train_model.py
-    deps:
-    - path: data\feature\
-      md5: 781a8ed6213f1948c39b7a03b499062e.dir
-      size: 8984869
-      nfiles: 2
-    - path: src\data\train_model.py
-      md5: e7061f53341c9966270e92b593def93e
-      size: 5078
-    params:
-      params.yaml:
         model:
-          model_type: decision_tree
+          model_type: logistic_reg
           logistic_reg:
+            pipeline_type:
+              KFoldTE: false
+              frequency_encoding: true
+              KFold_frequency_encoding: true
+              tfidf_vectorizer_encoding: false
+              count_vectorizer_encoding: true
             hyper_params:
               max_iter: 50
               penalty: l2
               C: 1.0
               class_weight: balanced
+            trained_model: model\logistic_reg\model.pkl
+            eval_metrics: model\logistic_reg\metrics
+            eval_plots: model\logistic_reg\plots
           decision_tree:
+            pipeline_type:
+              KFoldTE: false
+              frequency_encoding: true
+              KFold_frequency_encoding: true
+              tfidf_vectorizer_encoding: false
+              count_vectorizer_encoding: true
             hyper_params:
               max_depth: 14
               splitter: best
               min_samples_leaf: 0.001
               max_features: 0.3
               class_weight: balanced
+            trained_model: model\decision_tree\model.pkl
+            eval_metrics: model\decision_tree\metrics
+            eval_plots: model\decision_tree\plots
           extra_decision_tree:
+            pipeline_type:
+              KFoldTE: false
+              frequency_encoding: true
+              KFold_frequency_encoding: true
+              tfidf_vectorizer_encoding: false
+              count_vectorizer_encoding: true
             hyper_params:
-              n_estimators: 50
-              max_depth: 4
+              n_estimators: 30
+              max_depth: 5
               bootstrap: true
-              max_samples: 0.7
-              max_features: 0.3
-              min_samples_leaf: 0.01
+              max_samples: 0.95
+              max_features: 0.5
+              min_samples_leaf: 0.001
               class_weight: balanced_subsample
+            trained_model: model\extra_decision_tree\model.pkl
+            eval_metrics: model\extra_decision_tree\metrics
+            eval_plots: model\extra_decision_tree\plots
           random_forest:
+            pipeline_type:
+              KFoldTE: false
+              frequency_encoding: true
+              KFold_frequency_encoding: true
+              tfidf_vectorizer_encoding: false
+              count_vectorizer_encoding: true
             hyper_params:
               n_estimators: 100
               max_depth: 6
@@ -107,36 +112,124 @@ stages:
               max_features: 0.6
               min_samples_leaf: 0.002
               class_weight: balanced_subsample
-          trained_model: model\model.pkl
-          eval:
-            evals: eval
-            eval_metrics: metrics
-            eval_plots: plots
+            trained_model: model\random_forest\model.pkl
+            eval_metrics: model\random_forest\metrics
+            eval_plots: model\random_forest\plots
+        train_test_split:
+          test_size: 0.01
+          random_seed: 45
+          cv: 5
+          train_data: feature\train_data.parquet
     outs:
-    - path: data\model
-      md5: f5d7d84781adf38d9e75b3b12e11b2f8.dir
-      size: 79621
+    - path: data\feature\
+      md5: f503affd728ada6ef1249f0388ce2658.dir
+      size: 4762076
       nfiles: 1
+  train_model:
+    cmd: python src\data\train_model.py
+    deps:
+    - path: data\feature\
+      md5: f503affd728ada6ef1249f0388ce2658.dir
+      size: 4762076
+      nfiles: 1
+    - path: src\data\train_model.py
+      md5: c5db4a5a5335351fcbb1d6765b4e38b1
+      size: 7284
+    params:
+      params.yaml:
+        model:
+          model_type: logistic_reg
+          logistic_reg:
+            pipeline_type:
+              KFoldTE: false
+              frequency_encoding: true
+              KFold_frequency_encoding: true
+              tfidf_vectorizer_encoding: false
+              count_vectorizer_encoding: true
+            hyper_params:
+              max_iter: 50
+              penalty: l2
+              C: 1.0
+              class_weight: balanced
+            trained_model: model\logistic_reg\model.pkl
+            eval_metrics: model\logistic_reg\metrics
+            eval_plots: model\logistic_reg\plots
+          decision_tree:
+            pipeline_type:
+              KFoldTE: false
+              frequency_encoding: true
+              KFold_frequency_encoding: true
+              tfidf_vectorizer_encoding: false
+              count_vectorizer_encoding: true
+            hyper_params:
+              max_depth: 14
+              splitter: best
+              min_samples_leaf: 0.001
+              max_features: 0.3
+              class_weight: balanced
+            trained_model: model\decision_tree\model.pkl
+            eval_metrics: model\decision_tree\metrics
+            eval_plots: model\decision_tree\plots
+          extra_decision_tree:
+            pipeline_type:
+              KFoldTE: false
+              frequency_encoding: true
+              KFold_frequency_encoding: true
+              tfidf_vectorizer_encoding: false
+              count_vectorizer_encoding: true
+            hyper_params:
+              n_estimators: 30
+              max_depth: 5
+              bootstrap: true
+              max_samples: 0.95
+              max_features: 0.5
+              min_samples_leaf: 0.001
+              class_weight: balanced_subsample
+            trained_model: model\extra_decision_tree\model.pkl
+            eval_metrics: model\extra_decision_tree\metrics
+            eval_plots: model\extra_decision_tree\plots
+          random_forest:
+            pipeline_type:
+              KFoldTE: false
+              frequency_encoding: true
+              KFold_frequency_encoding: true
+              tfidf_vectorizer_encoding: false
+              count_vectorizer_encoding: true
+            hyper_params:
+              n_estimators: 100
+              max_depth: 6
+              bootstrap: true
+              max_samples: 0.95
+              max_features: 0.6
+              min_samples_leaf: 0.002
+              class_weight: balanced_subsample
+            trained_model: model\random_forest\model.pkl
+            eval_metrics: model\random_forest\metrics
+            eval_plots: model\random_forest\plots
+    outs:
+    - path: data\model\metrics\metrics.json
+      md5: f39f00f2fb47b5711fe6d0427787a0e3
+      size: 76
   evaluate_model:
     cmd: python src\data\eval.py
     deps:
     - path: data\model
-      md5: f5d7d84781adf38d9e75b3b12e11b2f8.dir
-      size: 79621
+      md5: e16941fb70e9c3401de9df9dc9870e9f.dir
+      size: 32977
       nfiles: 1
     - path: src\data\eval.py
-      md5: aed7619d67e1d57aacb8299c6f1f97ca
-      size: 12055
+      md5: 64779cb95c7bf90ff0f45abd4722d6a2
+      size: 12080
     outs:
     - path: data\eval\metrics\metrics.json
-      md5: 5ff2e67892e19fa09a229b9c52b372c1
+      md5: bd822b5620ed49d00a7ee86bb046b3ba
       size: 80
     - path: data\eval\plots\confusion_matrix.png
-      md5: 4f721af14676cb3992de13ea4800c1d0
-      size: 16763
+      md5: 8ccc83fbfab075ed404888d66c50f761
+      size: 16259
     - path: data\eval\plots\pr_rc_curve.png
-      md5: 7faef03c7510c031c9df7964650daf86
-      size: 20359
+      md5: 0ee74bacf57f7daa655da842106347d9
+      size: 23723
     - path: data\eval\plots\roc_curve.png
-      md5: 3b426ee161569c8571ceb54a810a98a6
-      size: 22884
+      md5: e5d3dd354e83c2731d920315c6a3023d
+      size: 25948
