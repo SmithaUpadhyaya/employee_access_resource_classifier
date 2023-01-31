@@ -39,15 +39,15 @@ model:
 
     pipeline_type:
       KFoldTE: true
-      frequency_encoding: true
-      KFold_frequency_encoding: false
-      tfidf_vectorizer_encoding: false
-      count_vectorizer_encoding: true
+      frequency_encoding: false
+      KFold_frequency_encoding: true
+      tfidf_vectorizer_encoding: true
+      count_vectorizer_encoding: false
 
     hyper_params:
-      max_iter: 900
+      max_iter: 700
       penalty: l2
-      C: 1
+      C: 10000
       class_weight: balanced
 
     trained_model: model\logistic_reg\model.pkl

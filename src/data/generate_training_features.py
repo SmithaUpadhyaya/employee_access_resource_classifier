@@ -74,9 +74,13 @@ if __name__ == '__main__':
                                 )
     os.makedirs(os.path.dirname(train_filepath), exist_ok = True)
 
-    Y = X[['ACTION']]
-    X.drop(columns = X.columns[:30], inplace = True)
-    hlpwrite.save_to_parquet(pd.concat([X, Y], axis = 1 ), train_filepath, True)
+    #Instead of hard code object type columns use select_dtype
+    #Y = X[['ACTION']]
+    #X.drop(columns = X.columns[:30], inplace = True) 
+    #hlpwrite.save_to_parquet(pd.concat([X, Y], axis = 1 ), train_filepath, True)
+
+    feature_columns = X.select_dtypes(exclude = ['object']).columns #Exclude "object" type columns
+    hlpwrite.save_to_parquet(X[feature_columns], train_filepath, True)
 
     """
     #Drop all the orginal feature after transform

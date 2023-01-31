@@ -51,14 +51,14 @@ stages:
           logistic_reg:
             pipeline_type:
               KFoldTE: true
-              frequency_encoding: true
-              KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: false
-              count_vectorizer_encoding: true
+              frequency_encoding: false
+              KFold_frequency_encoding: true
+              tfidf_vectorizer_encoding: true
+              count_vectorizer_encoding: false
             hyper_params:
-              max_iter: 900
+              max_iter: 700
               penalty: l2
-              C: 1
+              C: 10000
               class_weight: balanced
             trained_model: model\logistic_reg\model.pkl
             eval_metrics: model\logistic_reg\metrics
@@ -122,15 +122,15 @@ stages:
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: 2c63bb217ebeb4057ae9b0f03205fb8b.dir
-      size: 4474638
+      md5: 0cbc5ddfae2d9d5d273a8e08da85f763.dir
+      size: 2011205
       nfiles: 1
   train_model:
-    cmd: python src\data\train_model.py
+    cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: 2c63bb217ebeb4057ae9b0f03205fb8b.dir
-      size: 4474638
+      md5: 0cbc5ddfae2d9d5d273a8e08da85f763.dir
+      size: 2011205
       nfiles: 1
     - path: src\data\train_model.py
       md5: 4e966ea802f899c1b20f10fe16baaa15
@@ -142,14 +142,14 @@ stages:
           logistic_reg:
             pipeline_type:
               KFoldTE: true
-              frequency_encoding: true
-              KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: false
-              count_vectorizer_encoding: true
+              frequency_encoding: false
+              KFold_frequency_encoding: true
+              tfidf_vectorizer_encoding: true
+              count_vectorizer_encoding: false
             hyper_params:
-              max_iter: 900
+              max_iter: 700
               penalty: l2
-              C: 1
+              C: 10000
               class_weight: balanced
             trained_model: model\logistic_reg\model.pkl
             eval_metrics: model\logistic_reg\metrics
@@ -208,7 +208,7 @@ stages:
             eval_plots: model\random_forest\plots
     outs:
     - path: data\model\metrics\metrics.json
-      md5: 507dd0b4e47e36b64c6acef7d9750b27
+      md5: 013129bc00b00717bd72d974b51bf1ad
       size: 76
   evaluate_model:
     cmd: python src\data\eval.py
