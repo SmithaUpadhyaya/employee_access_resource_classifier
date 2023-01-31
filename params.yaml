@@ -17,7 +17,7 @@ featurize:
     output:
       folder: feature\tfidf
       filename: tfidf.parquet
-            
+
   count_vector:
     random_seed: 2023
     dim_reduction: 1
@@ -25,7 +25,7 @@ featurize:
     output:
       folder: feature\cntvector
       filename: count_vectorizer.parquet
-            
+
 train_test_split:
   test_size: 0.01
   random_seed: 45
@@ -38,16 +38,16 @@ model:
   logistic_reg:
 
     pipeline_type:
-      KFoldTE: false
+      KFoldTE: true
       frequency_encoding: true
-      KFold_frequency_encoding: true
+      KFold_frequency_encoding: false
       tfidf_vectorizer_encoding: false
       count_vectorizer_encoding: true
 
     hyper_params:
-      max_iter: 50
+      max_iter: 900
       penalty: l2
-      C: 1.0
+      C: 1
       class_weight: balanced
 
     trained_model: model\logistic_reg\model.pkl
@@ -118,7 +118,6 @@ model:
       min_samples_leaf: 0.002
 
       class_weight: balanced_subsample #balanced
-    
     trained_model: model\random_forest\model.pkl
     eval_metrics: model\random_forest\metrics
     eval_plots: model\random_forest\plots
@@ -127,7 +126,7 @@ model:
 trained_model:
   model_path: model\model.pkl
   feature_eng: model\feature_engg_pipeline.json
-   
+
   params:
     max_depth: 14
     splitter: best

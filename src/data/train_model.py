@@ -104,11 +104,14 @@ if __name__ == '__main__':
     split_s = StratifiedShuffleSplit(n_splits = split_params['cv'], test_size = split_params['test_size'], random_state = split_params['random_seed'])
 
     fold = 0
-    for train_index, test_index in split_s.split(X, X['ACTION']):
+    for train_index, test_index in split_s.split(X, X.ACTION):
            
-        Y_train, Y_test = X[['ACTION']].iloc[train_index,:], X[['ACTION']].iloc[test_index,:]
         X_train, X_test = X.iloc[train_index,:], X.iloc[test_index,:]
 
+        Y_train = X_train.ACTION
+        Y_test = X_test.ACTION
+        #Y_train, Y_test = X[['ACTION']].iloc[train_index,:], X[['ACTION']].iloc[test_index,:]
+        
         X_train.drop('ACTION', axis = 1, inplace = True)
         X_test.drop('ACTION', axis = 1, inplace = True)
 
@@ -143,10 +146,21 @@ if __name__ == '__main__':
                                 model_param[model_param['model_type']]['eval_metrics']
                              )
     os.makedirs(metric_file, exist_ok = True)
-    metric_file = os.path.join(metric_file, "metrics.json")
+
     json.dump(
         obj = metrics,
-        fp = open(metric_file, 'w'),
+        fp = open(os.path.join(metric_file, "metrics.json"), 'w'),
+        indent = 4, 
+        sort_keys = True
+    )
+
+    #Save roc and f1 score for each fold in seperate file
+    json.dump(
+        {
+            "f1_score": cv_roc,
+            "roc_score": cv_f1_score
+        },
+        fp = open(os.path.join(metric_file, "folds_scores.json"), 'w'),
         indent = 4, 
         sort_keys = True
     )
@@ -155,10 +169,10 @@ if __name__ == '__main__':
     metric_file = os.path.join( hlpread.read_yaml_key('data_source.data_folders'), 
                                 "model","metrics")
     os.makedirs(metric_file, exist_ok = True)
-    metric_file = os.path.join(metric_file, "metrics.json")
+
     json.dump(
         obj = metrics,
-        fp = open(metric_file, 'w'),
+        fp = open(os.path.join(metric_file, "metrics.json"), 'w'),
         indent = 4, 
         sort_keys = True
     )
