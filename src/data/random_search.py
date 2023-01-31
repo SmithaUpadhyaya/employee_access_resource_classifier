@@ -8,7 +8,7 @@ import os
 
 
 # Automated random search experiments
-num_exps = 15 #Number of experiments to run to generate
+num_exps = 20 #Number of experiments to run to generate
 random.seed(0)
 
 
@@ -116,8 +116,8 @@ def run_exp_Random_Forest():
     
     #Hyperparamter tunn=ing for Random Forest
     params = {
-        "n_estimators": random.choice([20, 25, 30, 40, 50]),
-        "max_depth": random.choice([4, 5, 6]),
+        "n_estimators": random.choice([50, 100, 150, 200]),
+        "max_depth": random.choice([4, 5]),
 
         "bootstrap": True,
         "max_samples": random.choice([0.5, 0.6, 0.7, 0.8, 0.95]),
@@ -125,7 +125,7 @@ def run_exp_Random_Forest():
         "max_features":  random.choice([0.2, 0.3, 0.5, 0.6, 0.95]),
         "min_samples_leaf":  random.choice([0.01, 0.05, 0.001, 0.002, 0.005]),
 
-        "class_weight": random.choice(['balanced', 'balanced_subsample']),
+        "class_weight": 'balanced', #random.choice(['balanced', 'balanced_subsample']),
 
         #Select the featurization techinique
         "KFoldTE": random.choice([True, False]), 
@@ -199,9 +199,9 @@ def run_exp_Logistic_Reg():
     
 for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
-    run_exp_Logistic_Reg()
+    #run_exp_Logistic_Reg()
     
-    #run_exp_Random_Forest()
+    run_exp_Random_Forest()
 
     #run_exp_ExtraTreesClassifier()
     
