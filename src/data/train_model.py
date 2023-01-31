@@ -157,8 +157,8 @@ if __name__ == '__main__':
     #Save roc and f1 score for each fold in seperate file
     json.dump(
         {
-            "f1_score": cv_roc,
-            "roc_score": cv_f1_score
+            "f1_score": cv_f1_score,
+            "roc_score": cv_roc
         },
         fp = open(os.path.join(metric_file, "folds_scores.json"), 'w'),
         indent = 4, 

@@ -40,12 +40,12 @@ model:
     pipeline_type:
       KFoldTE: true
       frequency_encoding: false
-      KFold_frequency_encoding: true
+      KFold_frequency_encoding: false
       tfidf_vectorizer_encoding: true
       count_vectorizer_encoding: false
 
     hyper_params:
-      max_iter: 700
+      max_iter: 900
       penalty: l2
       C: 10000
       class_weight: balanced

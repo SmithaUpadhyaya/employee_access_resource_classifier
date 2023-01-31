@@ -52,11 +52,11 @@ stages:
             pipeline_type:
               KFoldTE: true
               frequency_encoding: false
-              KFold_frequency_encoding: true
+              KFold_frequency_encoding: false
               tfidf_vectorizer_encoding: true
               count_vectorizer_encoding: false
             hyper_params:
-              max_iter: 700
+              max_iter: 900
               penalty: l2
               C: 10000
               class_weight: balanced
@@ -122,15 +122,15 @@ stages:
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: 9678417c8070b5f13b9457bfcdf5688e.dir
-      size: 2057516
+      md5: 8f19e2db1fc494b7282f5be1dd1b8a4c.dir
+      size: 1306969
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: 9678417c8070b5f13b9457bfcdf5688e.dir
-      size: 2057516
+      md5: 8f19e2db1fc494b7282f5be1dd1b8a4c.dir
+      size: 1306969
       nfiles: 1
     - path: src\data\train_model.py
       md5: 4e966ea802f899c1b20f10fe16baaa15
@@ -143,11 +143,11 @@ stages:
             pipeline_type:
               KFoldTE: true
               frequency_encoding: false
-              KFold_frequency_encoding: true
+              KFold_frequency_encoding: false
               tfidf_vectorizer_encoding: true
               count_vectorizer_encoding: false
             hyper_params:
-              max_iter: 700
+              max_iter: 900
               penalty: l2
               C: 10000
               class_weight: balanced
@@ -208,7 +208,7 @@ stages:
             eval_plots: model\random_forest\plots
     outs:
     - path: data\model\metrics\metrics.json
-      md5: 013129bc00b00717bd72d974b51bf1ad
+      md5: 391bc5921768472086c71af131b0036e
       size: 76
   evaluate_model:
     cmd: python src\data\eval.py
