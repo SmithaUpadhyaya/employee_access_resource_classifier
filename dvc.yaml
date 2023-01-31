@@ -38,7 +38,7 @@ stages:
 
 
   train_model:
-    cmd: python src\data\train_model.py
+    cmd: python -W ignore src\data\train_model.py
     deps:
       - src\data\train_model.py
       - ${data_source.data_folders}\feature\

@@ -133,8 +133,8 @@ stages:
       size: 4474638
       nfiles: 1
     - path: src\data\train_model.py
-      md5: 3bba826b717874d5a447b78bc807605b
-      size: 7522
+      md5: 4e966ea802f899c1b20f10fe16baaa15
+      size: 7599
     params:
       params.yaml:
         model:
