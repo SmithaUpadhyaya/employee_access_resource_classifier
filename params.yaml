@@ -78,22 +78,22 @@ model:
   extra_decision_tree:
 
     pipeline_type:
-      KFoldTE: false
-      frequency_encoding: true
-      KFold_frequency_encoding: true
+      KFoldTE: true
+      frequency_encoding: false
+      KFold_frequency_encoding: false
       tfidf_vectorizer_encoding: false
-      count_vectorizer_encoding: true
+      count_vectorizer_encoding: false
 
     hyper_params:
-      n_estimators: 30
-      max_depth: 5
+      n_estimators: 55
+      max_depth: 4
 
       bootstrap: true
-      max_samples: 0.95  #Max sample to consider for bootstrap
-      max_features: 0.5
-      min_samples_leaf: 0.001
+      max_samples: 0.75  #Max sample to consider for bootstrap
+      max_features: 0.7
+      min_samples_leaf: 0.5
 
-      class_weight: balanced_subsample #balanced
+      class_weight: balanced           #balanced
 
     trained_model: model\extra_decision_tree\model.pkl
     eval_metrics: model\extra_decision_tree\metrics

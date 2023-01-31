@@ -47,7 +47,7 @@ stages:
               folder: feature\cntvector
               filename: count_vectorizer.parquet
         model:
-          model_type: random_forest
+          model_type: extra_decision_tree
           logistic_reg:
             pipeline_type:
               KFoldTE: true
@@ -81,19 +81,19 @@ stages:
             eval_plots: model\decision_tree\plots
           extra_decision_tree:
             pipeline_type:
-              KFoldTE: false
-              frequency_encoding: true
-              KFold_frequency_encoding: true
+              KFoldTE: true
+              frequency_encoding: false
+              KFold_frequency_encoding: false
               tfidf_vectorizer_encoding: false
-              count_vectorizer_encoding: true
+              count_vectorizer_encoding: false
             hyper_params:
-              n_estimators: 30
-              max_depth: 5
+              n_estimators: 55
+              max_depth: 4
               bootstrap: true
-              max_samples: 0.95
-              max_features: 0.5
-              min_samples_leaf: 0.001
-              class_weight: balanced_subsample
+              max_samples: 0.75
+              max_features: 0.7
+              min_samples_leaf: 0.5
+              class_weight: balanced
             trained_model: model\extra_decision_tree\model.pkl
             eval_metrics: model\extra_decision_tree\metrics
             eval_plots: model\extra_decision_tree\plots
@@ -122,15 +122,15 @@ stages:
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: 7dbdf5178d15762143b85356febf1b5d.dir
-      size: 1230736
+      md5: a1799263f3637fc06065a5ae607efd76.dir
+      size: 702124
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: 7dbdf5178d15762143b85356febf1b5d.dir
-      size: 1230736
+      md5: a1799263f3637fc06065a5ae607efd76.dir
+      size: 702124
       nfiles: 1
     - path: src\data\train_model.py
       md5: 7797157e12ed4d5a3b5ada5412c3ec94
@@ -138,7 +138,7 @@ stages:
     params:
       params.yaml:
         model:
-          model_type: random_forest
+          model_type: extra_decision_tree
           logistic_reg:
             pipeline_type:
               KFoldTE: true
@@ -172,19 +172,19 @@ stages:
             eval_plots: model\decision_tree\plots
           extra_decision_tree:
             pipeline_type:
-              KFoldTE: false
-              frequency_encoding: true
-              KFold_frequency_encoding: true
+              KFoldTE: true
+              frequency_encoding: false
+              KFold_frequency_encoding: false
               tfidf_vectorizer_encoding: false
-              count_vectorizer_encoding: true
+              count_vectorizer_encoding: false
             hyper_params:
-              n_estimators: 30
-              max_depth: 5
+              n_estimators: 55
+              max_depth: 4
               bootstrap: true
-              max_samples: 0.95
-              max_features: 0.5
-              min_samples_leaf: 0.001
-              class_weight: balanced_subsample
+              max_samples: 0.75
+              max_features: 0.7
+              min_samples_leaf: 0.5
+              class_weight: balanced
             trained_model: model\extra_decision_tree\model.pkl
             eval_metrics: model\extra_decision_tree\metrics
             eval_plots: model\extra_decision_tree\plots
@@ -208,8 +208,8 @@ stages:
             eval_plots: model\random_forest\plots
     outs:
     - path: data\model\metrics\metrics.json
-      md5: 2822d767dd9cfb9aff3f9b4fc0b6530c
-      size: 76
+      md5: cccaf0d217df166760db142a83317556
+      size: 62
   evaluate_model:
     cmd: python src\data\eval.py
     deps:
