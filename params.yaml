@@ -33,7 +33,7 @@ train_test_split:
   train_data: feature\train_data.parquet
 
 model:
-  model_type: logistic_reg
+  model_type: random_forest
 
   logistic_reg:
 
