@@ -56,7 +56,7 @@ stages:
               tfidf_vectorizer_encoding: true
               count_vectorizer_encoding: false
             hyper_params:
-              max_iter: 900
+              max_iter: 1000
               penalty: l2
               C: 10000
               class_weight: balanced
@@ -133,7 +133,7 @@ stages:
       size: 1306969
       nfiles: 1
     - path: src\data\train_model.py
-      md5: 4e966ea802f899c1b20f10fe16baaa15
+      md5: 7797157e12ed4d5a3b5ada5412c3ec94
       size: 7599
     params:
       params.yaml:
@@ -147,7 +147,7 @@ stages:
               tfidf_vectorizer_encoding: true
               count_vectorizer_encoding: false
             hyper_params:
-              max_iter: 900
+              max_iter: 1000
               penalty: l2
               C: 10000
               class_weight: balanced
@@ -208,7 +208,7 @@ stages:
             eval_plots: model\random_forest\plots
     outs:
     - path: data\model\metrics\metrics.json
-      md5: 391bc5921768472086c71af131b0036e
+      md5: 823ae7c3f5621f689cf054120b420ac4
       size: 76
   evaluate_model:
     cmd: python src\data\eval.py
