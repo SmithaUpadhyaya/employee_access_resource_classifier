@@ -22,96 +22,51 @@ while i > 0:
 
 print(f'Working directory: {wrk_dir}')
 """
-def Logistic_Reg():
+def run_exp_Decision_Tree():
+
+    #Hyper-paramters tuning for Decision Tree
     
-    #Hyper paramater tuning for Logistic Regression 
     params = {
-        "max_iter": random.choice([50, 100, 120, 130, 150, 200, 250]),
-        "penalty": random.choice(['l2']), #'l1': 
-        "C":  random.choice([100, 10, 1.0, 0.1, 0.01]),
+        "max_depth": random.choice(range(10, 15, 1)),      #random.choice([3,5,7,9])
+        "splitter": random.choice(['best', 'random']), #'l1': 
+        "min_samples_leaf":  random.choice([0.01, 0.05, 0.001, 0.002, 0.005]),
+        "max_features":  random.choice([0.3, 0.5, 0.6, 0.7, 0.8, 0.95, 1]),
+        #"min_samples_split":  random.choice([]),
 
         #Select the featurization techinique
         "KFoldTE": random.choice([True, False]), 
         "frequency_encoding": random.choice([True, False]),
-        "KFold_frequency_encoding": random.choice([True, False]),
+        "KFold_frequency_encoding": False, #random.choice([True, False])
         "tfidf_vectorizer_encoding": random.choice([True, False]),
         "count_vectorizer_encoding": random.choice([True, False]),
     }
 
-    #This will generate the experiment and wait for instruction to execute 
-    #--temp : did not help. Continue to run from ".dvc\tmp\exps\"
-    # Initial thought to use --queue, since they will run ".dvc\tmp\exps\" environment it alwasy gave error when finding the data file. This is usefull when using remort storage systems
+
     subprocess.run(["dvc", "exp", "run", #"--queue",
-                    "--set-param", f"model.logistic_reg.hyper_params.max_iter={params['max_iter']}",
-                    "--set-param", f"model.logistic_reg.hyper_params.penalty={params['penalty']}",
-                    "--set-param", f"model.logistic_reg.hyper_params.C={params['C']}",
+                    "--set-param", f"model.decision_tree.hyper_params.max_depth={params['max_depth']}",
+                    "--set-param", f"model.decision_tree.hyper_params.splitter={params['splitter']}",
+                    "--set-param", f"model.decision_tree.hyper_params.min_samples_leaf={params['min_samples_leaf']}",
+                     "--set-param", f"model.decision_tree.hyper_params.max_features={params['max_features']}",
+                  
 
                     #Select the featurization techinique
-                    "--set-param", f"model.logistic_reg.pipeline_type.KFoldTE={params['KFoldTE']}",
-                    "--set-param", f"model.logistic_reg.pipeline_type.frequency_encoding={params['frequency_encoding']}",
-                    "--set-param", f"model.logistic_reg.pipeline_type.KFold_frequency_encoding={params['KFold_frequency_encoding']}",
-                    "--set-param", f"model.logistic_reg.pipeline_type.tfidf_vectorizer_encoding={params['tfidf_vectorizer_encoding']}",
-                    "--set-param", f"model.logistic_reg.pipeline_type.count_vectorizer_encoding={params['count_vectorizer_encoding']}",
+                    "--set-param", f"model.decision_tree.pipeline_type.KFoldTE={params['KFoldTE']}",
+                    "--set-param", f"model.decision_tree.pipeline_type.frequency_encoding={params['frequency_encoding']}",
+                    "--set-param", f"model.decision_tree.pipeline_type.KFold_frequency_encoding={params['KFold_frequency_encoding']}",
+                    "--set-param", f"model.decision_tree.pipeline_type.tfidf_vectorizer_encoding={params['tfidf_vectorizer_encoding']}",
+                    "--set-param", f"model.decision_tree.pipeline_type.count_vectorizer_encoding={params['count_vectorizer_encoding']}",
 
                     ]
                   #This did not help
                   #, cwd = get_project_root()
                   #, cwd = wrk_dir 
                   )
+
+#===============================================================================================
+
+def run_exp_ExtraTreesClassifier():
     
-for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
-
-    Logistic_Reg()
-    
-    """
-    #Hyperparamter tunn=ing for Random Forest
-    params = {
-        "n_estimators": random.choice([20, 25, 30, 40, 50]),
-        "max_depth": random.choice([4, 5, 6]),
-
-        "bootstrap": True,
-        "max_samples": random.choice([0.5, 0.6, 0.7, 0.8, 0.95]),
-        
-        "max_features":  random.choice([0.2, 0.3, 0.5, 0.6, 0.95]),
-        "min_samples_leaf":  random.choice([0.01, 0.05, 0.001, 0.002, 0.005]),
-
-        "class_weight": random.choice(['balanced', 'balanced_subsample']),
-
-        #Select the featurization techinique
-        "KFoldTE": random.choice([True, False]), 
-        "frequency_encoding": random.choice([True, False]),
-        "KFold_frequency_encoding": random.choice([True, False]),
-        "tfidf_vectorizer_encoding": random.choice([True, False]),
-        "count_vectorizer_encoding": random.choice([True, False]),
-    }
-
-
-    subprocess.run(["dvc", "exp", "run", 
-                    "--set-param", f"model.random_forest.hyper_params.n_estimators={params['n_estimators']}",
-                    "--set-param", f"model.random_forest.hyper_params.max_depth={params['max_depth']}",
-
-                    "--set-param", f"model.random_forest.hyper_params.bootstrap={params['bootstrap']}",
-                    "--set-param", f"model.random_forest.hyper_params.max_samples={params['max_samples']}",
-
-                    "--set-param", f"model.random_forest.hyper_params.max_features={params['max_features']}",
-                    "--set-param", f"model.random_forest.hyper_params.min_samples_leaf={params['min_samples_leaf']}",
-
-                    "--set-param", f"model.random_forest.hyper_params.class_weight={params['class_weight']}",
-
-
-                    #Select the featurization techinique
-                    "--set-param", f"pipeline_type.KFoldTE={params['KFoldTE']}",
-                    "--set-param", f"pipeline_type.frequency_encoding={params['frequency_encoding']}",
-                    "--set-param", f"pipeline_type.KFold_frequency_encoding={params['KFold_frequency_encoding']}",
-                    "--set-param", f"pipeline_type.tfidf_vectorizer_encoding={params['tfidf_vectorizer_encoding']}",
-                    "--set-param", f"pipeline_type.count_vectorizer_encoding={params['count_vectorizer_encoding']}",
-
-                    ]
-                  )
-    """
-    """
-    #Hyperparamater tuning for ExtraTreeClassifier
-    #After 1st iteration
+    #Hyperparamater tuning for ExtraTreesClassifier
     params = {
         "n_estimators": random.choice(range(26, 100, 1)),#random.choice([5, 10, 15, 20, 25]),
         "max_depth": random.choice([4, 5, 6]), #random.choice([5,6]),
@@ -146,55 +101,112 @@ for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
 
                     #Select the featurization techinique
-                    "--set-param", f"pipeline_type.KFoldTE={params['KFoldTE']}",
-                    "--set-param", f"pipeline_type.frequency_encoding={params['frequency_encoding']}",
-                    "--set-param", f"pipeline_type.KFold_frequency_encoding={params['KFold_frequency_encoding']}",
-                    "--set-param", f"pipeline_type.tfidf_vectorizer_encoding={params['tfidf_vectorizer_encoding']}",
-                    "--set-param", f"pipeline_type.count_vectorizer_encoding={params['count_vectorizer_encoding']}",
+                    "--set-param", f"model.extra_decision_tree.pipeline_type.KFoldTE={params['KFoldTE']}",
+                    "--set-param", f"model.extra_decision_tree.pipeline_type.frequency_encoding={params['frequency_encoding']}",
+                    "--set-param", f"model.extra_decision_tree.pipeline_type.KFold_frequency_encoding={params['KFold_frequency_encoding']}",
+                    "--set-param", f"model.extra_decision_tree.pipeline_type.tfidf_vectorizer_encoding={params['tfidf_vectorizer_encoding']}",
+                    "--set-param", f"model.extra_decision_tree.pipeline_type.count_vectorizer_encoding={params['count_vectorizer_encoding']}",
 
                     ]
                   )
-    """
-    """
-    #Hyper-paramters tuning for Decision Tree
-    #Modify the hyper paramter after 1 round of random search
+    
+#===============================================================================================
+
+def run_exp_Random_Forest():
+    
+    #Hyperparamter tunn=ing for Random Forest
     params = {
-        "max_depth": random.choice(range(10, 15, 1)),      #random.choice([3,5,7,9])
-        "splitter": random.choice(['best', 'random']), #'l1': 
+        "n_estimators": random.choice([20, 25, 30, 40, 50]),
+        "max_depth": random.choice([4, 5, 6]),
+
+        "bootstrap": True,
+        "max_samples": random.choice([0.5, 0.6, 0.7, 0.8, 0.95]),
+        
+        "max_features":  random.choice([0.2, 0.3, 0.5, 0.6, 0.95]),
         "min_samples_leaf":  random.choice([0.01, 0.05, 0.001, 0.002, 0.005]),
-        "max_features":  random.choice([0.3, 0.5, 0.6, 0.7, 0.8, 0.95, 1]),
-        #"min_samples_split":  random.choice([]),
+
+        "class_weight": random.choice(['balanced', 'balanced_subsample']),
 
         #Select the featurization techinique
         "KFoldTE": random.choice([True, False]), 
         "frequency_encoding": random.choice([True, False]),
-        "KFold_frequency_encoding": False, #random.choice([True, False])
+        "KFold_frequency_encoding": random.choice([True, False]),
         "tfidf_vectorizer_encoding": random.choice([True, False]),
         "count_vectorizer_encoding": random.choice([True, False]),
     }
 
+    subprocess.run(["dvc", "exp", "run", 
+                    "--set-param", f"model.random_forest.hyper_params.n_estimators={params['n_estimators']}",
+                    "--set-param", f"model.random_forest.hyper_params.max_depth={params['max_depth']}",
 
-    subprocess.run(["dvc", "exp", "run", #"--queue",
-                    "--set-param", f"model.decision_tree.hyper_params.max_depth={params['max_depth']}",
-                    "--set-param", f"model.decision_tree.hyper_params.splitter={params['splitter']}",
-                    "--set-param", f"model.decision_tree.hyper_params.min_samples_leaf={params['min_samples_leaf']}",
-                     "--set-param", f"model.decision_tree.hyper_params.max_features={params['max_features']}",
-                  
+                    "--set-param", f"model.random_forest.hyper_params.bootstrap={params['bootstrap']}",
+                    "--set-param", f"model.random_forest.hyper_params.max_samples={params['max_samples']}",
+
+                    "--set-param", f"model.random_forest.hyper_params.max_features={params['max_features']}",
+                    "--set-param", f"model.random_forest.hyper_params.min_samples_leaf={params['min_samples_leaf']}",
+
+                    "--set-param", f"model.random_forest.hyper_params.class_weight={params['class_weight']}",
+
 
                     #Select the featurization techinique
-                    "--set-param", f"pipeline_type.KFoldTE={params['KFoldTE']}",
-                    "--set-param", f"pipeline_type.frequency_encoding={params['frequency_encoding']}",
-                    "--set-param", f"pipeline_type.KFold_frequency_encoding={params['KFold_frequency_encoding']}",
-                    "--set-param", f"pipeline_type.tfidf_vectorizer_encoding={params['tfidf_vectorizer_encoding']}",
-                    "--set-param", f"pipeline_type.count_vectorizer_encoding={params['count_vectorizer_encoding']}",
+                    "--set-param", f"model.random_forest.pipeline_type.KFoldTE={params['KFoldTE']}",
+                    "--set-param", f"model.random_forest.pipeline_type.frequency_encoding={params['frequency_encoding']}",
+                    "--set-param", f"model.random_forest.pipeline_type.KFold_frequency_encoding={params['KFold_frequency_encoding']}",
+                    "--set-param", f"model.random_forest.pipeline_type.tfidf_vectorizer_encoding={params['tfidf_vectorizer_encoding']}",
+                    "--set-param", f"model.random_forest.pipeline_type.count_vectorizer_encoding={params['count_vectorizer_encoding']}",
+
+                    ]
+                  )
+
+#===============================================================================================
+    
+def run_exp_Logistic_Reg():
+    
+    #Hyper paramater tuning for Logistic Regression 
+    params = {
+        "max_iter": random.choice([500, 600, 700, 800, 900, 1000]),
+        "penalty": random.choice(['l2']), #'l1': 
+        "C":  random.choice([10**-4, 10**-2, 10**0, 10**2, 10**4]),
+
+        #Select the featurization techinique
+        "KFoldTE": random.choice([True, False]), 
+        "frequency_encoding": random.choice([True, False]),
+        "KFold_frequency_encoding": random.choice([True, False]),
+        "tfidf_vectorizer_encoding": random.choice([True, False]),
+        "count_vectorizer_encoding": random.choice([True, False]),
+    }
+
+    #This will generate the experiment and wait for instruction to execute 
+    #--temp : did not help. Continue to run from ".dvc\tmp\exps\"
+    # Initial thought to use --queue, since they will run ".dvc\tmp\exps\" environment it alwasy gave error when finding the data file. This is usefull when using remort storage systems
+    subprocess.run(["dvc", "exp", "run", #"--queue",
+                    "--set-param", f"model.logistic_reg.hyper_params.max_iter={params['max_iter']}",
+                    "--set-param", f"model.logistic_reg.hyper_params.penalty={params['penalty']}",
+                    "--set-param", f"model.logistic_reg.hyper_params.C={params['C']}",
+
+                    #Select the featurization techinique
+                    "--set-param", f"model.logistic_reg.pipeline_type.KFoldTE={params['KFoldTE']}",
+                    "--set-param", f"model.logistic_reg.pipeline_type.frequency_encoding={params['frequency_encoding']}",
+                    "--set-param", f"model.logistic_reg.pipeline_type.KFold_frequency_encoding={params['KFold_frequency_encoding']}",
+                    "--set-param", f"model.logistic_reg.pipeline_type.tfidf_vectorizer_encoding={params['tfidf_vectorizer_encoding']}",
+                    "--set-param", f"model.logistic_reg.pipeline_type.count_vectorizer_encoding={params['count_vectorizer_encoding']}",
 
                     ]
                   #This did not help
                   #, cwd = get_project_root()
                   #, cwd = wrk_dir 
                   )
-    """
+    
+for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
+    run_exp_Logistic_Reg()
+    
+    #run_exp_Random_Forest()
+
+    #run_exp_ExtraTreesClassifier()
+    
+    #run_exp_Decision_Tree()
+    
     
 
 print("Queued Experiement to run.")
