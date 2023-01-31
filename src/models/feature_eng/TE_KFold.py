@@ -42,6 +42,8 @@ class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
             #assert(type(y) != type(None), 'Target y is NONE') #assert exception to rasied in the condition is not meet.
             raise ModuleException('KFoldT_Enc', 'target y is None.')
         
+        log.write_log(f'TEKFold-fit: Started...', log.logging.DEBUG)  
+
         if not self.targetName in X.columns:
             X[self.targetName] = y
 
@@ -82,7 +84,7 @@ class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
                 #Step 3: Calculate mean of target_col in X_tr dataset, and fill missing value in the X_val. 
                 X_tr_targetcol_mean = X_tr[self.targetName].mean()
                 transformed_X.loc[list(X_val[X_val.isna()].index), col_mean_name] = X_tr_targetcol_mean
-                    
+            
             
             #Fill the missing value the global mean of the the target columns
             transformed_X[col_mean_name].fillna(self.global_mean_of_target, inplace = True) 
@@ -93,10 +95,10 @@ class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
         log.write_log(f'TEKFold-fit: Number of feature after target encoded: {len(KFold_TE_col)}...', log.logging.DEBUG)
         
         if self.merge_result == True:
-           
+            
             X = pd.concat([X, transformed_X[KFold_TE_col]], axis = 1)
             log.write_log(f'TEKFold-fit: Total number of feature after target encode: {len(X.columns)}...', log.logging.DEBUG)            
-           
+            
             #X.reset_index(drop = True, inplace = True)            
             return X
 
@@ -110,7 +112,9 @@ class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
         #This is used when want to transfom test data
         if len(self.learned_values) == 0:
             raise ModuleException('KFoldT_Enc', 'KFold Target Encoding instance is not fitted yet. Try calling fit_transform first.')             
-            
+
+        log.write_log(f'TEKFold-transform: Started...', log.logging.DEBUG) 
+
         #To use the global target mean in case of new catagory in the column 
         col_mean = self.global_mean_of_target
         KFold_TE_col = []

@@ -16,6 +16,8 @@ class FrequencyEncoding(BaseEstimator, TransformerMixin):
 
     def fit(self, X, y = None):
 
+        log.write_log(f'FreqEncode-fit: Started...', log.logging.DEBUG)
+
         if len(self.colnames) == 0:
             self.colnames = [x for x in X.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
 
@@ -42,6 +44,8 @@ class FrequencyEncoding(BaseEstimator, TransformerMixin):
         if len(self.learned_values) == 0:
             raise ModuleException('Freq_Enc', 'Frequency Encoding instance is not fitted yet.')
         
+        log.write_log(f'FreqEncode-transform: Started...', log.logging.DEBUG)
+
         #FreqEnc_col = []
         transformed_X = pd.DataFrame()
 
