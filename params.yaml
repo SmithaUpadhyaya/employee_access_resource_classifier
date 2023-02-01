@@ -132,7 +132,7 @@ model:
       count_vectorizer_encoding: true
 
     hyper_params:
-      n_estimators: 98
+      n_estimators: 96
       max_depth: 4
 
     trained_model: model\xgboost\model.pkl

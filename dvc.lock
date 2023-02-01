@@ -123,7 +123,7 @@ stages:
               tfidf_vectorizer_encoding: true
               count_vectorizer_encoding: true
             hyper_params:
-              n_estimators: 100
+              n_estimators: 98
               max_depth: 4
             trained_model: model\xgboost\model.pkl
             eval_metrics: model\xgboost\metrics
@@ -227,15 +227,15 @@ stages:
               tfidf_vectorizer_encoding: true
               count_vectorizer_encoding: true
             hyper_params:
-              n_estimators: 100
+              n_estimators: 98
               max_depth: 4
             trained_model: model\xgboost\model.pkl
             eval_metrics: model\xgboost\metrics
             eval_plots: model\xgboost\plots
     outs:
     - path: data\model\metrics\metrics.json
-      md5: a114d5bde899afa1acf2d60ae9688e47
-      size: 76
+      md5: 43247436c877fd7ba34e34e49428a006
+      size: 75
   evaluate_model:
     cmd: python src\data\eval.py
     deps:
