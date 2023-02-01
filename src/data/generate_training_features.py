@@ -10,6 +10,7 @@ from src.models.feature_eng.TE_KFold import KFoldTargetEncoder
 from src.models.feature_eng.FreqEncoding import FrequencyEncoding
 from src.models.feature_eng.Combine_feature import CombineFeatures
 from src.models.feature_eng.KFoldFreqEncoding import KFoldFrequencyEncoding
+from src.models.feature_eng.RandomCatagoryEncode import RandomCatagoryEncode
 from src.models.feature_eng.CountVectorizerEncoding import CountVectorizerEncoding
 from src.models.feature_eng.TFIDFVectorizerEncoding import TFIDFVectorizerEncoding
 
@@ -38,12 +39,11 @@ if __name__ == '__main__':
     pipeline_params = pipeline_params[pipeline_params['model_type']]['pipeline_type']
     
     log.write_log(f'generate_training_features: Define the pipeline...', log.logging.DEBUG)
+
     feature_engg = Pipeline(steps = [
                                         ('combine_feature', CombineFeatures()), #This step is always required
                                     ]) 
 
-    #if pipeline_params['combine_feature'] == True:
-    #    feature_engg.steps.append(['combine_feature', CombineFeatures()])
 
     if pipeline_params['tfidf_vectorizer_encoding'] == True:
         feature_engg.steps.append(('tfidf_vectorizer_encoding', TFIDFVectorizerEncoding()))
@@ -60,7 +60,8 @@ if __name__ == '__main__':
     if pipeline_params['KFold_frequency_encoding'] == True:
         feature_engg.steps.append(('KFold_frequency_encoding', KFoldFrequencyEncoding(min_group_size = 1)))
 
-    
+    feature_engg.steps.append(('Random_Catagory_Encode', RandomCatagoryEncode()))
+
     log.write_log(f'generate_training_features: Fit_transform pipeline started...', log.logging.DEBUG)
     X = feature_engg.fit_transform(db_train) 
     log.write_log(f'generate_training_features: Fit_transform pipeline completed...', log.logging.DEBUG)

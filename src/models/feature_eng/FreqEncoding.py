@@ -1,14 +1,17 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 from utils.exception import ModuleException
+from utils.read_utils import read_yaml_key
 import logs.logger as log
 import pandas as pd
 
 #Frequency/Count Encoder
 class FrequencyEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, targetcol = 'ACTION', colnames = [], min_group_size = 1, concat_result_X = True):
+    def __init__(self, targetcol = 'ACTION', min_group_size = 1, concat_result_X = True):
 
-        self.colnames = colnames
+        
+        self.params = read_yaml_key('featurize.fequency_encode')
+        self.colnames = self.params['columns']
         self.targetcol = targetcol
         self.min_group_size = min_group_size
         self.merge_result = concat_result_X
@@ -19,7 +22,7 @@ class FrequencyEncoding(BaseEstimator, TransformerMixin):
         log.write_log(f'FreqEncode-fit: Started...', log.logging.DEBUG)
 
         if len(self.colnames) == 0:
-            self.colnames = [x for x in X.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
+            self.colnames = [x for x in X.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & ('_rnd_int_enc' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
 
         log.write_log(f'FreqEncode-fit: Number of features to encode: {len(self.colnames)}...', log.logging.DEBUG)
 

@@ -1,6 +1,7 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 #from sklearn.model_selection import StratifiedKFold
 from utils.exception import ModuleException
+from utils.read_utils import read_yaml_key
 from sklearn.model_selection import KFold
 import logs.logger as log
 import pandas as pd
@@ -11,17 +12,19 @@ import numpy as np
 
 class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
     
-    def __init__(self, colnames = [], targetName = 'ACTION', n_fold = 15, random_seed = 2023, concat_result_X = True):
+    def __init__(self, concat_result_X = True):
 
-        self.colnames = colnames
-        self.targetName = targetName
+        self.params = read_yaml_key('featurize.ktarget_enc')
+        self.colnames = self.params['columns']
+        self.targetName = self.params['targetcol']
+        self.seed = self.params['random_seed']
+        self.n_fold = self.params['n_fold']
+
         self.merge_result = concat_result_X
-        self.n_fold = n_fold
-        self.seed = random_seed
-
+        
         self.global_mean_of_target = 0.0
         self.learned_values = {}  
-        self.kf = KFold(n_splits = n_fold, shuffle = True, random_state = random_seed)
+        self.kf = KFold(n_splits = self.n_fold , shuffle = True, random_state = self.seed)
 
         #Initial use stratkf. 
         # Fail since 89% of items are unique and they are not avaliable in the fold. 
@@ -56,7 +59,7 @@ class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
         transformed_X = pd.DataFrame()
 
         if len(self.colnames) == 0:
-            self.colnames = [x for x in X.columns if (x not in self.targetName) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
+            self.colnames = [x for x in X.columns if (x not in self.targetName) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & ('_rnd_int_enc' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
 
         log.write_log(f'TEKFold-fit: Number of features to target encode: {len(self.colnames)}...', log.logging.DEBUG)
 

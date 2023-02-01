@@ -1,8 +1,8 @@
 import os
 import json
 import pickle
-import xgboost as xgb
 import logs.logger as log
+from xgboost import XGBClassifier
 import utils.read_utils as hlpread
 import utils.write_utils as hlpwrite
 from sklearn.pipeline import Pipeline
@@ -28,27 +28,27 @@ def define_model(param_filepath):
 
     if model_type == 'logistic_reg':
 
-        model = LogisticRegression(random_state = 42)
+        model = LogisticRegression()
         model.set_params(**hyper_param)
 
     elif model_type == 'decision_tree':
         
-        model = DecisionTreeClassifier(criterion = 'gini', random_state = 42)
+        model = DecisionTreeClassifier(criterion = 'gini')
         model.set_params(**hyper_param)   
 
     elif model_type == 'extra_decision_tree':
 
-        model = ExtraTreesClassifier(criterion = 'gini', random_state = 42)
+        model = ExtraTreesClassifier(criterion = 'gini')
         model.set_params(**hyper_param)
 
     elif model_type == 'random_forest':
 
-        model = RandomForestClassifier(criterion='gini', random_state = 42)
+        model = RandomForestClassifier(criterion='gini')
         model.set_params(**hyper_param)
 
     elif model_type == 'xgboost':
 
-        model = xgb.XGBClassifier()
+        model = XGBClassifier()
         model.set_params(**hyper_param) 
     
     else:

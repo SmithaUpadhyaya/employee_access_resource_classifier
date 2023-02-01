@@ -23,19 +23,90 @@ stages:
       size: 591595
       nfiles: 1
     - path: src\data\generate_training_features.py
-      md5: b6c57cadce0ac106406bf20fc5f871d7
-      size: 6698
+      md5: 40ba002133bc0285d89f0f37599693e8
+      size: 6728
     - path: src\models\feature_eng
-      md5: 50b771b3bcb26903ef3c8f17b06900c1.dir
-      size: 37634
-      nfiles: 7
+      md5: 90466c8f79b89ee8acb04986095c4a1d.dir
+      size: 39862
+      nfiles: 8
     params:
       params.yaml:
         featurize:
+          ktarget_enc:
+            n_fold: 15
+            random_seed: 2023
+            targetcol: ACTION
+            columns: []
+          random_catagory_encode:
+            random_seed: 2023
+            targetcol: ACTION
+            columns:
+            - RESOURCE_ROLE_ROLLUP_2
+            - ROLE_DEPTNAME_ROLE_FAMILY_DESC
+            - ROLE_FAMILY
+            - RESOURCE_ROLE_CODE
+            - RESOURCE
+            - ROLE_DEPTNAME
+            - ROLE_ROLLUP_2_ROLE_FAMILY
+            - ROLE_FAMILY_ROLE_CODE
+            - ROLE_CODE
+            - ROLE_ROLLUP_1
+            - ROLE_ROLLUP_1_ROLE_ROLLUP_2
+            - ROLE_DEPTNAME_ROLE_CODE
+            - RESOURCE_ROLE_FAMILY
+            - ROLE_ROLLUP_1_ROLE_FAMILY
+            - RESOURCE_ROLE_FAMILY_DESC
+            - ROLE_ROLLUP_1_ROLE_DEPTNAME
+            - ROLE_ROLLUP_2_ROLE_DEPTNAME
+            - ROLE_ROLLUP_2
+            - RESOURCE_ROLE_DEPTNAME
+          fequency_encode:
+            columns:
+            - ROLE_DEPTNAME_ROLE_FAMILY_DESC
+            - ROLE_ROLLUP_2_ROLE_FAMILY_DESC
+            - ROLE_ROLLUP_1_ROLE_FAMILY_DESC
+            - ROLE_FAMILY_DESC_ROLE_CODE
+            - ROLE_DEPTNAME_ROLE_CODE
+            - ROLE_FAMILY_DESC_ROLE_FAMILY
+            - ROLE_ROLLUP_2_ROLE_CODE
+            - ROLE_DEPTNAME_ROLE_FAMILY
+            - ROLE_ROLLUP_1_ROLE_CODE
+            - ROLE_ROLLUP_2_ROLE_DEPTNAME
+            - ROLE_ROLLUP_1_ROLE_DEPTNAME
+            - ROLE_ROLLUP_2_ROLE_FAMILY
+            - ROLE_ROLLUP_1_ROLE_FAMILY
+            - ROLE_ROLLUP_1_ROLE_ROLLUP_2
+            - ROLE_FAMILY_ROLE_CODE
+            - ROLE_DEPTNAME
+            - ROLE_FAMILY_DESC
+            - ROLE_CODE
+            - ROLE_ROLLUP_2
+            - ROLE_ROLLUP_1
+            - ROLE_FAMILY
+            - RESOURCE
           tfidf:
             random_seed: 2023
             dim_reduction: 1
             var_explained: 0.2
+            targetcol: ACTION
+            combine_columns_required: false
+            columns:
+            - ROLE_DEPTNAME
+            - ROLE_FAMILY_DESC
+            - ROLE_CODE
+            - ROLE_ROLLUP_2
+            - ROLE_ROLLUP_1
+            - ROLE_FAMILY
+            - RESOURCE
+            - ROLE_ROLLUP_1_ROLE_ROLLUP_2
+            - ROLE_FAMILY_ROLE_CODE
+            - ROLE_ROLLUP_1_ROLE_FAMILY
+            - ROLE_ROLLUP_2_ROLE_FAMILY
+            - ROLE_ROLLUP_1_ROLE_DEPTNAME
+            - ROLE_ROLLUP_2_ROLE_DEPTNAME
+            - ROLE_ROLLUP_1_ROLE_CODE
+            - ROLE_DEPTNAME_ROLE_FAMILY
+            - ROLE_ROLLUP_2_ROLE_CODE
             output:
               folder: feature\tfidf
               filename: tfidf.parquet
@@ -43,6 +114,25 @@ stages:
             random_seed: 2023
             dim_reduction: 1
             var_explained: 0.9
+            targetcol: ACTION
+            combine_columns_required: false
+            columns:
+            - ROLE_DEPTNAME
+            - ROLE_FAMILY_DESC
+            - ROLE_CODE
+            - ROLE_ROLLUP_2
+            - ROLE_ROLLUP_1
+            - ROLE_FAMILY
+            - RESOURCE
+            - ROLE_ROLLUP_1_ROLE_ROLLUP_2
+            - ROLE_FAMILY_ROLE_CODE
+            - ROLE_ROLLUP_1_ROLE_FAMILY
+            - ROLE_ROLLUP_2_ROLE_FAMILY
+            - ROLE_ROLLUP_1_ROLE_DEPTNAME
+            - ROLE_ROLLUP_2_ROLE_DEPTNAME
+            - ROLE_ROLLUP_1_ROLE_CODE
+            - ROLE_DEPTNAME_ROLE_FAMILY
+            - ROLE_ROLLUP_2_ROLE_CODE
             output:
               folder: feature\cntvector
               filename: count_vectorizer.parquet
@@ -56,10 +146,10 @@ stages:
               tfidf_vectorizer_encoding: true
               count_vectorizer_encoding: false
             hyper_params:
-              max_iter: 1000
+              random_state: 42
+              max_iter: 100
               penalty: l2
-              C: 10000
-              class_weight: balanced
+              solver: liblinear
             trained_model: model\logistic_reg\model.pkl
             eval_metrics: model\logistic_reg\metrics
             eval_plots: model\logistic_reg\plots
@@ -71,6 +161,7 @@ stages:
               tfidf_vectorizer_encoding: false
               count_vectorizer_encoding: true
             hyper_params:
+              random_state: 42
               max_depth: 14
               splitter: best
               min_samples_leaf: 0.001
@@ -84,9 +175,10 @@ stages:
               KFoldTE: true
               frequency_encoding: false
               KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: false
+              tfidf_vectorizer_encoding: true
               count_vectorizer_encoding: false
             hyper_params:
+              random_state: 56
               n_estimators: 55
               max_depth: 4
               bootstrap: true
@@ -105,6 +197,7 @@ stages:
               tfidf_vectorizer_encoding: true
               count_vectorizer_encoding: false
             hyper_params:
+              random_state: 42
               n_estimators: 220
               max_depth: 5
               bootstrap: true
@@ -123,8 +216,10 @@ stages:
               tfidf_vectorizer_encoding: true
               count_vectorizer_encoding: true
             hyper_params:
-              n_estimators: 98
+              n_estimators: 96
               max_depth: 4
+              learning_rate: 0.01
+              random_state: 2023
             trained_model: model\xgboost\model.pkl
             eval_metrics: model\xgboost\metrics
             eval_plots: model\xgboost\plots
@@ -135,19 +230,19 @@ stages:
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: 8b80be83f2406bc42c2a698a6bb82b71.dir
-      size: 4736582
+      md5: 29830271493b985e6fcd161b72cb7c18.dir
+      size: 2623188
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: 8b80be83f2406bc42c2a698a6bb82b71.dir
-      size: 4736582
+      md5: 29830271493b985e6fcd161b72cb7c18.dir
+      size: 2623188
       nfiles: 1
     - path: src\data\train_model.py
-      md5: f73bb9e39d6f85b3e918e7c36e8506f0
-      size: 7734
+      md5: 9046b9020248591c4be955e35c5af3fa
+      size: 7668
     params:
       params.yaml:
         model:
@@ -160,10 +255,10 @@ stages:
               tfidf_vectorizer_encoding: true
               count_vectorizer_encoding: false
             hyper_params:
-              max_iter: 1000
+              random_state: 42
+              max_iter: 100
               penalty: l2
-              C: 10000
-              class_weight: balanced
+              solver: liblinear
             trained_model: model\logistic_reg\model.pkl
             eval_metrics: model\logistic_reg\metrics
             eval_plots: model\logistic_reg\plots
@@ -175,6 +270,7 @@ stages:
               tfidf_vectorizer_encoding: false
               count_vectorizer_encoding: true
             hyper_params:
+              random_state: 42
               max_depth: 14
               splitter: best
               min_samples_leaf: 0.001
@@ -188,9 +284,10 @@ stages:
               KFoldTE: true
               frequency_encoding: false
               KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: false
+              tfidf_vectorizer_encoding: true
               count_vectorizer_encoding: false
             hyper_params:
+              random_state: 56
               n_estimators: 55
               max_depth: 4
               bootstrap: true
@@ -209,6 +306,7 @@ stages:
               tfidf_vectorizer_encoding: true
               count_vectorizer_encoding: false
             hyper_params:
+              random_state: 42
               n_estimators: 220
               max_depth: 5
               bootstrap: true
@@ -227,15 +325,17 @@ stages:
               tfidf_vectorizer_encoding: true
               count_vectorizer_encoding: true
             hyper_params:
-              n_estimators: 98
+              n_estimators: 96
               max_depth: 4
+              learning_rate: 0.01
+              random_state: 2023
             trained_model: model\xgboost\model.pkl
             eval_metrics: model\xgboost\metrics
             eval_plots: model\xgboost\plots
     outs:
     - path: data\model\metrics\metrics.json
-      md5: 43247436c877fd7ba34e34e49428a006
-      size: 75
+      md5: a076f6f083ce4a6d9038e597ee0db2a1
+      size: 76
   evaluate_model:
     cmd: python src\data\eval.py
     deps:

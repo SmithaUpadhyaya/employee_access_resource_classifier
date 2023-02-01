@@ -10,10 +10,89 @@ data_source:
 
 featurize:
 
+  ktarget_enc:
+    n_fold: 15
+    random_seed: 2023
+    targetcol: 'ACTION'
+    columns: []
+
+  random_catagory_encode:
+    random_seed: 2023
+    targetcol: 'ACTION'
+    columns: [
+              'RESOURCE_ROLE_ROLLUP_2', 
+              'ROLE_DEPTNAME_ROLE_FAMILY_DESC',
+              'ROLE_FAMILY', 
+              'RESOURCE_ROLE_CODE',
+              'RESOURCE', 
+              'ROLE_DEPTNAME', 
+              'ROLE_ROLLUP_2_ROLE_FAMILY',
+              'ROLE_FAMILY_ROLE_CODE', 
+              'ROLE_CODE', 
+              'ROLE_ROLLUP_1',
+              'ROLE_ROLLUP_1_ROLE_ROLLUP_2', 
+              'ROLE_DEPTNAME_ROLE_CODE',
+              'RESOURCE_ROLE_FAMILY', 
+              'ROLE_ROLLUP_1_ROLE_FAMILY',
+              'RESOURCE_ROLE_FAMILY_DESC', 
+              'ROLE_ROLLUP_1_ROLE_DEPTNAME',
+              'ROLE_ROLLUP_2_ROLE_DEPTNAME', 
+              'ROLE_ROLLUP_2',
+              'RESOURCE_ROLE_DEPTNAME',
+             ]
+             
+  fequency_encode:
+      columns: 
+              [
+              'ROLE_DEPTNAME_ROLE_FAMILY_DESC',
+              'ROLE_ROLLUP_2_ROLE_FAMILY_DESC',
+              'ROLE_ROLLUP_1_ROLE_FAMILY_DESC',
+              'ROLE_FAMILY_DESC_ROLE_CODE',
+              'ROLE_DEPTNAME_ROLE_CODE',
+              'ROLE_FAMILY_DESC_ROLE_FAMILY',              
+              'ROLE_ROLLUP_2_ROLE_CODE',
+              'ROLE_DEPTNAME_ROLE_FAMILY',
+              'ROLE_ROLLUP_1_ROLE_CODE',
+              'ROLE_ROLLUP_2_ROLE_DEPTNAME',
+              'ROLE_ROLLUP_1_ROLE_DEPTNAME',
+              'ROLE_ROLLUP_2_ROLE_FAMILY',
+              'ROLE_ROLLUP_1_ROLE_FAMILY',
+              'ROLE_ROLLUP_1_ROLE_ROLLUP_2',
+              'ROLE_FAMILY_ROLE_CODE',
+              'ROLE_DEPTNAME',
+              'ROLE_FAMILY_DESC',
+              'ROLE_CODE',
+              'ROLE_ROLLUP_2',
+              'ROLE_ROLLUP_1',
+              'ROLE_FAMILY',
+              'RESOURCE',
+              ]
+  
   tfidf:
     random_seed: 2023
     dim_reduction: 1
     var_explained: 0.2
+    targetcol: 'ACTION'
+    combine_columns_required: False
+    columns:
+            [
+              'ROLE_DEPTNAME',
+              'ROLE_FAMILY_DESC',
+              'ROLE_CODE',
+              'ROLE_ROLLUP_2',
+              'ROLE_ROLLUP_1',
+              'ROLE_FAMILY',
+              'RESOURCE',
+              'ROLE_ROLLUP_1_ROLE_ROLLUP_2', 
+              'ROLE_FAMILY_ROLE_CODE' ,
+              'ROLE_ROLLUP_1_ROLE_FAMILY',
+              'ROLE_ROLLUP_2_ROLE_FAMILY',
+              'ROLE_ROLLUP_1_ROLE_DEPTNAME',
+              'ROLE_ROLLUP_2_ROLE_DEPTNAME',
+              'ROLE_ROLLUP_1_ROLE_CODE',
+              'ROLE_DEPTNAME_ROLE_FAMILY',
+              'ROLE_ROLLUP_2_ROLE_CODE'
+            ]
     output:
       folder: feature\tfidf
       filename: tfidf.parquet
@@ -22,6 +101,28 @@ featurize:
     random_seed: 2023
     dim_reduction: 1
     var_explained: 0.9
+    targetcol: 'ACTION'
+    combine_columns_required: False
+    
+    columns:
+            [
+              'ROLE_DEPTNAME',
+              'ROLE_FAMILY_DESC',
+              'ROLE_CODE',
+              'ROLE_ROLLUP_2',
+              'ROLE_ROLLUP_1',
+              'ROLE_FAMILY',
+              'RESOURCE',
+              'ROLE_ROLLUP_1_ROLE_ROLLUP_2', 
+              'ROLE_FAMILY_ROLE_CODE' ,
+              'ROLE_ROLLUP_1_ROLE_FAMILY',
+              'ROLE_ROLLUP_2_ROLE_FAMILY',
+              'ROLE_ROLLUP_1_ROLE_DEPTNAME',
+              'ROLE_ROLLUP_2_ROLE_DEPTNAME',
+              'ROLE_ROLLUP_1_ROLE_CODE',
+              'ROLE_DEPTNAME_ROLE_FAMILY',
+              'ROLE_ROLLUP_2_ROLE_CODE'
+            ]
     output:
       folder: feature\cntvector
       filename: count_vectorizer.parquet
@@ -45,10 +146,12 @@ model:
       count_vectorizer_encoding: false
 
     hyper_params:
-      max_iter: 1000
+      random_state: 42
+      max_iter: 100
       penalty: l2
-      C: 10000
-      class_weight: balanced
+      solver: 'liblinear'
+      #C: 10000
+      #class_weight: balanced
 
     trained_model: model\logistic_reg\model.pkl
     eval_metrics: model\logistic_reg\metrics
@@ -64,6 +167,7 @@ model:
       count_vectorizer_encoding: true
 
     hyper_params:
+      random_state: 42
       max_depth: 14
       splitter: best
       min_samples_leaf: 0.001
@@ -81,10 +185,11 @@ model:
       KFoldTE: true
       frequency_encoding: false
       KFold_frequency_encoding: false
-      tfidf_vectorizer_encoding: false
+      tfidf_vectorizer_encoding: true
       count_vectorizer_encoding: false
 
     hyper_params:
+      random_state: 56
       n_estimators: 55
       max_depth: 4
 
@@ -93,7 +198,7 @@ model:
       max_features: 0.7
       min_samples_leaf: 0.5
 
-      class_weight: balanced           #balanced
+      class_weight: balanced #balanced
 
     trained_model: model\extra_decision_tree\model.pkl
     eval_metrics: model\extra_decision_tree\metrics
@@ -109,6 +214,7 @@ model:
       count_vectorizer_encoding: false
 
     hyper_params:
+      random_state: 42
       n_estimators: 220
       max_depth: 5
 
@@ -132,8 +238,10 @@ model:
       count_vectorizer_encoding: true
 
     hyper_params:
-      n_estimators: 96
+      n_estimators: 200
       max_depth: 4
+      learning_rate: 0.01
+      random_state: 100
 
     trained_model: model\xgboost\model.pkl
     eval_metrics: model\xgboost\metrics

@@ -1,5 +1,6 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 from utils.exception import ModuleException
+from utils.read_utils import read_yaml_key
 from sklearn.model_selection import KFold
 import logs.logger as log
 import pandas as pd
@@ -9,9 +10,10 @@ import numpy as np
 # Will be assigning different Encoder of same group value 
 class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, colnames = [], targetcol = 'ACTION', min_group_size = 1, n_fold = 5, random_seed = 2023, concat_result_X = True):
+    def __init__(self, targetcol = 'ACTION', min_group_size = 1, n_fold = 5, random_seed = 2023, concat_result_X = True):
 
-        self.colnames = colnames
+        self.params = read_yaml_key('featurize.fequency_encode')
+        self.colnames = self.params['columns']
         self.targetcol = targetcol
         self.min_group_size = min_group_size
         self.merge_result = concat_result_X
@@ -34,7 +36,7 @@ class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
         log.write_log(f'KFreqEncode-fit: Started...', log.logging.DEBUG)
 
         if len(self.colnames ) == 0:
-            self.colnames = [x for x in X.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
+            self.colnames = [x for x in X.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & ('_rnd_int_enc' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
 
         log.write_log(f'KFreqEncode-fit: Number of features to encode: {len(self.colnames)}...', log.logging.DEBUG)
 
