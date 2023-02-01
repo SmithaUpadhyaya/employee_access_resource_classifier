@@ -13,86 +13,79 @@ featurize:
   ktarget_enc:
     n_fold: 15
     random_seed: 2023
-    targetcol: 'ACTION'
+    targetcol: ACTION
     columns: []
 
   random_catagory_encode:
     random_seed: 2023
-    targetcol: 'ACTION'
-    columns: [
-              'RESOURCE_ROLE_ROLLUP_2', 
-              'ROLE_DEPTNAME_ROLE_FAMILY_DESC',
-              'ROLE_FAMILY', 
-              'RESOURCE_ROLE_CODE',
-              'RESOURCE', 
-              'ROLE_DEPTNAME', 
-              'ROLE_ROLLUP_2_ROLE_FAMILY',
-              'ROLE_FAMILY_ROLE_CODE', 
-              'ROLE_CODE', 
-              'ROLE_ROLLUP_1',
-              'ROLE_ROLLUP_1_ROLE_ROLLUP_2', 
-              'ROLE_DEPTNAME_ROLE_CODE',
-              'RESOURCE_ROLE_FAMILY', 
-              'ROLE_ROLLUP_1_ROLE_FAMILY',
-              'RESOURCE_ROLE_FAMILY_DESC', 
-              'ROLE_ROLLUP_1_ROLE_DEPTNAME',
-              'ROLE_ROLLUP_2_ROLE_DEPTNAME', 
-              'ROLE_ROLLUP_2',
-              'RESOURCE_ROLE_DEPTNAME',
-             ]
-             
+    targetcol: ACTION
+    columns:
+    - RESOURCE_ROLE_ROLLUP_2
+    - ROLE_DEPTNAME_ROLE_FAMILY_DESC
+    - ROLE_FAMILY
+    - RESOURCE_ROLE_CODE
+    - RESOURCE
+    - ROLE_DEPTNAME
+    - ROLE_ROLLUP_2_ROLE_FAMILY
+    - ROLE_FAMILY_ROLE_CODE
+    - ROLE_CODE
+    - ROLE_ROLLUP_1
+    - ROLE_ROLLUP_1_ROLE_ROLLUP_2
+    - ROLE_DEPTNAME_ROLE_CODE
+    - RESOURCE_ROLE_FAMILY
+    - ROLE_ROLLUP_1_ROLE_FAMILY
+    - RESOURCE_ROLE_FAMILY_DESC
+    - ROLE_ROLLUP_1_ROLE_DEPTNAME
+    - ROLE_ROLLUP_2_ROLE_DEPTNAME
+    - ROLE_ROLLUP_2
+    - RESOURCE_ROLE_DEPTNAME
   fequency_encode:
-      columns: 
-              [
-              'ROLE_DEPTNAME_ROLE_FAMILY_DESC',
-              'ROLE_ROLLUP_2_ROLE_FAMILY_DESC',
-              'ROLE_ROLLUP_1_ROLE_FAMILY_DESC',
-              'ROLE_FAMILY_DESC_ROLE_CODE',
-              'ROLE_DEPTNAME_ROLE_CODE',
-              'ROLE_FAMILY_DESC_ROLE_FAMILY',              
-              'ROLE_ROLLUP_2_ROLE_CODE',
-              'ROLE_DEPTNAME_ROLE_FAMILY',
-              'ROLE_ROLLUP_1_ROLE_CODE',
-              'ROLE_ROLLUP_2_ROLE_DEPTNAME',
-              'ROLE_ROLLUP_1_ROLE_DEPTNAME',
-              'ROLE_ROLLUP_2_ROLE_FAMILY',
-              'ROLE_ROLLUP_1_ROLE_FAMILY',
-              'ROLE_ROLLUP_1_ROLE_ROLLUP_2',
-              'ROLE_FAMILY_ROLE_CODE',
-              'ROLE_DEPTNAME',
-              'ROLE_FAMILY_DESC',
-              'ROLE_CODE',
-              'ROLE_ROLLUP_2',
-              'ROLE_ROLLUP_1',
-              'ROLE_FAMILY',
-              'RESOURCE',
-              ]
-  
+    columns:
+    - ROLE_DEPTNAME_ROLE_FAMILY_DESC
+    - ROLE_ROLLUP_2_ROLE_FAMILY_DESC
+    - ROLE_ROLLUP_1_ROLE_FAMILY_DESC
+    - ROLE_FAMILY_DESC_ROLE_CODE
+    - ROLE_DEPTNAME_ROLE_CODE
+    - ROLE_FAMILY_DESC_ROLE_FAMILY
+    - ROLE_ROLLUP_2_ROLE_CODE
+    - ROLE_DEPTNAME_ROLE_FAMILY
+    - ROLE_ROLLUP_1_ROLE_CODE
+    - ROLE_ROLLUP_2_ROLE_DEPTNAME
+    - ROLE_ROLLUP_1_ROLE_DEPTNAME
+    - ROLE_ROLLUP_2_ROLE_FAMILY
+    - ROLE_ROLLUP_1_ROLE_FAMILY
+    - ROLE_ROLLUP_1_ROLE_ROLLUP_2
+    - ROLE_FAMILY_ROLE_CODE
+    - ROLE_DEPTNAME
+    - ROLE_FAMILY_DESC
+    - ROLE_CODE
+    - ROLE_ROLLUP_2
+    - ROLE_ROLLUP_1
+    - ROLE_FAMILY
+    - RESOURCE
   tfidf:
     random_seed: 2023
     dim_reduction: 1
     var_explained: 0.2
-    targetcol: 'ACTION'
-    combine_columns_required: False
+    targetcol: ACTION
+    combine_columns_required: false
     columns:
-            [
-              'ROLE_DEPTNAME',
-              'ROLE_FAMILY_DESC',
-              'ROLE_CODE',
-              'ROLE_ROLLUP_2',
-              'ROLE_ROLLUP_1',
-              'ROLE_FAMILY',
-              'RESOURCE',
-              'ROLE_ROLLUP_1_ROLE_ROLLUP_2', 
-              'ROLE_FAMILY_ROLE_CODE' ,
-              'ROLE_ROLLUP_1_ROLE_FAMILY',
-              'ROLE_ROLLUP_2_ROLE_FAMILY',
-              'ROLE_ROLLUP_1_ROLE_DEPTNAME',
-              'ROLE_ROLLUP_2_ROLE_DEPTNAME',
-              'ROLE_ROLLUP_1_ROLE_CODE',
-              'ROLE_DEPTNAME_ROLE_FAMILY',
-              'ROLE_ROLLUP_2_ROLE_CODE'
-            ]
+    - ROLE_DEPTNAME
+    - ROLE_FAMILY_DESC
+    - ROLE_CODE
+    - ROLE_ROLLUP_2
+    - ROLE_ROLLUP_1
+    - ROLE_FAMILY
+    - RESOURCE
+    - ROLE_ROLLUP_1_ROLE_ROLLUP_2
+    - ROLE_FAMILY_ROLE_CODE
+    - ROLE_ROLLUP_1_ROLE_FAMILY
+    - ROLE_ROLLUP_2_ROLE_FAMILY
+    - ROLE_ROLLUP_1_ROLE_DEPTNAME
+    - ROLE_ROLLUP_2_ROLE_DEPTNAME
+    - ROLE_ROLLUP_1_ROLE_CODE
+    - ROLE_DEPTNAME_ROLE_FAMILY
+    - ROLE_ROLLUP_2_ROLE_CODE
     output:
       folder: feature\tfidf
       filename: tfidf.parquet
@@ -101,28 +94,26 @@ featurize:
     random_seed: 2023
     dim_reduction: 1
     var_explained: 0.9
-    targetcol: 'ACTION'
-    combine_columns_required: False
-    
+    targetcol: ACTION
+    combine_columns_required: false
+
     columns:
-            [
-              'ROLE_DEPTNAME',
-              'ROLE_FAMILY_DESC',
-              'ROLE_CODE',
-              'ROLE_ROLLUP_2',
-              'ROLE_ROLLUP_1',
-              'ROLE_FAMILY',
-              'RESOURCE',
-              'ROLE_ROLLUP_1_ROLE_ROLLUP_2', 
-              'ROLE_FAMILY_ROLE_CODE' ,
-              'ROLE_ROLLUP_1_ROLE_FAMILY',
-              'ROLE_ROLLUP_2_ROLE_FAMILY',
-              'ROLE_ROLLUP_1_ROLE_DEPTNAME',
-              'ROLE_ROLLUP_2_ROLE_DEPTNAME',
-              'ROLE_ROLLUP_1_ROLE_CODE',
-              'ROLE_DEPTNAME_ROLE_FAMILY',
-              'ROLE_ROLLUP_2_ROLE_CODE'
-            ]
+    - ROLE_DEPTNAME
+    - ROLE_FAMILY_DESC
+    - ROLE_CODE
+    - ROLE_ROLLUP_2
+    - ROLE_ROLLUP_1
+    - ROLE_FAMILY
+    - RESOURCE
+    - ROLE_ROLLUP_1_ROLE_ROLLUP_2
+    - ROLE_FAMILY_ROLE_CODE
+    - ROLE_ROLLUP_1_ROLE_FAMILY
+    - ROLE_ROLLUP_2_ROLE_FAMILY
+    - ROLE_ROLLUP_1_ROLE_DEPTNAME
+    - ROLE_ROLLUP_2_ROLE_DEPTNAME
+    - ROLE_ROLLUP_1_ROLE_CODE
+    - ROLE_DEPTNAME_ROLE_FAMILY
+    - ROLE_ROLLUP_2_ROLE_CODE
     output:
       folder: feature\cntvector
       filename: count_vectorizer.parquet
@@ -149,7 +140,7 @@ model:
       random_state: 42
       max_iter: 100
       penalty: l2
-      solver: 'liblinear'
+      solver: liblinear
       #C: 10000
       #class_weight: balanced
 
@@ -238,12 +229,12 @@ model:
       count_vectorizer_encoding: true
 
     hyper_params:
-      n_estimators: 100
-      reg_lambda: 1.12
+      n_estimators: 405
+      reg_lambda: 1.9100000000000008
       max_depth: 4
-      learning_rate: 0.01
+      learning_rate: 0.9299999999999996
       random_state: 100
-      colsample_bytree: 0.6
+      colsample_bytree: 0.9450000000000003
 
     trained_model: model\xgboost\model.pkl
     eval_metrics: model\xgboost\metrics

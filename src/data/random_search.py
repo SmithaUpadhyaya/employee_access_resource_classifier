@@ -8,7 +8,7 @@ import os
 
 
 # Automated random search experiments
-num_exps = 5 #Number of experiments to run to generate
+num_exps = 30 #Number of experiments to run to generate
 random.seed(42)
 
 
@@ -169,6 +169,7 @@ def run_exp_XBoost():
         "reg_lambda": random.choice(np.arange(1, 2, 0.01)), 
         "learning_rate": random.choice(np.arange(0.1, 1, 0.01)),
         "colsample_bytree": random.choice(np.arange(0.6, 1, 0.005)),
+        "random_state": random.choice(range(50, 500, 30)),
     }
 
     subprocess.run(["dvc", "exp", "run", 
