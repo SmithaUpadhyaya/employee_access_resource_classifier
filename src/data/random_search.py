@@ -166,9 +166,9 @@ def run_exp_XBoost():
     params = {
         "n_estimators": random.choice(range(50, 500, 5)), #random.choice([50, 100, 150, 200]),
         "max_depth": random.choice([4, 5]),
-        "reg_lambda": random.choice(range(1, 2, 0.01)), 
-        "learning_rate": random.choice(range(0.1, 1, 0.01)),
-        "colsample_bytree": random.choice(range(0.6, 1, 0.005)),
+        "reg_lambda": random.choice(np.arange(1, 2, 0.01)), 
+        "learning_rate": random.choice(np.arange(0.1, 1, 0.01)),
+        "colsample_bytree": random.choice(np.arange(0.6, 1, 0.005)),
     }
 
     subprocess.run(["dvc", "exp", "run", 
