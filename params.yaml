@@ -231,17 +231,19 @@ model:
   xgboost:
 
     pipeline_type:
-      KFoldTE: false
+      KFoldTE: true
       frequency_encoding: true
       KFold_frequency_encoding: false
-      tfidf_vectorizer_encoding: true
+      tfidf_vectorizer_encoding: false
       count_vectorizer_encoding: true
 
     hyper_params:
-      n_estimators: 200
+      n_estimators: 100
+      reg_lambda: 1.12
       max_depth: 4
       learning_rate: 0.01
       random_state: 100
+      colsample_bytree: 0.6
 
     trained_model: model\xgboost\model.pkl
     eval_metrics: model\xgboost\metrics

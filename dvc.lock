@@ -210,16 +210,17 @@ stages:
             eval_plots: model\random_forest\plots
           xgboost:
             pipeline_type:
-              KFoldTE: false
+              KFoldTE: true
               frequency_encoding: true
               KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: true
+              tfidf_vectorizer_encoding: false
               count_vectorizer_encoding: true
             hyper_params:
-              n_estimators: 96
+              n_estimators: 200
+              reg_lambda: 1.12
               max_depth: 4
               learning_rate: 0.01
-              random_state: 2023
+              random_state: 100
             trained_model: model\xgboost\model.pkl
             eval_metrics: model\xgboost\metrics
             eval_plots: model\xgboost\plots
@@ -230,15 +231,15 @@ stages:
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: 29830271493b985e6fcd161b72cb7c18.dir
-      size: 2623188
+      md5: c7c23f80dd2b94e229264834f95492fb.dir
+      size: 2795414
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: 29830271493b985e6fcd161b72cb7c18.dir
-      size: 2623188
+      md5: c7c23f80dd2b94e229264834f95492fb.dir
+      size: 2795414
       nfiles: 1
     - path: src\data\train_model.py
       md5: 9046b9020248591c4be955e35c5af3fa
@@ -319,22 +320,23 @@ stages:
             eval_plots: model\random_forest\plots
           xgboost:
             pipeline_type:
-              KFoldTE: false
+              KFoldTE: true
               frequency_encoding: true
               KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: true
+              tfidf_vectorizer_encoding: false
               count_vectorizer_encoding: true
             hyper_params:
-              n_estimators: 96
+              n_estimators: 200
+              reg_lambda: 1.12
               max_depth: 4
               learning_rate: 0.01
-              random_state: 2023
+              random_state: 100
             trained_model: model\xgboost\model.pkl
             eval_metrics: model\xgboost\metrics
             eval_plots: model\xgboost\plots
     outs:
     - path: data\model\metrics\metrics.json
-      md5: a076f6f083ce4a6d9038e597ee0db2a1
+      md5: b377eff1c76caef48b26dd9cc07670e2
       size: 76
   evaluate_model:
     cmd: python src\data\eval.py

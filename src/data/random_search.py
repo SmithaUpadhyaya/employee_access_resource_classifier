@@ -159,7 +159,33 @@ def run_exp_Random_Forest():
                   )
 
 #===============================================================================================
+
+def run_exp_XBoost():
     
+    #Hyperparamter tunn=ing for Random Forest
+    params = {
+        "n_estimators": random.choice(range(50, 500, 5)), #random.choice([50, 100, 150, 200]),
+        "max_depth": random.choice([4, 5]),
+        "reg_lambda": random.choice(range(1, 2, 0.01)), 
+        "learning_rate": random.choice(range(0.1, 1, 0.01)),
+        "colsample_bytree": random.choice(range(0.6, 1, 0.005)),
+    }
+
+    subprocess.run(["dvc", "exp", "run", 
+                    "--set-param", f"model.xgboost.hyper_params.n_estimators={params['n_estimators']}",
+                    "--set-param", f"model.xgboost.hyper_params.max_depth={params['max_depth']}",                   
+
+                    "--set-param", f"model.xgboost.hyper_params.reg_lambda={params['reg_lambda']}",
+                    "--set-param", f"model.xgboost.hyper_params.learning_rate={params['learning_rate']}",
+                    "--set-param", f"model.xgboost.hyper_params.colsample_bytree={params['colsample_bytree']}",                 
+
+                    ]
+                  )
+
+#===============================================================================================
+
+
+
 def run_exp_Logistic_Reg():
     
     #Hyper paramater tuning for Logistic Regression 
@@ -203,11 +229,11 @@ for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
     
     #run_exp_Random_Forest()
 
-    run_exp_ExtraTreesClassifier()
+    #run_exp_ExtraTreesClassifier()
     
     #run_exp_Decision_Tree()
     
-    
+    run_exp_XBoost()
 
 print("Queued Experiement to run.")
 #=============================================================
