@@ -31,13 +31,14 @@ stages:
         #    #- test_data
         #    - pipeline_type
         - train_test_split
-        - pipeline_type
+        #- pipeline_type
+        - model
     outs:
       - ${data_source.data_folders}\feature\
 
 
   train_model:
-    cmd: python src\data\train_model.py
+    cmd: python -W ignore src\data\train_model.py
     deps:
       - src\data\train_model.py
       - ${data_source.data_folders}\feature\
@@ -46,32 +47,37 @@ stages:
       #- src\data\train_params.yaml:
       #    - model
       - model
-    outs:
-      - ${data_source.data_folders}\model
-
-  evaluate_model:
-    cmd: python src\data\eval.py
-    deps:
-      - ${data_source.data_folders}\model
-      - src\data\eval.py
     #outs:
-    #  - ${data_source.data_folders}\eval\plots:
-    #      cache: false
+    #  - ${data_source.data_folders}\model
+
     metrics:
-      - ${data_source.data_folders}\eval\metrics\metrics.json:
-          cache: false #With cache: false, DVC skips caching the output under DVC, if we want we can track its versioned by Git.
+      - ${data_source.data_folders}\model\metrics\metrics.json:
+          cache: false
+
+
+  #evaluate_model:
+  #  cmd: python src\data\eval.py
+  #  deps:
+  #    - ${data_source.data_folders}\model
+  #    - src\data\eval.py
+  #  #outs:
+  #  #  - ${data_source.data_folders}\eval\plots:
+  #  #      cache: false
+  #  metrics:
+  #    - ${data_source.data_folders}\eval\metrics\metrics.json:
+  #        cache: false #With cache: false, DVC skips caching the output under DVC, if we want we can track its versioned by Git.
                
-    plots:
-        #- ${data_source.data_folders}\eval\plots\confusion_matrix.png:
-        - data\eval\plots\confusion_matrix.png:        
-            cache: true
+  #  plots:
+  #      #- ${data_source.data_folders}\eval\plots\confusion_matrix.png:
+  #      - data\eval\plots\confusion_matrix.png:        
+  #          cache: true
 
-        #- ${data_source.data_folders}\eval\plots\roc_curve.png:           
-        - data\eval\plots\roc_curve.png:
-            cache: true
+  #      #- ${data_source.data_folders}\eval\plots\roc_curve.png:           
+  #      - data\eval\plots\roc_curve.png:
+  #          cache: true
 
-        #- ${data_source.data_folders}\eval\plots\pr_rc_curve.png:  
-        - data\eval\plots\pr_rc_curve.png:       
-            cache: true
+  #      #- ${data_source.data_folders}\eval\plots\pr_rc_curve.png:  
+  #      - data\eval\plots\pr_rc_curve.png:       
+  #          cache: true
       
     
