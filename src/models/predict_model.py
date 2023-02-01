@@ -1,5 +1,6 @@
 from src.models.feature_eng.TFIDFVectorizerEncoding import TFIDFVectorizerEncoding
 from src.models.feature_eng.CountVectorizerEncoding import CountVectorizerEncoding
+from src.models.feature_eng.RandomCatagoryEncode import RandomCatagoryEncode
 from src.models.feature_eng.Combine_feature import CombineFeatures
 from src.models.feature_eng.FreqEncoding import FrequencyEncoding
 from src.models.feature_eng.TE_KFold import KFoldTargetEncoder
@@ -30,9 +31,11 @@ class employee_access_resource:
         if self.feature_engg == None:
             self.feature_engg = Pipeline(steps = [
                                         ('combine_feature', CombineFeatures()),
-                                        ('tfidf_vectorizer_encoding', TFIDFVectorizerEncoding()),
-                                        ('count_vectorizer_encoding', CountVectorizerEncoding()),                                        
+                                        #('tfidf_vectorizer_encoding', TFIDFVectorizerEncoding()),
+                                        ('count_vectorizer_encoding', CountVectorizerEncoding()), 
+                                        ('KFoldTE', KFoldTargetEncoder()),                                       
                                         ('frequency_encoding', FrequencyEncoding(min_group_size = 1)),
+                                        ('Random_Catagory_Encode', RandomCatagoryEncode()),
                                     ]) 
 
             X = self.feature_engg.fit_transform(X) 

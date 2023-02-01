@@ -216,12 +216,12 @@ stages:
               tfidf_vectorizer_encoding: false
               count_vectorizer_encoding: true
             hyper_params:
-              n_estimators: 405
-              reg_lambda: 1.9100000000000008
-              max_depth: 4
-              learning_rate: 0.9299999999999996
+              n_estimators: 460
+              reg_lambda: 1.1800000000000002
+              max_depth: 5
+              learning_rate: 0.4299999999999998
               random_state: 100
-              colsample_bytree: 0.9450000000000003
+              colsample_bytree: 0.685
             trained_model: model\xgboost\model.pkl
             eval_metrics: model\xgboost\metrics
             eval_plots: model\xgboost\plots
@@ -327,19 +327,19 @@ stages:
               tfidf_vectorizer_encoding: false
               count_vectorizer_encoding: true
             hyper_params:
-              n_estimators: 405
-              reg_lambda: 1.9100000000000008
-              max_depth: 4
-              learning_rate: 0.9299999999999996
+              n_estimators: 460
+              reg_lambda: 1.1800000000000002
+              max_depth: 5
+              learning_rate: 0.4299999999999998
               random_state: 100
-              colsample_bytree: 0.9450000000000003
+              colsample_bytree: 0.685
             trained_model: model\xgboost\model.pkl
             eval_metrics: model\xgboost\metrics
             eval_plots: model\xgboost\plots
     outs:
     - path: data\model\metrics\metrics.json
-      md5: 35060d77ecaa68d8a31a005e678cb36e
-      size: 74
+      md5: 289ca638dc69e77af13c35c892bb12d3
+      size: 76
   evaluate_model:
     cmd: python src\data\eval.py
     deps:
