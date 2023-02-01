@@ -47,7 +47,7 @@ stages:
               folder: feature\cntvector
               filename: count_vectorizer.parquet
         model:
-          model_type: extra_decision_tree
+          model_type: xgboost
           logistic_reg:
             pipeline_type:
               KFoldTE: true
@@ -115,6 +115,19 @@ stages:
             trained_model: model\random_forest\model.pkl
             eval_metrics: model\random_forest\metrics
             eval_plots: model\random_forest\plots
+          xgboost:
+            pipeline_type:
+              KFoldTE: false
+              frequency_encoding: true
+              KFold_frequency_encoding: false
+              tfidf_vectorizer_encoding: true
+              count_vectorizer_encoding: true
+            hyper_params:
+              n_estimators: 100
+              max_depth: 4
+            trained_model: model\xgboost\model.pkl
+            eval_metrics: model\xgboost\metrics
+            eval_plots: model\xgboost\plots
         train_test_split:
           test_size: 0.01
           random_seed: 45
@@ -122,23 +135,23 @@ stages:
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: a1799263f3637fc06065a5ae607efd76.dir
-      size: 702124
+      md5: 8b80be83f2406bc42c2a698a6bb82b71.dir
+      size: 4736582
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: a1799263f3637fc06065a5ae607efd76.dir
-      size: 702124
+      md5: 8b80be83f2406bc42c2a698a6bb82b71.dir
+      size: 4736582
       nfiles: 1
     - path: src\data\train_model.py
-      md5: 7797157e12ed4d5a3b5ada5412c3ec94
-      size: 7599
+      md5: f73bb9e39d6f85b3e918e7c36e8506f0
+      size: 7734
     params:
       params.yaml:
         model:
-          model_type: extra_decision_tree
+          model_type: xgboost
           logistic_reg:
             pipeline_type:
               KFoldTE: true
@@ -206,10 +219,23 @@ stages:
             trained_model: model\random_forest\model.pkl
             eval_metrics: model\random_forest\metrics
             eval_plots: model\random_forest\plots
+          xgboost:
+            pipeline_type:
+              KFoldTE: false
+              frequency_encoding: true
+              KFold_frequency_encoding: false
+              tfidf_vectorizer_encoding: true
+              count_vectorizer_encoding: true
+            hyper_params:
+              n_estimators: 100
+              max_depth: 4
+            trained_model: model\xgboost\model.pkl
+            eval_metrics: model\xgboost\metrics
+            eval_plots: model\xgboost\plots
     outs:
     - path: data\model\metrics\metrics.json
-      md5: cccaf0d217df166760db142a83317556
-      size: 62
+      md5: a114d5bde899afa1acf2d60ae9688e47
+      size: 76
   evaluate_model:
     cmd: python src\data\eval.py
     deps:

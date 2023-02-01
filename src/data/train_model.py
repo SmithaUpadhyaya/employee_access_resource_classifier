@@ -1,6 +1,7 @@
 import os
 import json
 import pickle
+import xgboost as xgb
 import logs.logger as log
 import utils.read_utils as hlpread
 import utils.write_utils as hlpwrite
@@ -44,12 +45,16 @@ def define_model(param_filepath):
 
         model = RandomForestClassifier(criterion='gini', random_state = 42)
         model.set_params(**hyper_param)
-        
+
+    elif model_type == 'xgboost':
+
+        model = xgb.XGBClassifier()
+        model.set_params(**hyper_param) 
+    
     else:
         raise Exception('Unsupported model_type.')
         
     return model, model_param
-
 
 if __name__ == '__main__':
 

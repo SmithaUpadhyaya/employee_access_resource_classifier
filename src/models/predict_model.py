@@ -1,11 +1,14 @@
+from src.models.feature_eng.TFIDFVectorizerEncoding import TFIDFVectorizerEncoding
 from src.models.feature_eng.CountVectorizerEncoding import CountVectorizerEncoding
 from src.models.feature_eng.Combine_feature import CombineFeatures
+from src.models.feature_eng.FreqEncoding import FrequencyEncoding
 from src.models.feature_eng.TE_KFold import KFoldTargetEncoder
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.pipeline import Pipeline
 import utils.write_utils as hlpwrite
 import utils.read_utils as hlpread
 from os.path import exists, join
+import xgboost as xgb
 
 class employee_access_resource:
 
@@ -27,8 +30,9 @@ class employee_access_resource:
         if self.feature_engg == None:
             self.feature_engg = Pipeline(steps = [
                                         ('combine_feature', CombineFeatures()),
-                                        ('count_vectorizer_encoding', CountVectorizerEncoding()),
-                                        ('KFoldTE', KFoldTargetEncoder())
+                                        ('tfidf_vectorizer_encoding', TFIDFVectorizerEncoding()),
+                                        ('count_vectorizer_encoding', CountVectorizerEncoding()),                                        
+                                        ('frequency_encoding', FrequencyEncoding(min_group_size = 1)),
                                     ]) 
 
             X = self.feature_engg.fit_transform(X) 
@@ -41,19 +45,31 @@ class employee_access_resource:
         
         return X
 
-    def train(self, X):
+    def define_model(self):
 
         training_param =  hlpread.read_yaml_key('trained_model')
 
         #Define model
-        self.model = DecisionTreeClassifier(criterion = 'gini', random_state = 42)
-        self.model.set_params(**training_param['params'])
+        #model = DecisionTreeClassifier(criterion = 'gini', random_state = 42)
+        model = xgb.XGBClassifier()
+        model.set_params(**training_param['params'])
+
+        return model
+
+    def train(self, X):
+
+        
+        self.model = self.define_model()        
 
         #Generate features
         X = self.generate_feature(X)
 
         #Train model
-        self.model.fit(X[X.columns[30:]], X['ACTION'])
+        Y = X.ACTION
+        X.drop('ACTION', axis = 1, inplace = True)
+        self.feature_columns = X.select_dtypes(exclude = ['object']).columns #Exclude "object" type columns   
+
+        self.model.fit(X[self.feature_columns], Y)
 
         #Save the model
         hlpwrite.save_object(self.trained_model_path , self.model)
@@ -67,7 +83,7 @@ class employee_access_resource:
 
         X = self.generate_feature(X)
 
-        y_hat = self.model.predict_proba(X[X.columns[29:]]) #Predict will not have 'ACTION' FEATURE
+        y_hat = self.model.predict_proba(X[self.feature_columns]) #Predict will not have 'ACTION' FEATURE
         y_hat =  y_hat.argmax(-1)  
         
         return y_hat

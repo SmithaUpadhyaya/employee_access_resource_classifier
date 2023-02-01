@@ -33,7 +33,7 @@ train_test_split:
   train_data: feature\train_data.parquet
 
 model:
-  model_type: extra_decision_tree
+  model_type: xgboost
 
   logistic_reg:
 
@@ -122,6 +122,22 @@ model:
     eval_metrics: model\random_forest\metrics
     eval_plots: model\random_forest\plots
 
+  xgboost:
+
+    pipeline_type:
+      KFoldTE: false
+      frequency_encoding: true
+      KFold_frequency_encoding: false
+      tfidf_vectorizer_encoding: true
+      count_vectorizer_encoding: true
+
+    hyper_params:
+      n_estimators: 98
+      max_depth: 4
+
+    trained_model: model\xgboost\model.pkl
+    eval_metrics: model\xgboost\metrics
+    eval_plots: model\xgboost\plots
 
 trained_model:
   model_path: model\model.pkl
