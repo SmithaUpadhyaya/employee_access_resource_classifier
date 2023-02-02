@@ -10,16 +10,17 @@ import numpy as np
 # Will be assigning different Encoder of same group value 
 class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, targetcol = 'ACTION', min_group_size = 1, n_fold = 5, random_seed = 2023, concat_result_X = True):
+    def __init__(self, concat_result_X = True):
 
         self.params = read_yaml_key('featurize.fequency_encode')
         self.colnames = self.params['columns']
-        self.targetcol = targetcol
-        self.min_group_size = min_group_size
+        self.targetcol = self.params['targetcol']
+        self.min_group_size = self.params['min_group_size']  
+
         self.merge_result = concat_result_X
         self.learned_values = {}
 
-        self.kf = KFold(n_splits = n_fold, shuffle = True, random_state = random_seed)
+        self.kf = KFold(n_splits = self.params['n_fold'], shuffle = True, random_state = self.params['random_seed'])
    
     def fit(self, X, y = None):
         return self

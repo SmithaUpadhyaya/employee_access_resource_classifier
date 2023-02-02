@@ -60,7 +60,6 @@ class employee_access_resource:
         return model
 
     def train(self, X):
-
         
         self.model = self.define_model()        
 

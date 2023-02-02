@@ -10,16 +10,14 @@ import pandas as pd
 
 class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, concat_result_X = True):        
-    
+    def __init__(self, concat_result_X = True):    
+
+        self.params = read_yaml_key('featurize.count_vector')
+
+        self.targetcol = self.params['targetcol']
+        self.combine_columns_required = self.params['combine_columns_required']
         self.merge_result = concat_result_X
 
-        params = read_yaml_key('featurize.count_vector')
-        self.params = params
-
-        self.targetcol = params['targetcol']
-        self.combine_columns_required = params['combine_columns_required']
-        
         self.dict_Vectorizer = {}
         self.dict_dim_reduction = {}
 
@@ -81,9 +79,10 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
 
         log_code = "CountVector-"+ "fit" if istraining else "transform"
         
-        #colnames = [x for x in dataset.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & ('_rnd_int_enc' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
-
         colnames = self.params['columns']
+        if len(colnames) == 0: 
+            colnames = [x for x in dataset.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & ('_rnd_int_enc' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
+        
         log.write_log(f'{log_code}: Number of features to consider for vectorize: {len(colnames)}', log.logging.DEBUG)
 
         #permutat = math.factorial(len(colnames))/ (math.factorial((len(colnames)-2)))

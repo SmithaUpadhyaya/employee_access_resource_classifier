@@ -1,12 +1,14 @@
 from sklearn.base import BaseEstimator, TransformerMixin
+from utils.read_utils import read_yaml_key
 from itertools import combinations
 import logs.logger as log
 
 class CombineFeatures(BaseEstimator, TransformerMixin):
 
-    def __init__(self, targetcol = 'ACTION'):
+    def __init__(self):
 
-        self.targetcol = targetcol
+        self.params = read_yaml_key('featurize.combine_feat')
+        self.targetcol = self.params['targetcol']
         #self.use_columns = use_columns
         
     def combine_cols(self, X):

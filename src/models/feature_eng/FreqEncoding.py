@@ -7,13 +7,13 @@ import pandas as pd
 #Frequency/Count Encoder
 class FrequencyEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, targetcol = 'ACTION', min_group_size = 1, concat_result_X = True):
-
+    def __init__(self, concat_result_X = True):
         
         self.params = read_yaml_key('featurize.fequency_encode')
         self.colnames = self.params['columns']
-        self.targetcol = targetcol
-        self.min_group_size = min_group_size
+        self.targetcol = self.params['targetcol'] 
+        self.min_group_size = self.params['min_group_size']
+
         self.merge_result = concat_result_X
         self.learned_values = {}
 

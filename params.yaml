@@ -10,6 +10,10 @@ data_source:
 
 featurize:
 
+  combine_feat:
+    targetcol: 'ACTION'
+    columns: []
+    
   ktarget_enc:
     n_fold: 15
     random_seed: 2023
@@ -22,6 +26,10 @@ featurize:
     columns: ['RESOURCE_ROLE_ROLLUP_2','ROLE_DEPTNAME_ROLE_FAMILY_DESC', 'ROLE_FAMILY', 'RESOURCE_ROLE_CODE', 'RESOURCE', 'ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_FAMILY', 'ROLE_FAMILY_ROLE_CODE', 'ROLE_CODE', 'ROLE_ROLLUP_1', 'ROLE_ROLLUP_1_ROLE_ROLLUP_2', 'ROLE_DEPTNAME_ROLE_CODE','RESOURCE_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_FAMILY',  'RESOURCE_ROLE_FAMILY_DESC', 'ROLE_ROLLUP_1_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_DEPTNAME','ROLE_ROLLUP_2', 'RESOURCE_ROLE_DEPTNAME']
 
   fequency_encode:
+    min_group_size: 2
+    n_fold: 5
+    random_seed: 2023
+    targetcol: 'ACTION'
     columns: [ 'ROLE_DEPTNAME_ROLE_FAMILY_DESC', 'ROLE_ROLLUP_2_ROLE_FAMILY_DESC','ROLE_ROLLUP_1_ROLE_FAMILY_DESC', 'ROLE_FAMILY_DESC_ROLE_CODE','ROLE_DEPTNAME_ROLE_CODE', 'ROLE_FAMILY_DESC_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_CODE', 'ROLE_DEPTNAME_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_CODE','ROLE_ROLLUP_2_ROLE_DEPTNAME', 'ROLE_ROLLUP_1_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_ROLLUP_2','ROLE_FAMILY_ROLE_CODE', 'ROLE_DEPTNAME', 'ROLE_FAMILY_DESC', 'ROLE_CODE','ROLE_ROLLUP_2', 'ROLE_ROLLUP_1', 'ROLE_FAMILY','RESOURCE']
 
   tfidf:
@@ -174,16 +182,16 @@ trained_model:
   feature_eng: model\feature_engg_pipeline.json
 
   params:
-    max_depth: 14
-    splitter: best
-    min_samples_leaf: 0.001
-    max_features: 0.3
-    #min_samples_split: 0.01
-    class_weight: balanced
+    n_estimators: 460
+    reg_lambda: 1.1800000000000002
+    max_depth: 5
+    learning_rate: 0.4299999999999998
+    random_state: 100
+    colsample_bytree: 0.685
 
   pipeline_type:
     KFoldTE: true
-    frequency_encoding: false
+    frequency_encoding: true
     KFold_frequency_encoding: false
     tfidf_vectorizer_encoding: false
     count_vectorizer_encoding: true
