@@ -6,17 +6,17 @@ from utils.exception import ModuleException
 from utils.read_utils import read_yaml_key
 import logs.logger as log
 import pandas as pd
+#import math
 
 class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, targetcol = 'ACTION', combine_cols = False, concat_result_X = True):
-        
-        self.targetcol = targetcol        
-        self.combine_columns_required = combine_cols
-        self.merge_result = concat_result_X
+    def __init__(self, concat_result_X = True):    
 
-        params = read_yaml_key('featurize.count_vector')
-        self.params = params
+        self.params = read_yaml_key('featurize.count_vector')
+
+        self.targetcol = self.params['targetcol']
+        self.combine_columns_required = self.params['combine_columns_required']
+        self.merge_result = concat_result_X
 
         self.dict_Vectorizer = {}
         self.dict_dim_reduction = {}
@@ -60,10 +60,10 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
         col_names = []
 
         if col_no == 1:
-            col_names.append(col1 + "_{}_svd_{}".format(col2, 'cv'))
+            col_names.append(col1 + "_svd_{}_{}".format(col2, 'cv'))
         else:    
             for i in range(col_no):
-                col_names.append(col1 + "_{}_svd_{}_{}".format(col2, 'cv', i))
+                col_names.append(col1 + "_svd_{}_{}_{}".format(col2, 'cv', i))
         
         data_X = pd.DataFrame( data_X, columns = col_names)
         
@@ -77,15 +77,24 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
 
     def get_col_interactions_svd(self, dataset, istraining):
 
-        colnames = [x for x in dataset.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
+        log_code = "CountVector-"+ "fit" if istraining else "transform"
+        
+        colnames = self.params['columns']
+        if len(colnames) == 0: 
+            colnames = [x for x in dataset.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & ('_rnd_int_enc' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
+        
+        log.write_log(f'{log_code}: Number of features to consider for vectorize: {len(colnames)}', log.logging.DEBUG)
 
-        log.write_log(f'CountVector-fit: Number of features to consider for vectorize: {len(colnames)}...', log.logging.DEBUG)
-
+        #permutat = math.factorial(len(colnames))/ (math.factorial((len(colnames)-2)))
+        #log.write_log(f'{log_code}: Number of permutations for features: {len(colnames)} is {permutat}', log.logging.DEBUG)
+        
+        permutat_cnt = 0
         for col1, col2 in permutations(colnames, 2): #dataset.columns
         
             if (col1 == self.targetcol) | (col2 == self.targetcol):
                 continue
-
+            
+            #print(col1 + "_{}_svd_{}".format(col2, 'cv'))
             data = self.extract_col_interaction(dataset, col1, col2, istraining)
 
             if type(data) == type(None):
@@ -98,12 +107,18 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
             #Merge the extracted interaction data about col1 to main dataset by joining them with there key.
             #Reason to do this is we want to merge the calculated interaction data to respective col1 in main dataset
             dataset = dataset.merge(data, on = col1, how = 'inner')
+            #log.write_log(list(dataset.columns))
+            permutat_cnt += 1
+        
+        log.write_log(f'{log_code}: Number of permutations for features: {len(colnames)} is {permutat_cnt}', log.logging.DEBUG)
 
         return dataset 
 
     def combine_cols(self, dataset, columns):
 
         if self.combine_columns_required == True:
+
+            log.write_log(f'CountVector: Combine features started: {len(columns)}...', log.logging.DEBUG)
 
             for c1, c2 in combinations(columns, 2): #permutations #Number of unique count where same i.e col1_col2 == col2_col1
             
@@ -128,19 +143,21 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
 
     def encode(self, X, istraining):
 
+        log_code = "CountVector-"+ "fit" if istraining else "transform"
+
         col_use = [x for x in X.columns if not x in ['ROLE_TITLE', 'MGR_ID']]
         X = X[col_use]
 
         X = self.combine_cols(X, col_use)
 
         new_dataset = self.get_col_interactions_svd(X, istraining)
-        log.write_log(f'CountVector-fit: Total number of feature after encode: {len(new_dataset.columns)}...', log.logging.DEBUG)
+        log.write_log(f'{log_code}: Total number of feature after encode: {len(new_dataset.columns)}...', log.logging.DEBUG)
 
         if self.merge_result == False:
 
             #Get all the transformed columns
             col_name = [x for x in new_dataset.columns if "svd" in x] #[0]
-            log.write_log(f'CountVector-fit: Feature to retrun encode: {len(col_name)}...', log.logging.DEBUG) 
+            log.write_log(f'{log_code}: Feature to return encode: {len(col_name)}...', log.logging.DEBUG) 
             return new_dataset[col_name] 
             
         else:
@@ -153,12 +170,16 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
 
     def fit_transform(self, X, y = None):
 
+        log.write_log(f'CountVector-fit: Started...', log.logging.DEBUG) 
+
         self.dict_Vectorizer = {}
         self.dict_dim_reduction = {}
 
         return self.encode(X, True)
 
     def transform(self, X, y = None):
+
+        log.write_log(f'CountVector-transform: Started...', log.logging.DEBUG) 
 
         if (len(self.dict_Vectorizer) == 0) | (len(self.dict_dim_reduction) == 0):
             raise ModuleException('CountVect-transform', 'Count Vectorizer instance is not fitted yet. Try calling fit_transform first.')

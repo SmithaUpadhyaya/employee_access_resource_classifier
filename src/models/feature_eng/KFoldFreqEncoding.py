@@ -1,5 +1,6 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 from utils.exception import ModuleException
+from utils.read_utils import read_yaml_key
 from sklearn.model_selection import KFold
 import logs.logger as log
 import pandas as pd
@@ -9,15 +10,17 @@ import numpy as np
 # Will be assigning different Encoder of same group value 
 class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, colnames = [], targetcol = 'ACTION', min_group_size = 1, n_fold = 5, random_seed = 2023, concat_result_X = True):
+    def __init__(self, concat_result_X = True):
 
-        self.colnames = colnames
-        self.targetcol = targetcol
-        self.min_group_size = min_group_size
+        self.params = read_yaml_key('featurize.fequency_encode')
+        self.colnames = self.params['columns']
+        self.targetcol = self.params['targetcol']
+        self.min_group_size = self.params['min_group_size']  
+
         self.merge_result = concat_result_X
         self.learned_values = {}
 
-        self.kf = KFold(n_splits = n_fold, shuffle = True, random_state = random_seed)
+        self.kf = KFold(n_splits = self.params['n_fold'], shuffle = True, random_state = self.params['random_seed'])
    
     def fit(self, X, y = None):
         return self
@@ -31,8 +34,10 @@ class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
         transformed_X = pd.DataFrame()
         KFold_FE_col = []
 
+        log.write_log(f'KFreqEncode-fit: Started...', log.logging.DEBUG)
+
         if len(self.colnames ) == 0:
-            self.colnames = [x for x in X.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
+            self.colnames = [x for x in X.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & ('_rnd_int_enc' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
 
         log.write_log(f'KFreqEncode-fit: Number of features to encode: {len(self.colnames)}...', log.logging.DEBUG)
 
@@ -95,7 +100,9 @@ class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
         #This is used when want to transfom test data
         if len(self.learned_values) == 0:
             raise ModuleException('KFoldFreq_Enc', 'KFold Frequency Encoding instance is not fitted yet. Try calling fit_transform first.')
-            
+        
+        log.write_log(f'KFreqEncode-transform: Started...', log.logging.DEBUG)
+
         transformed_X = pd.DataFrame()
 
         for colname in self.colnames:

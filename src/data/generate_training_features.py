@@ -10,6 +10,7 @@ from src.models.feature_eng.TE_KFold import KFoldTargetEncoder
 from src.models.feature_eng.FreqEncoding import FrequencyEncoding
 from src.models.feature_eng.Combine_feature import CombineFeatures
 from src.models.feature_eng.KFoldFreqEncoding import KFoldFrequencyEncoding
+from src.models.feature_eng.RandomCatagoryEncode import RandomCatagoryEncode
 from src.models.feature_eng.CountVectorizerEncoding import CountVectorizerEncoding
 from src.models.feature_eng.TFIDFVectorizerEncoding import TFIDFVectorizerEncoding
 
@@ -33,16 +34,16 @@ if __name__ == '__main__':
         
     #Load the pipeline configuration
     log.write_log(f'generate_training_features: Load pipeline configuartion...', log.logging.DEBUG)
-    pipeline_params = hlpread.read_yaml_key('pipeline_type', train_params_file)
-
+    #pipeline_params = hlpread.read_yaml_key('pipeline_type', train_params_file)
+    pipeline_params = hlpread.read_yaml_key('model', train_params_file)
+    pipeline_params = pipeline_params[pipeline_params['model_type']]['pipeline_type']
     
     log.write_log(f'generate_training_features: Define the pipeline...', log.logging.DEBUG)
+
     feature_engg = Pipeline(steps = [
                                         ('combine_feature', CombineFeatures()), #This step is always required
                                     ]) 
 
-    #if pipeline_params['combine_feature'] == True:
-    #    feature_engg.steps.append(['combine_feature', CombineFeatures()])
 
     if pipeline_params['tfidf_vectorizer_encoding'] == True:
         feature_engg.steps.append(('tfidf_vectorizer_encoding', TFIDFVectorizerEncoding()))
@@ -59,16 +60,36 @@ if __name__ == '__main__':
     if pipeline_params['KFold_frequency_encoding'] == True:
         feature_engg.steps.append(('KFold_frequency_encoding', KFoldFrequencyEncoding(min_group_size = 1)))
 
-    
+    feature_engg.steps.append(('Random_Catagory_Encode', RandomCatagoryEncode()))
+
     log.write_log(f'generate_training_features: Fit_transform pipeline started...', log.logging.DEBUG)
     X = feature_engg.fit_transform(db_train) 
     log.write_log(f'generate_training_features: Fit_transform pipeline completed...', log.logging.DEBUG)
+    
+    #Save generated data
+    log.write_log(f'generate_training_features: Save train data to files...', log.logging.DEBUG)
+        
+    train_filepath = os.path.join(
+                                    hlpread.read_yaml_key('data_source.data_folders'),
+                                    hlpread.read_yaml_key('train_test_split.train_data'),
+                                )
+    os.makedirs(os.path.dirname(train_filepath), exist_ok = True)
 
+    #Instead of hard code object type columns use select_dtype
+    #Y = X[['ACTION']]
+    #X.drop(columns = X.columns[:30], inplace = True) 
+    #hlpwrite.save_to_parquet(pd.concat([X, Y], axis = 1 ), train_filepath, True)
+
+    feature_columns = X.select_dtypes(exclude = ['object']).columns #Exclude "object" type columns
+    hlpwrite.save_to_parquet(X[feature_columns], train_filepath, True)
+
+    """
     #Drop all the orginal feature after transform
     log.write_log(f'generate_training_features: Feature counts after transform: {X.shape}.', log.logging.DEBUG)
     Y = X[['ACTION']]
-    X.drop(columns = X.columns[:31], inplace = True)
+    X.drop(columns = X.columns[:30], inplace = True)
     log.write_log(f'generate_training_features: Feature counts after drop: {X.shape}.', log.logging.DEBUG)
+
 
     #Split train and test data
     log.write_log(f'generate_training_features: Split train and test data...', log.logging.DEBUG)
@@ -96,13 +117,7 @@ if __name__ == '__main__':
 
     #Save train data
     log.write_log(f'generate_training_features: Save train and test split data to files...', log.logging.DEBUG)
-    
-    #train_data_param = hlpread.read_yaml_key('training_data', train_params_file)
-    #train_filepath = os.path.join(
-    #                                hlpread.read_yaml_key('data_source.data_folders'),
-    #                                train_data_param['output']['folder'],
-    #                                train_data_param['output']['filename'],                                  
-    #                            )
+        
     train_filepath = os.path.join(
                                     hlpread.read_yaml_key('data_source.data_folders'),
                                     split_params['train_data']
@@ -112,12 +127,6 @@ if __name__ == '__main__':
 
 
     #Save test data
-    #test_data_param = hlpread.read_yaml_key('test_data', train_params_file)
-    #test_filepath = os.path.join(
-    #                                hlpread.read_yaml_key('data_source.data_folders'),
-    #                                test_data_param['output']['folder'],
-    #                                test_data_param['output']['filename'],                                  
-    #                            )
     test_filepath = os.path.join(
                                  hlpread.read_yaml_key('data_source.data_folders'),
                                  split_params['test_data']
@@ -126,3 +135,4 @@ if __name__ == '__main__':
     hlpwrite.save_to_parquet(X_test, test_filepath, True)
     
     log.write_log(f'generate_training_features: Generated features for training...', log.logging.DEBUG)
+    """

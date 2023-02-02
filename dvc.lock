@@ -23,19 +23,90 @@ stages:
       size: 591595
       nfiles: 1
     - path: src\data\generate_training_features.py
-      md5: 0925fdb9bfeba3fb2feb1d4ea61436d0
-      size: 6515
+      md5: 40ba002133bc0285d89f0f37599693e8
+      size: 6728
     - path: src\models\feature_eng
-      md5: 0c2e990a040f8c4e6b968a51d9657d52.dir
-      size: 35637
-      nfiles: 7
+      md5: 90466c8f79b89ee8acb04986095c4a1d.dir
+      size: 39862
+      nfiles: 8
     params:
       params.yaml:
         featurize:
+          ktarget_enc:
+            n_fold: 15
+            random_seed: 2023
+            targetcol: ACTION
+            columns: []
+          random_catagory_encode:
+            random_seed: 2023
+            targetcol: ACTION
+            columns:
+            - RESOURCE_ROLE_ROLLUP_2
+            - ROLE_DEPTNAME_ROLE_FAMILY_DESC
+            - ROLE_FAMILY
+            - RESOURCE_ROLE_CODE
+            - RESOURCE
+            - ROLE_DEPTNAME
+            - ROLE_ROLLUP_2_ROLE_FAMILY
+            - ROLE_FAMILY_ROLE_CODE
+            - ROLE_CODE
+            - ROLE_ROLLUP_1
+            - ROLE_ROLLUP_1_ROLE_ROLLUP_2
+            - ROLE_DEPTNAME_ROLE_CODE
+            - RESOURCE_ROLE_FAMILY
+            - ROLE_ROLLUP_1_ROLE_FAMILY
+            - RESOURCE_ROLE_FAMILY_DESC
+            - ROLE_ROLLUP_1_ROLE_DEPTNAME
+            - ROLE_ROLLUP_2_ROLE_DEPTNAME
+            - ROLE_ROLLUP_2
+            - RESOURCE_ROLE_DEPTNAME
+          fequency_encode:
+            columns:
+            - ROLE_DEPTNAME_ROLE_FAMILY_DESC
+            - ROLE_ROLLUP_2_ROLE_FAMILY_DESC
+            - ROLE_ROLLUP_1_ROLE_FAMILY_DESC
+            - ROLE_FAMILY_DESC_ROLE_CODE
+            - ROLE_DEPTNAME_ROLE_CODE
+            - ROLE_FAMILY_DESC_ROLE_FAMILY
+            - ROLE_ROLLUP_2_ROLE_CODE
+            - ROLE_DEPTNAME_ROLE_FAMILY
+            - ROLE_ROLLUP_1_ROLE_CODE
+            - ROLE_ROLLUP_2_ROLE_DEPTNAME
+            - ROLE_ROLLUP_1_ROLE_DEPTNAME
+            - ROLE_ROLLUP_2_ROLE_FAMILY
+            - ROLE_ROLLUP_1_ROLE_FAMILY
+            - ROLE_ROLLUP_1_ROLE_ROLLUP_2
+            - ROLE_FAMILY_ROLE_CODE
+            - ROLE_DEPTNAME
+            - ROLE_FAMILY_DESC
+            - ROLE_CODE
+            - ROLE_ROLLUP_2
+            - ROLE_ROLLUP_1
+            - ROLE_FAMILY
+            - RESOURCE
           tfidf:
             random_seed: 2023
             dim_reduction: 1
             var_explained: 0.2
+            targetcol: ACTION
+            combine_columns_required: false
+            columns:
+            - ROLE_DEPTNAME
+            - ROLE_FAMILY_DESC
+            - ROLE_CODE
+            - ROLE_ROLLUP_2
+            - ROLE_ROLLUP_1
+            - ROLE_FAMILY
+            - RESOURCE
+            - ROLE_ROLLUP_1_ROLE_ROLLUP_2
+            - ROLE_FAMILY_ROLE_CODE
+            - ROLE_ROLLUP_1_ROLE_FAMILY
+            - ROLE_ROLLUP_2_ROLE_FAMILY
+            - ROLE_ROLLUP_1_ROLE_DEPTNAME
+            - ROLE_ROLLUP_2_ROLE_DEPTNAME
+            - ROLE_ROLLUP_1_ROLE_CODE
+            - ROLE_DEPTNAME_ROLE_FAMILY
+            - ROLE_ROLLUP_2_ROLE_CODE
             output:
               folder: feature\tfidf
               filename: tfidf.parquet
@@ -43,91 +114,252 @@ stages:
             random_seed: 2023
             dim_reduction: 1
             var_explained: 0.9
+            targetcol: ACTION
+            combine_columns_required: false
+            columns:
+            - ROLE_DEPTNAME
+            - ROLE_FAMILY_DESC
+            - ROLE_CODE
+            - ROLE_ROLLUP_2
+            - ROLE_ROLLUP_1
+            - ROLE_FAMILY
+            - RESOURCE
+            - ROLE_ROLLUP_1_ROLE_ROLLUP_2
+            - ROLE_FAMILY_ROLE_CODE
+            - ROLE_ROLLUP_1_ROLE_FAMILY
+            - ROLE_ROLLUP_2_ROLE_FAMILY
+            - ROLE_ROLLUP_1_ROLE_DEPTNAME
+            - ROLE_ROLLUP_2_ROLE_DEPTNAME
+            - ROLE_ROLLUP_1_ROLE_CODE
+            - ROLE_DEPTNAME_ROLE_FAMILY
+            - ROLE_ROLLUP_2_ROLE_CODE
             output:
               folder: feature\cntvector
               filename: count_vectorizer.parquet
-        pipeline_type:
-          KFoldTE: true
-          frequency_encoding: false
-          KFold_frequency_encoding: false
-          tfidf_vectorizer_encoding: false
-          count_vectorizer_encoding: true
-        train_test_split:
-          test_size: 0.01
-          random_seed: 45
-          train_data: feature\train\train_data.parquet
-          test_data: feature\test\test_data.parquet
-    outs:
-    - path: data\feature\
-      md5: 781a8ed6213f1948c39b7a03b499062e.dir
-      size: 8984869
-      nfiles: 2
-  train_model:
-    cmd: python src\data\train_model.py
-    deps:
-    - path: data\feature\
-      md5: 781a8ed6213f1948c39b7a03b499062e.dir
-      size: 8984869
-      nfiles: 2
-    - path: src\data\train_model.py
-      md5: 08fbae7b257e9c8b0b95a6fd9ded7326
-      size: 4822
-    params:
-      params.yaml:
         model:
-          model_type: extra_decision_tree
+          model_type: xgboost
           logistic_reg:
+            pipeline_type:
+              KFoldTE: true
+              frequency_encoding: false
+              KFold_frequency_encoding: false
+              tfidf_vectorizer_encoding: true
+              count_vectorizer_encoding: false
             hyper_params:
-              max_iter: 50
+              random_state: 42
+              max_iter: 100
               penalty: l2
-              C: 1.0
-              class_weight: balanced
+              solver: liblinear
+            trained_model: model\logistic_reg\model.pkl
+            eval_metrics: model\logistic_reg\metrics
+            eval_plots: model\logistic_reg\plots
           decision_tree:
+            pipeline_type:
+              KFoldTE: false
+              frequency_encoding: true
+              KFold_frequency_encoding: true
+              tfidf_vectorizer_encoding: false
+              count_vectorizer_encoding: true
             hyper_params:
+              random_state: 42
               max_depth: 14
               splitter: best
               min_samples_leaf: 0.001
               max_features: 0.3
               class_weight: balanced
+            trained_model: model\decision_tree\model.pkl
+            eval_metrics: model\decision_tree\metrics
+            eval_plots: model\decision_tree\plots
           extra_decision_tree:
+            pipeline_type:
+              KFoldTE: true
+              frequency_encoding: false
+              KFold_frequency_encoding: false
+              tfidf_vectorizer_encoding: true
+              count_vectorizer_encoding: false
             hyper_params:
-              n_estimators: 1000
+              random_state: 56
+              n_estimators: 55
+              max_depth: 4
+              bootstrap: true
+              max_samples: 0.75
+              max_features: 0.7
+              min_samples_leaf: 0.5
+              class_weight: balanced
+            trained_model: model\extra_decision_tree\model.pkl
+            eval_metrics: model\extra_decision_tree\metrics
+            eval_plots: model\extra_decision_tree\plots
+          random_forest:
+            pipeline_type:
+              KFoldTE: false
+              frequency_encoding: true
+              KFold_frequency_encoding: false
+              tfidf_vectorizer_encoding: true
+              count_vectorizer_encoding: false
+            hyper_params:
+              random_state: 42
+              n_estimators: 220
               max_depth: 5
               bootstrap: true
-              max_samples: 0.01
-              max_features: 0.3
-              min_samples_leaf: 0.001
-              class_weight: balanced_subsample
-          trained_model: model\model.pkl
-          eval:
-            evals: eval
-            eval_metrics: metrics
-            eval_plots: plots
+              max_samples: 0.5
+              max_features: 0.5
+              min_samples_leaf: 0.005
+              class_weight: balanced
+            trained_model: model\random_forest\model.pkl
+            eval_metrics: model\random_forest\metrics
+            eval_plots: model\random_forest\plots
+          xgboost:
+            pipeline_type:
+              KFoldTE: true
+              frequency_encoding: true
+              KFold_frequency_encoding: false
+              tfidf_vectorizer_encoding: false
+              count_vectorizer_encoding: true
+            hyper_params:
+              n_estimators: 460
+              reg_lambda: 1.1800000000000002
+              max_depth: 5
+              learning_rate: 0.4299999999999998
+              random_state: 100
+              colsample_bytree: 0.685
+            trained_model: model\xgboost\model.pkl
+            eval_metrics: model\xgboost\metrics
+            eval_plots: model\xgboost\plots
+        train_test_split:
+          test_size: 0.01
+          random_seed: 45
+          cv: 5
+          train_data: feature\train_data.parquet
     outs:
-    - path: data\model
-      md5: 107886f282fe86ffe255a2c080e1f7e6.dir
-      size: 1285279
+    - path: data\feature\
+      md5: c7c23f80dd2b94e229264834f95492fb.dir
+      size: 2795414
       nfiles: 1
+  train_model:
+    cmd: python -W ignore src\data\train_model.py
+    deps:
+    - path: data\feature\
+      md5: c7c23f80dd2b94e229264834f95492fb.dir
+      size: 2795414
+      nfiles: 1
+    - path: src\data\train_model.py
+      md5: 9046b9020248591c4be955e35c5af3fa
+      size: 7668
+    params:
+      params.yaml:
+        model:
+          model_type: xgboost
+          logistic_reg:
+            pipeline_type:
+              KFoldTE: true
+              frequency_encoding: false
+              KFold_frequency_encoding: false
+              tfidf_vectorizer_encoding: true
+              count_vectorizer_encoding: false
+            hyper_params:
+              random_state: 42
+              max_iter: 100
+              penalty: l2
+              solver: liblinear
+            trained_model: model\logistic_reg\model.pkl
+            eval_metrics: model\logistic_reg\metrics
+            eval_plots: model\logistic_reg\plots
+          decision_tree:
+            pipeline_type:
+              KFoldTE: false
+              frequency_encoding: true
+              KFold_frequency_encoding: true
+              tfidf_vectorizer_encoding: false
+              count_vectorizer_encoding: true
+            hyper_params:
+              random_state: 42
+              max_depth: 14
+              splitter: best
+              min_samples_leaf: 0.001
+              max_features: 0.3
+              class_weight: balanced
+            trained_model: model\decision_tree\model.pkl
+            eval_metrics: model\decision_tree\metrics
+            eval_plots: model\decision_tree\plots
+          extra_decision_tree:
+            pipeline_type:
+              KFoldTE: true
+              frequency_encoding: false
+              KFold_frequency_encoding: false
+              tfidf_vectorizer_encoding: true
+              count_vectorizer_encoding: false
+            hyper_params:
+              random_state: 56
+              n_estimators: 55
+              max_depth: 4
+              bootstrap: true
+              max_samples: 0.75
+              max_features: 0.7
+              min_samples_leaf: 0.5
+              class_weight: balanced
+            trained_model: model\extra_decision_tree\model.pkl
+            eval_metrics: model\extra_decision_tree\metrics
+            eval_plots: model\extra_decision_tree\plots
+          random_forest:
+            pipeline_type:
+              KFoldTE: false
+              frequency_encoding: true
+              KFold_frequency_encoding: false
+              tfidf_vectorizer_encoding: true
+              count_vectorizer_encoding: false
+            hyper_params:
+              random_state: 42
+              n_estimators: 220
+              max_depth: 5
+              bootstrap: true
+              max_samples: 0.5
+              max_features: 0.5
+              min_samples_leaf: 0.005
+              class_weight: balanced
+            trained_model: model\random_forest\model.pkl
+            eval_metrics: model\random_forest\metrics
+            eval_plots: model\random_forest\plots
+          xgboost:
+            pipeline_type:
+              KFoldTE: true
+              frequency_encoding: true
+              KFold_frequency_encoding: false
+              tfidf_vectorizer_encoding: false
+              count_vectorizer_encoding: true
+            hyper_params:
+              n_estimators: 460
+              reg_lambda: 1.1800000000000002
+              max_depth: 5
+              learning_rate: 0.4299999999999998
+              random_state: 100
+              colsample_bytree: 0.685
+            trained_model: model\xgboost\model.pkl
+            eval_metrics: model\xgboost\metrics
+            eval_plots: model\xgboost\plots
+    outs:
+    - path: data\model\metrics\metrics.json
+      md5: 289ca638dc69e77af13c35c892bb12d3
+      size: 76
   evaluate_model:
     cmd: python src\data\eval.py
     deps:
     - path: data\model
-      md5: 107886f282fe86ffe255a2c080e1f7e6.dir
-      size: 1285279
+      md5: e16941fb70e9c3401de9df9dc9870e9f.dir
+      size: 32977
       nfiles: 1
     - path: src\data\eval.py
-      md5: 70169681883d3b066b20b7a067319f0e
-      size: 12188
+      md5: 64779cb95c7bf90ff0f45abd4722d6a2
+      size: 12080
     outs:
     - path: data\eval\metrics\metrics.json
-      md5: a2ae8feb6f3ea74d15b7ccf225fa6e02
+      md5: bd822b5620ed49d00a7ee86bb046b3ba
       size: 80
     - path: data\eval\plots\confusion_matrix.png
-      md5: 17d2a2c6ed9b6f6c76a9946d594e8dfb
-      size: 15898
+      md5: 8ccc83fbfab075ed404888d66c50f761
+      size: 16259
     - path: data\eval\plots\pr_rc_curve.png
-      md5: cf67f194b19127c4357f081d1f59273f
-      size: 21162
+      md5: 0ee74bacf57f7daa655da842106347d9
+      size: 23723
     - path: data\eval\plots\roc_curve.png
-      md5: 9e9b4ed47982ee47f82e59eb6714c9cc
-      size: 26221
+      md5: e5d3dd354e83c2731d920315c6a3023d
+      size: 25948

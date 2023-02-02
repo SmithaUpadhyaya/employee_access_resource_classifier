@@ -5,6 +5,7 @@ When an employee at any company starts work, they first need to obtain the compu
 ## Objective ##
 
 The objective is to build a model, learned using historical data, that will determine an employee's access needs. So model will take an employee's role information and a resource code and will return whether or not access should be granted. This is a binary classification task.
+Resource access may allow an employee to read/manipulate resources through various applications or web portals. So its crucial that employee does not get access to Resource they should not have. Recall would be good metric to evaluate false negative.Therefore F1-score is a good metric to evaluate the performance of this dataset as it weights recall and precision equally, and a good retrieval algorithm will maximize both precision and recall simultaneously.
 
 ## Dataset ##
 
@@ -13,8 +14,9 @@ The objective is to build a model, learned using historical data, that will dete
 ### Description of the features: ###
 Given the data related to current employees and their provisioned access
 
-* Label : ACTION is 1 if access is granted to the resource and 0 if not granted.
+* We have large class imbalance.
 * Features
+    - ACTION - Class label to grant access to resource. If 1 access is granted to the resource else no access.
     - RESOURCE - An ID for each resource
     - MGR_ID - The EMPLOYEE ID of the manager of the current EMPLOYEE ID record. An employee may have only one manager at a time.
     - ROLE_ROLLUP_1 - Company role grouping category id 1 (e.g. US Engineering)
@@ -24,25 +26,6 @@ Given the data related to current employees and their provisioned access
     - ROLE_FAMILY_DESC - Company role family extended description (e.g. Retail Manager, Software Engineering)
     - ROLE_FAMILY - Company role family description (e.g. Retail Manager)
     - ROLE_CODE - Company role code; this code is unique to each role (e.g. Manager)
-
-We have large class imbalance.
-
-# Metric #
-
-Resource access may allow an employee to read/manipulate resources through various applications or web portals. So its crutual that employee does not get  access to Resource they should not have. 
-Recall is the score that will make sure the False negartive.
-
-Therefore F1-score is a good metric to evaluate the performance of this dataset as it weights recall and precision equally, and a good retrieval algorithm will maximize both precision and recall simultaneously.
-
-
-
-# Solution # 
- 
-Feature enginnner by combininti varaious feature and calclaueing TFIDFVectorization and CountVectoris to generated feature whocj will be combination of the features
-
-
-# Experiments Results #
-
 
 # How to setup the local environment #
 
@@ -96,5 +79,11 @@ Creating a virtual environment and install all the requirements
    Change paramaters in 'param.yaml' file then run
     
         dvc exp run
+
+ * Run grid search on paramaters
+    
+    Change/Define the paramaters for the model in 'src\data\random_search.py'
+
+        python src\data\random_search.py
 
 
