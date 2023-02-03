@@ -192,15 +192,15 @@ def run_exp_Logistic_Reg():
     #Hyper paramater tuning for Logistic Regression 
     params = {
         "max_iter": random.choice(range(5,100,5)),#random.choice([500, 600, 700, 800, 900, 1000]),
-        "penalty": 'l2',#random.choice(['l2']), #'l1': 
-        "C": random.choice(range(-10,10,1)), #random.choice([10**-4, 10**-2, 10**0, 10**1, 10**4]),
+        "penalty": random.choice(['l2']), #'l1': 
+        "C": random.choice(range(1,100,1)), #random.choice([10**-4, 10**-2, 10**0, 10**1, 10**4]),
 
         #Select the featurization techinique
         "KFoldTE": True, #random.choice([True, False]), 
         "frequency_encoding": False, #random.choice([True, False]),
         "KFold_frequency_encoding": False, #random.choice([True, False]),
         "tfidf_vectorizer_encoding": False, #random.choice([True, False]),
-        "count_vectorizer_encoding": True#random.choice([True, False]),
+        "count_vectorizer_encoding": True, #random.choice([True, False]),
     }
 
     #This will generate the experiment and wait for instruction to execute 
