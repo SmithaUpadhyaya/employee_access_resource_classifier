@@ -77,7 +77,7 @@ model:
       max_iter: 5
       penalty: l2
       solver: liblinear
-      #C: 10000
+      C: 1
       #class_weight: balanced
 
     trained_model: model\logistic_reg\model.pkl
