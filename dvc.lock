@@ -144,17 +144,17 @@ stages:
               folder: feature\cntvector
               filename: count_vectorizer.parquet
         model:
-          model_type: xgboost
+          model_type: logistic_reg
           logistic_reg:
             pipeline_type:
               KFoldTE: true
               frequency_encoding: false
               KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: true
-              count_vectorizer_encoding: false
+              tfidf_vectorizer_encoding: false
+              count_vectorizer_encoding: true
             hyper_params:
-              random_state: 42
-              max_iter: 100
+              random_state: 2023
+              max_iter: 5
               penalty: l2
               solver: liblinear
             trained_model: model\logistic_reg\model.pkl
@@ -239,15 +239,15 @@ stages:
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: 1bd6a98a5b45685a19af3c66f1a2f8aa.dir
-      size: 2795412
+      md5: 0cf4b370ccd6980c566a45183480da41.dir
+      size: 2553242
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: 1bd6a98a5b45685a19af3c66f1a2f8aa.dir
-      size: 2795412
+      md5: 0cf4b370ccd6980c566a45183480da41.dir
+      size: 2553242
       nfiles: 1
     - path: src\data\train_model.py
       md5: 9046b9020248591c4be955e35c5af3fa
@@ -255,17 +255,17 @@ stages:
     params:
       params.yaml:
         model:
-          model_type: xgboost
+          model_type: logistic_reg
           logistic_reg:
             pipeline_type:
               KFoldTE: true
               frequency_encoding: false
               KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: true
-              count_vectorizer_encoding: false
+              tfidf_vectorizer_encoding: false
+              count_vectorizer_encoding: true
             hyper_params:
-              random_state: 42
-              max_iter: 100
+              random_state: 2023
+              max_iter: 5
               penalty: l2
               solver: liblinear
             trained_model: model\logistic_reg\model.pkl
@@ -345,7 +345,7 @@ stages:
             eval_plots: model\xgboost\plots
     outs:
     - path: data\model\metrics\metrics.json
-      md5: 8f95ed615aa4429a3a2b48f284fc0125
+      md5: f58dd29ac23cd43e144ba7d1d289eaa0
       size: 76
   evaluate_model:
     cmd: python src\data\eval.py

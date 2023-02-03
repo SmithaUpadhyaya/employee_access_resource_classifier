@@ -49,7 +49,6 @@ featurize:
     var_explained: 0.9
     targetcol: 'ACTION'
     combine_columns_required: false
-
     columns: [ 'ROLE_DEPTNAME', 'ROLE_FAMILY_DESC', 'ROLE_CODE', 'ROLE_ROLLUP_2', 'ROLE_ROLLUP_1', 'ROLE_FAMILY', 'RESOURCE', 'ROLE_ROLLUP_1_ROLE_ROLLUP_2','ROLE_FAMILY_ROLE_CODE', 'ROLE_ROLLUP_1_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_DEPTNAME','ROLE_ROLLUP_2_ROLE_DEPTNAME','ROLE_ROLLUP_1_ROLE_CODE', 'ROLE_DEPTNAME_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_CODE']
     output:
       folder: feature\cntvector
@@ -62,7 +61,7 @@ train_test_split:
   train_data: feature\train_data.parquet
 
 model:
-  model_type: xgboost
+  model_type: logistic_reg
 
   logistic_reg:
 
@@ -70,12 +69,12 @@ model:
       KFoldTE: true
       frequency_encoding: false
       KFold_frequency_encoding: false
-      tfidf_vectorizer_encoding: true
-      count_vectorizer_encoding: false
+      tfidf_vectorizer_encoding: false
+      count_vectorizer_encoding: true
 
     hyper_params:
-      random_state: 42
-      max_iter: 100
+      random_state: 2023
+      max_iter: 5
       penalty: l2
       solver: liblinear
       #C: 10000

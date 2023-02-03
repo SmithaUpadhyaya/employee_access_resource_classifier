@@ -32,7 +32,12 @@ stages:
         #    - pipeline_type
         - train_test_split
         #- pipeline_type
-        - model
+        - model.model_type
+        - model.logistic_reg.pipeline_type
+        - model.decision_tree.pipeline_type
+        - model.extra_decision_tree.pipeline_type
+        - model.random_forest.pipeline_type
+        - model.xgboost.pipeline_type
     outs:
       - ${data_source.data_folders}\feature\
 
@@ -46,7 +51,12 @@ stages:
       #- data_source.data_folders # track specific param (from params.yaml)
       #- src\data\train_params.yaml:
       #    - model
-      - model
+      - model.model_type
+      - model.logistic_reg.hyper_params
+      - model.decision_tree.hyper_params
+      - model.extra_decision_tree.hyper_params
+      - model.random_forest.hyper_params
+      - model.xgboost.hyper_params
     #outs:
     #  - ${data_source.data_folders}\model
 
