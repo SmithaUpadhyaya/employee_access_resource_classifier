@@ -166,7 +166,7 @@ model:
       count_vectorizer_encoding: true
 
     hyper_params:
-      n_estimators: 460
+      n_estimators: 5
       reg_lambda: 1.1800000000000002
       max_depth: 5
       learning_rate: 0.4299999999999998
@@ -182,7 +182,7 @@ trained_model:
   feature_eng: model\feature_engg_pipeline.json
 
   params:
-    n_estimators: 460
+    n_estimators: 5
     reg_lambda: 1.1800000000000002
     max_depth: 5
     learning_rate: 0.4299999999999998

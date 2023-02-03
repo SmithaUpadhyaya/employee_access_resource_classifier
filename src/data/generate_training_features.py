@@ -55,10 +55,10 @@ if __name__ == '__main__':
         feature_engg.steps.append(('KFoldTE', KFoldTargetEncoder()))
 
     if pipeline_params['frequency_encoding'] == True:
-        feature_engg.steps.append(('frequency_encoding', FrequencyEncoding(min_group_size = 1)))
+        feature_engg.steps.append(('frequency_encoding', FrequencyEncoding()))
 
     if pipeline_params['KFold_frequency_encoding'] == True:
-        feature_engg.steps.append(('KFold_frequency_encoding', KFoldFrequencyEncoding(min_group_size = 1)))
+        feature_engg.steps.append(('KFold_frequency_encoding', KFoldFrequencyEncoding()))
 
     feature_engg.steps.append(('Random_Catagory_Encode', RandomCatagoryEncode()))
 

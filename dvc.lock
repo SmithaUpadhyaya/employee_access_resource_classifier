@@ -23,15 +23,18 @@ stages:
       size: 591595
       nfiles: 1
     - path: src\data\generate_training_features.py
-      md5: 40ba002133bc0285d89f0f37599693e8
-      size: 6728
+      md5: e35f2496d7a99d0ac13d3e8f8d904f4b
+      size: 6692
     - path: src\models\feature_eng
-      md5: 90466c8f79b89ee8acb04986095c4a1d.dir
-      size: 39862
+      md5: bd303419cc226bec863218d1c48b6ada.dir
+      size: 39967
       nfiles: 8
     params:
       params.yaml:
         featurize:
+          combine_feat:
+            targetcol: ACTION
+            columns: []
           ktarget_enc:
             n_fold: 15
             random_seed: 2023
@@ -61,6 +64,10 @@ stages:
             - ROLE_ROLLUP_2
             - RESOURCE_ROLE_DEPTNAME
           fequency_encode:
+            min_group_size: 2
+            n_fold: 5
+            random_seed: 2023
+            targetcol: ACTION
             columns:
             - ROLE_DEPTNAME_ROLE_FAMILY_DESC
             - ROLE_ROLLUP_2_ROLE_FAMILY_DESC
@@ -216,7 +223,7 @@ stages:
               tfidf_vectorizer_encoding: false
               count_vectorizer_encoding: true
             hyper_params:
-              n_estimators: 460
+              n_estimators: 5
               reg_lambda: 1.1800000000000002
               max_depth: 5
               learning_rate: 0.4299999999999998
@@ -232,15 +239,15 @@ stages:
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: c7c23f80dd2b94e229264834f95492fb.dir
-      size: 2795414
+      md5: 1bd6a98a5b45685a19af3c66f1a2f8aa.dir
+      size: 2795412
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: c7c23f80dd2b94e229264834f95492fb.dir
-      size: 2795414
+      md5: 1bd6a98a5b45685a19af3c66f1a2f8aa.dir
+      size: 2795412
       nfiles: 1
     - path: src\data\train_model.py
       md5: 9046b9020248591c4be955e35c5af3fa
@@ -327,7 +334,7 @@ stages:
               tfidf_vectorizer_encoding: false
               count_vectorizer_encoding: true
             hyper_params:
-              n_estimators: 460
+              n_estimators: 5
               reg_lambda: 1.1800000000000002
               max_depth: 5
               learning_rate: 0.4299999999999998
@@ -338,7 +345,7 @@ stages:
             eval_plots: model\xgboost\plots
     outs:
     - path: data\model\metrics\metrics.json
-      md5: 289ca638dc69e77af13c35c892bb12d3
+      md5: 8f95ed615aa4429a3a2b48f284fc0125
       size: 76
   evaluate_model:
     cmd: python src\data\eval.py

@@ -16,12 +16,12 @@ class employee_access_resource:
     def __init__(self, trained_model_path, feature_eng_object_path):
 
       self.model = None
+      self.feature_engg = None
+
       self.trained_model_path = trained_model_path
       if exists(trained_model_path) == True:
         self.model = hlpread.read_object(trained_model_path)
-
-
-      self.feature_engg = None
+   
       self.feature_eng_object_path = feature_eng_object_path
       if exists(feature_eng_object_path) == True:
         self.feature_engg = hlpread.read_object(feature_eng_object_path)
@@ -34,7 +34,7 @@ class employee_access_resource:
                                         #('tfidf_vectorizer_encoding', TFIDFVectorizerEncoding()),
                                         ('count_vectorizer_encoding', CountVectorizerEncoding()), 
                                         ('KFoldTE', KFoldTargetEncoder()),                                       
-                                        ('frequency_encoding', FrequencyEncoding(min_group_size = 1)),
+                                        ('frequency_encoding', FrequencyEncoding()),
                                         ('Random_Catagory_Encode', RandomCatagoryEncode()),
                                     ]) 
 
@@ -69,9 +69,9 @@ class employee_access_resource:
         #Train model
         Y = X.ACTION
         X.drop('ACTION', axis = 1, inplace = True)
-        self.feature_columns = X.select_dtypes(exclude = ['object']).columns #Exclude "object" type columns   
+        feature_columns = X.select_dtypes(exclude = ['object']).columns #Exclude "object" type columns   
 
-        self.model.fit(X[self.feature_columns], Y)
+        self.model.fit(X[feature_columns], Y)
 
         #Save the model
         hlpwrite.save_object(self.trained_model_path , self.model)
@@ -85,8 +85,13 @@ class employee_access_resource:
 
         X = self.generate_feature(X)
 
-        y_hat = self.model.predict_proba(X[self.feature_columns]) #Predict will not have 'ACTION' FEATURE
-        y_hat =  y_hat.argmax(-1)  
+        if 'ACTION' in X.columns:
+            X.drop('ACTION', axis = 1, inplace = True)
+
+        feature_columns = X.select_dtypes(exclude = ['object']).columns
+
+        y_hat = self.model.predict_proba(X[feature_columns]) #Predict will not have 'ACTION' FEATURE
+        #y_hat =  y_hat.argmax(-1)  
         
         return y_hat
 
