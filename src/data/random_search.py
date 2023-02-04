@@ -27,7 +27,7 @@ def run_exp_Decision_Tree():
     #Hyper-paramters tuning for Decision Tree
     
     params = {
-        "random_state": random.choice(random.randint(50, 3000)), 
+        "random_state": random.randint(50, 3000), 
         "max_depth": random.choice(range(3, 5, 1)),      #random.choice([3,5,7,9])
         "splitter": 'best', #random.choice(['best', 'random']),
         "min_samples_leaf":  random.choice([0.01, 0.05, 0.001, 0.002, 0.005]),
@@ -227,13 +227,13 @@ def run_exp_Logistic_Reg():
     
 for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
-    run_exp_Logistic_Reg()
+    #run_exp_Logistic_Reg()
     
     #run_exp_Random_Forest()
 
     #run_exp_ExtraTreesClassifier()
     
-    #run_exp_Decision_Tree()
+    run_exp_Decision_Tree()
     
     #run_exp_XBoost()
 
