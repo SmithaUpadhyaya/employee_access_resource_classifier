@@ -27,18 +27,19 @@ def run_exp_Decision_Tree():
     #Hyper-paramters tuning for Decision Tree
     
     params = {
-        "max_depth": random.choice(range(10, 15, 1)),      #random.choice([3,5,7,9])
-        "splitter": random.choice(['best', 'random']), #'l1': 
+        "random_state": random.choice(random.randint(50, 3000)), 
+        "max_depth": random.choice(range(3, 5, 1)),      #random.choice([3,5,7,9])
+        "splitter": 'best', #random.choice(['best', 'random']),
         "min_samples_leaf":  random.choice([0.01, 0.05, 0.001, 0.002, 0.005]),
-        "max_features":  random.choice([0.3, 0.5, 0.6, 0.7, 0.8, 0.95, 1]),
+        "max_features":  random.choice(['sqrt', 'log2', 0.3, 0.5, 0.6, 0.7, 0.8, 0.95, 1]),
         #"min_samples_split":  random.choice([]),
 
         #Select the featurization techinique
-        "KFoldTE": random.choice([True, False]), 
-        "frequency_encoding": random.choice([True, False]),
-        "KFold_frequency_encoding": False, #random.choice([True, False])
-        "tfidf_vectorizer_encoding": random.choice([True, False]),
-        "count_vectorizer_encoding": random.choice([True, False]),
+        "KFoldTE": False, #random.choice([True, False]), 
+        "frequency_encoding": False, #random.choice([True, False]),
+        "KFold_frequency_encoding": True, #random.choice([True, False])
+        "tfidf_vectorizer_encoding": False, #random.choice([True, False]),
+        "count_vectorizer_encoding": True, #random.choice([True, False]),
     }
 
 

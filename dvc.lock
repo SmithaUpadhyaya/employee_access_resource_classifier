@@ -143,95 +143,37 @@ stages:
             output:
               folder: feature\cntvector
               filename: count_vectorizer.parquet
-        model:
-          model_type: logistic_reg
-          logistic_reg:
-            pipeline_type:
-              KFoldTE: true
-              frequency_encoding: false
-              KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: false
-              count_vectorizer_encoding: true
-            hyper_params:
-              random_state: 2023
-              max_iter: 5
-              penalty: l2
-              solver: liblinear
-            trained_model: model\logistic_reg\model.pkl
-            eval_metrics: model\logistic_reg\metrics
-            eval_plots: model\logistic_reg\plots
-          decision_tree:
-            pipeline_type:
-              KFoldTE: false
-              frequency_encoding: true
-              KFold_frequency_encoding: true
-              tfidf_vectorizer_encoding: false
-              count_vectorizer_encoding: true
-            hyper_params:
-              random_state: 42
-              max_depth: 14
-              splitter: best
-              min_samples_leaf: 0.001
-              max_features: 0.3
-              class_weight: balanced
-            trained_model: model\decision_tree\model.pkl
-            eval_metrics: model\decision_tree\metrics
-            eval_plots: model\decision_tree\plots
-          extra_decision_tree:
-            pipeline_type:
-              KFoldTE: true
-              frequency_encoding: false
-              KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: true
-              count_vectorizer_encoding: false
-            hyper_params:
-              random_state: 56
-              n_estimators: 55
-              max_depth: 4
-              bootstrap: true
-              max_samples: 0.75
-              max_features: 0.7
-              min_samples_leaf: 0.5
-              class_weight: balanced
-            trained_model: model\extra_decision_tree\model.pkl
-            eval_metrics: model\extra_decision_tree\metrics
-            eval_plots: model\extra_decision_tree\plots
-          random_forest:
-            pipeline_type:
-              KFoldTE: false
-              frequency_encoding: true
-              KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: true
-              count_vectorizer_encoding: false
-            hyper_params:
-              random_state: 42
-              n_estimators: 220
-              max_depth: 5
-              bootstrap: true
-              max_samples: 0.5
-              max_features: 0.5
-              min_samples_leaf: 0.005
-              class_weight: balanced
-            trained_model: model\random_forest\model.pkl
-            eval_metrics: model\random_forest\metrics
-            eval_plots: model\random_forest\plots
-          xgboost:
-            pipeline_type:
-              KFoldTE: true
-              frequency_encoding: true
-              KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: false
-              count_vectorizer_encoding: true
-            hyper_params:
-              n_estimators: 5
-              reg_lambda: 1.1800000000000002
-              max_depth: 5
-              learning_rate: 0.4299999999999998
-              random_state: 100
-              colsample_bytree: 0.685
-            trained_model: model\xgboost\model.pkl
-            eval_metrics: model\xgboost\metrics
-            eval_plots: model\xgboost\plots
+        model.decision_tree.pipeline_type:
+          KFoldTE: false
+          frequency_encoding: true
+          KFold_frequency_encoding: true
+          tfidf_vectorizer_encoding: false
+          count_vectorizer_encoding: true
+        model.extra_decision_tree.pipeline_type:
+          KFoldTE: true
+          frequency_encoding: false
+          KFold_frequency_encoding: false
+          tfidf_vectorizer_encoding: true
+          count_vectorizer_encoding: false
+        model.logistic_reg.pipeline_type:
+          KFoldTE: true
+          frequency_encoding: false
+          KFold_frequency_encoding: false
+          tfidf_vectorizer_encoding: false
+          count_vectorizer_encoding: true
+        model.model_type: logistic_reg
+        model.random_forest.pipeline_type:
+          KFoldTE: false
+          frequency_encoding: true
+          KFold_frequency_encoding: false
+          tfidf_vectorizer_encoding: true
+          count_vectorizer_encoding: false
+        model.xgboost.pipeline_type:
+          KFoldTE: true
+          frequency_encoding: true
+          KFold_frequency_encoding: false
+          tfidf_vectorizer_encoding: false
+          count_vectorizer_encoding: true
         train_test_split:
           test_size: 0.01
           random_seed: 45
@@ -254,98 +196,48 @@ stages:
       size: 7668
     params:
       params.yaml:
-        model:
-          model_type: logistic_reg
-          logistic_reg:
-            pipeline_type:
-              KFoldTE: true
-              frequency_encoding: false
-              KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: false
-              count_vectorizer_encoding: true
-            hyper_params:
-              random_state: 2023
-              max_iter: 5
-              penalty: l2
-              solver: liblinear
-            trained_model: model\logistic_reg\model.pkl
-            eval_metrics: model\logistic_reg\metrics
-            eval_plots: model\logistic_reg\plots
-          decision_tree:
-            pipeline_type:
-              KFoldTE: false
-              frequency_encoding: true
-              KFold_frequency_encoding: true
-              tfidf_vectorizer_encoding: false
-              count_vectorizer_encoding: true
-            hyper_params:
-              random_state: 42
-              max_depth: 14
-              splitter: best
-              min_samples_leaf: 0.001
-              max_features: 0.3
-              class_weight: balanced
-            trained_model: model\decision_tree\model.pkl
-            eval_metrics: model\decision_tree\metrics
-            eval_plots: model\decision_tree\plots
-          extra_decision_tree:
-            pipeline_type:
-              KFoldTE: true
-              frequency_encoding: false
-              KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: true
-              count_vectorizer_encoding: false
-            hyper_params:
-              random_state: 56
-              n_estimators: 55
-              max_depth: 4
-              bootstrap: true
-              max_samples: 0.75
-              max_features: 0.7
-              min_samples_leaf: 0.5
-              class_weight: balanced
-            trained_model: model\extra_decision_tree\model.pkl
-            eval_metrics: model\extra_decision_tree\metrics
-            eval_plots: model\extra_decision_tree\plots
-          random_forest:
-            pipeline_type:
-              KFoldTE: false
-              frequency_encoding: true
-              KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: true
-              count_vectorizer_encoding: false
-            hyper_params:
-              random_state: 42
-              n_estimators: 220
-              max_depth: 5
-              bootstrap: true
-              max_samples: 0.5
-              max_features: 0.5
-              min_samples_leaf: 0.005
-              class_weight: balanced
-            trained_model: model\random_forest\model.pkl
-            eval_metrics: model\random_forest\metrics
-            eval_plots: model\random_forest\plots
-          xgboost:
-            pipeline_type:
-              KFoldTE: true
-              frequency_encoding: true
-              KFold_frequency_encoding: false
-              tfidf_vectorizer_encoding: false
-              count_vectorizer_encoding: true
-            hyper_params:
-              n_estimators: 5
-              reg_lambda: 1.1800000000000002
-              max_depth: 5
-              learning_rate: 0.4299999999999998
-              random_state: 100
-              colsample_bytree: 0.685
-            trained_model: model\xgboost\model.pkl
-            eval_metrics: model\xgboost\metrics
-            eval_plots: model\xgboost\plots
+        model.decision_tree.hyper_params:
+          random_state: 42
+          max_depth: 14
+          splitter: best
+          min_samples_leaf: 0.001
+          max_features: 0.3
+          class_weight: balanced
+        model.extra_decision_tree.hyper_params:
+          random_state: 56
+          n_estimators: 55
+          max_depth: 4
+          bootstrap: true
+          max_samples: 0.75
+          max_features: 0.7
+          min_samples_leaf: 0.5
+          class_weight: balanced
+        model.logistic_reg.hyper_params:
+          random_state: 2023
+          max_iter: 40
+          penalty: l2
+          solver: liblinear
+          C: 11
+        model.model_type: logistic_reg
+        model.random_forest.hyper_params:
+          random_state: 42
+          n_estimators: 220
+          max_depth: 5
+          bootstrap: true
+          max_samples: 0.5
+          max_features: 0.5
+          min_samples_leaf: 0.005
+          class_weight: balanced
+        model.xgboost.hyper_params:
+          n_estimators: 5
+          reg_lambda: 1.1800000000000002
+          max_depth: 5
+          learning_rate: 0.4299999999999998
+          random_state: 100
+          colsample_bytree: 0.685
     outs:
     - path: data\model\metrics\metrics.json
-      md5: f58dd29ac23cd43e144ba7d1d289eaa0
+      md5: da23435dab9f018d745ed8fdeafd1109
       size: 76
   evaluate_model:
     cmd: python src\data\eval.py

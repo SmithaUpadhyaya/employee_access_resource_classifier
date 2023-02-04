@@ -61,7 +61,7 @@ train_test_split:
   train_data: feature\train_data.parquet
 
 model:
-  model_type: logistic_reg
+  model_type: decision_tree
 
   logistic_reg:
 
@@ -74,10 +74,10 @@ model:
 
     hyper_params:
       random_state: 2023
-      max_iter: 5
+      max_iter: 40
       penalty: l2
       solver: liblinear
-      C: 1
+      C: 11
       #class_weight: balanced
 
     trained_model: model\logistic_reg\model.pkl
@@ -88,19 +88,19 @@ model:
 
     pipeline_type:
       KFoldTE: false
-      frequency_encoding: true
+      frequency_encoding: false
       KFold_frequency_encoding: true
       tfidf_vectorizer_encoding: false
       count_vectorizer_encoding: true
 
     hyper_params:
-      random_state: 42
-      max_depth: 14
+      random_state: 2034
+      max_depth: 4
       splitter: best
-      min_samples_leaf: 0.001
+      min_samples_leaf: 0.005
       max_features: 0.3
       #min_samples_split: 0.01
-      class_weight: balanced
+      #class_weight: balanced
 
     trained_model: model\decision_tree\model.pkl
     eval_metrics: model\decision_tree\metrics
@@ -181,18 +181,16 @@ trained_model:
   feature_eng: model\feature_engg_pipeline.json
 
   params:
-    n_estimators: 5
-    reg_lambda: 1.1800000000000002
-    max_depth: 5
-    learning_rate: 0.4299999999999998
-    random_state: 100
-    colsample_bytree: 0.685
+    random_state: 2023
+    max_iter: 40
+    penalty: l2
+    solver: liblinear
+    C: 11
 
   pipeline_type:
     KFoldTE: true
-    frequency_encoding: true
+    frequency_encoding: false
     KFold_frequency_encoding: false
     tfidf_vectorizer_encoding: false
     count_vectorizer_encoding: true
-
 
