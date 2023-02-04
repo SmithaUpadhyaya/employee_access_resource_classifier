@@ -44,10 +44,11 @@ def run_exp_Decision_Tree():
 
 
     subprocess.run(["dvc", "exp", "run", #"--queue",
+                    "--set-param", f"model.decision_tree.hyper_params.random_state={params['random_state']}",
                     "--set-param", f"model.decision_tree.hyper_params.max_depth={params['max_depth']}",
                     "--set-param", f"model.decision_tree.hyper_params.splitter={params['splitter']}",
                     "--set-param", f"model.decision_tree.hyper_params.min_samples_leaf={params['min_samples_leaf']}",
-                     "--set-param", f"model.decision_tree.hyper_params.max_features={params['max_features']}",
+                    "--set-param", f"model.decision_tree.hyper_params.max_features={params['max_features']}",
                   
 
                     #Select the featurization techinique
