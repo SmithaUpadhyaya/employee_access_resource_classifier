@@ -59,7 +59,7 @@ class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
         transformed_X = pd.DataFrame()
 
         if len(self.colnames) == 0:
-            self.colnames = [x for x in X.columns if (x not in self.targetName) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & ('_rnd_int_enc' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
+            self.colnames = [x for x in X.columns if (x not in self.targetName) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & ('_rnd_int_enc' not in x) & (x not in read_yaml_key('featurize.combine_feat.ignore_columns'))] #['ROLE_TITLE', 'MGR_ID']
 
         log.write_log(f'TEKFold-fit: Number of features to target encode: {len(self.colnames)}...', log.logging.DEBUG)
 

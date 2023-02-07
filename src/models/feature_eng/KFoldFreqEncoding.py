@@ -37,7 +37,7 @@ class KFoldFrequencyEncoding(BaseEstimator, TransformerMixin):
         log.write_log(f'KFreqEncode-fit: Started...', log.logging.DEBUG)
 
         if len(self.colnames ) == 0:
-            self.colnames = [x for x in X.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & ('_rnd_int_enc' not in x) & (x not in ['ROLE_TITLE', 'MGR_ID'])]
+            self.colnames = [x for x in X.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & ('_rnd_int_enc' not in x) & (x not in read_yaml_key('featurize.combine_feat.ignore_columns'))] #['ROLE_TITLE', 'MGR_ID']
 
         log.write_log(f'KFreqEncode-fit: Number of features to encode: {len(self.colnames)}...', log.logging.DEBUG)
 

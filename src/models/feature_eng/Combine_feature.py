@@ -9,13 +9,13 @@ class CombineFeatures(BaseEstimator, TransformerMixin):
 
         self.params = read_yaml_key('featurize.combine_feat')
         self.targetcol = self.params['targetcol']
-        #self.use_columns = use_columns
+        self.ignore_columns = self.params['ignore_columns']
         
     def combine_cols(self, X):
 
         transform_X = X.copy()
 
-        self.use_columns = [x for x in transform_X.columns if (x not in ['ROLE_TITLE', 'MGR_ID']) & (x not in self.targetcol)]
+        self.use_columns = [x for x in transform_X.columns if (x not in self.ignore_columns) & (x not in self.targetcol)]
         log.write_log(f'CombineFeature: Number of features to combine: {len(self.use_columns)}...', log.logging.DEBUG)
 
         for c1,c2 in combinations(self.use_columns, 2): #permutations #Number of unique count where same i.e col1_col2 == col2_col1

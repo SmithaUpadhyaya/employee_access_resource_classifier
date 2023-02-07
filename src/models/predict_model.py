@@ -1,6 +1,7 @@
 from src.models.feature_eng.TFIDFVectorizerEncoding import TFIDFVectorizerEncoding
 from src.models.feature_eng.CountVectorizerEncoding import CountVectorizerEncoding
 from src.models.feature_eng.RandomCatagoryEncode import RandomCatagoryEncode
+from src.models.feature_eng.KFoldFreqEncoding import KFoldFrequencyEncoding
 from src.models.feature_eng.Combine_feature import CombineFeatures
 from src.models.feature_eng.FreqEncoding import FrequencyEncoding
 from src.models.feature_eng.TE_KFold import KFoldTargetEncoder
@@ -33,8 +34,9 @@ class employee_access_resource:
                                         ('combine_feature', CombineFeatures()),
                                         #('tfidf_vectorizer_encoding', TFIDFVectorizerEncoding()),
                                         ('count_vectorizer_encoding', CountVectorizerEncoding()), 
-                                        ('KFoldTE', KFoldTargetEncoder()),                                       
-                                        ('frequency_encoding', FrequencyEncoding()),
+                                        ('KFoldTE', KFoldTargetEncoder()), 
+                                        ('KFold_frequency_encoding', KFoldFrequencyEncoding()),                                      
+                                        #('frequency_encoding', FrequencyEncoding()),
                                         ('Random_Catagory_Encode', RandomCatagoryEncode()),
                                     ]) 
 
@@ -53,8 +55,7 @@ class employee_access_resource:
         training_param =  hlpread.read_yaml_key('trained_model')
 
         #Define model
-        #model = DecisionTreeClassifier(criterion = 'gini', random_state = 42)
-        model = xgb.XGBClassifier()
+        model = DecisionTreeClassifier(criterion = 'gini')
         model.set_params(**training_param['params'])
 
         return model

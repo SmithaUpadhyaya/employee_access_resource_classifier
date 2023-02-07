@@ -1,6 +1,7 @@
 import os
 import json
 import pickle
+import numpy as np
 import logs.logger as log
 from xgboost import XGBClassifier
 import utils.read_utils as hlpread
@@ -10,11 +11,12 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import roc_auc_score
 #from dvclive.keras import DVCLiveCallback #This will work with keras library and not with model sklearn. Since this require to define Callback 
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import FunctionTransformer
 from sklearn.model_selection import StratifiedShuffleSplit
 
 
@@ -97,8 +99,16 @@ if __name__ == '__main__':
 
             #Pipeline to perform standarization of freq enc feature before fitting the model
             model = Pipeline(steps=[("preprocessor", preprocessor), ("logreg_model", model)] )
-    
-    
+
+    #elif model_param['model_type'] == 'decision_tree':
+
+    #    freq_enc_cols = ['ROLE_DEPTNAME', 'ROLE_ROLLUP_1_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_CODE', 'ROLE_DEPTNAME_ROLE_FAMILY_DESC', 'ROLE_DEPTNAME_ROLE_FAMILY', 'ROLE_DEPTNAME_ROLE_CODE']
+    #    for i in range(len(freq_enc_cols)):
+    #        freq_enc_cols[i] = freq_enc_cols[i] + '_FreqEnc'
+
+    #    preprocessor = ColumnTransformer(transformers = [("log_transform_freq_enc_log", FunctionTransformer(np.log10), freq_enc_cols)])
+    #    model = Pipeline(steps=[("preprocessor", preprocessor), ("decision_tree_model", model)] )
+        
     #Step 3: Fit Model
     log.write_log(f'train_model: Fit model started...', log.logging.DEBUG)
 

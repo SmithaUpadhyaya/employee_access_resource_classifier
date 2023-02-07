@@ -20,9 +20,11 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
         self.dict_Vectorizer = {}
         self.dict_dim_reduction = {}
         
-    def combine_cols(self, dataset, columns):
+    def combine_cols(self, dataset):
 
         if self.combine_columns_required == True:
+
+            columns = [x for x in dataset.columns if not x in read_yaml_key('featurize.combine_feat.ignore_columns')] #['ROLE_TITLE', 'MGR_ID']
 
             log.write_log(f'TFIDF: Combine features started: {len(columns)}...', log.logging.DEBUG)
 
@@ -57,7 +59,7 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
 
         colnames = self.params['columns']
         if len(colnames) == 0: 
-            colnames = [x for x in dataset.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & ('_rnd_int_enc' not in x)& (x not in ['ROLE_TITLE', 'MGR_ID'])] 
+            colnames = [x for x in dataset.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & ('_rnd_int_enc' not in x) & (x not in read_yaml_key('featurize.combine_feat.ignore_columns'))] #['ROLE_TITLE', 'MGR_ID']
         
         log.write_log(f'{log_code}: Number of features to consider for vectorize: {len(colnames)}...', log.logging.DEBUG)
 
@@ -147,12 +149,9 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
 
     def encode(self, X, istraining):
 
-        log_code = "TFIDF-"+ "fit" if istraining else "transform"
+        log_code = "TFIDF-"+ "fit" if istraining else "transform"       
 
-        col_use = [x for x in X.columns if not x in ['ROLE_TITLE', 'MGR_ID']]
-        X = X[col_use]
-
-        X = self.combine_cols(X, col_use)
+        X = self.combine_cols(X)
 
         new_dataset = self.get_col_interactions_svd(X, istraining)
         log.write_log(f'{log_code}: Total number of feature after encode: {len(new_dataset.columns)}...', log.logging.DEBUG)

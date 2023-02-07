@@ -23,18 +23,21 @@ stages:
       size: 591595
       nfiles: 1
     - path: src\data\generate_training_features.py
-      md5: e35f2496d7a99d0ac13d3e8f8d904f4b
-      size: 6692
+      md5: bdae512297b025dd3f109fae99af5818
+      size: 6720
     - path: src\models\feature_eng
-      md5: bd303419cc226bec863218d1c48b6ada.dir
-      size: 39967
-      nfiles: 8
+      md5: 99f75eed641af1c6aaa55614f0024c01.dir
+      size: 46761
+      nfiles: 11
     params:
       params.yaml:
         featurize:
           combine_feat:
             targetcol: ACTION
-            columns: []
+            ignore_columns:
+            - ROLE_TITLE
+            - MGR_ID
+            - RESOURCE
           ktarget_enc:
             n_fold: 15
             random_seed: 2023
@@ -43,77 +46,36 @@ stages:
           random_catagory_encode:
             random_seed: 2023
             targetcol: ACTION
+            random_cnt: 3
             columns:
-            - RESOURCE_ROLE_ROLLUP_2
-            - ROLE_DEPTNAME_ROLE_FAMILY_DESC
-            - ROLE_FAMILY
-            - RESOURCE_ROLE_CODE
             - RESOURCE
-            - ROLE_DEPTNAME
-            - ROLE_ROLLUP_2_ROLE_FAMILY
-            - ROLE_FAMILY_ROLE_CODE
-            - ROLE_CODE
             - ROLE_ROLLUP_1
-            - ROLE_ROLLUP_1_ROLE_ROLLUP_2
-            - ROLE_DEPTNAME_ROLE_CODE
-            - RESOURCE_ROLE_FAMILY
-            - ROLE_ROLLUP_1_ROLE_FAMILY
-            - RESOURCE_ROLE_FAMILY_DESC
-            - ROLE_ROLLUP_1_ROLE_DEPTNAME
-            - ROLE_ROLLUP_2_ROLE_DEPTNAME
             - ROLE_ROLLUP_2
-            - RESOURCE_ROLE_DEPTNAME
+            - ROLE_DEPTNAME
+            - ROLE_FAMILY_DESC
+            - ROLE_FAMILY
+            - ROLE_CODE
           fequency_encode:
             min_group_size: 2
             n_fold: 5
             random_seed: 2023
             targetcol: ACTION
+            log_transform: true
             columns:
-            - ROLE_DEPTNAME_ROLE_FAMILY_DESC
-            - ROLE_ROLLUP_2_ROLE_FAMILY_DESC
-            - ROLE_ROLLUP_1_ROLE_FAMILY_DESC
-            - ROLE_FAMILY_DESC_ROLE_CODE
-            - ROLE_DEPTNAME_ROLE_CODE
-            - ROLE_FAMILY_DESC_ROLE_FAMILY
-            - ROLE_ROLLUP_2_ROLE_CODE
-            - ROLE_DEPTNAME_ROLE_FAMILY
-            - ROLE_ROLLUP_1_ROLE_CODE
-            - ROLE_ROLLUP_2_ROLE_DEPTNAME
-            - ROLE_ROLLUP_1_ROLE_DEPTNAME
-            - ROLE_ROLLUP_2_ROLE_FAMILY
-            - ROLE_ROLLUP_1_ROLE_FAMILY
-            - ROLE_ROLLUP_1_ROLE_ROLLUP_2
-            - ROLE_FAMILY_ROLE_CODE
             - ROLE_DEPTNAME
-            - ROLE_FAMILY_DESC
-            - ROLE_CODE
-            - ROLE_ROLLUP_2
-            - ROLE_ROLLUP_1
-            - ROLE_FAMILY
-            - RESOURCE
+            - ROLE_ROLLUP_1_ROLE_DEPTNAME
+            - ROLE_ROLLUP_2_ROLE_DEPTNAME
+            - ROLE_ROLLUP_2_ROLE_CODE
+            - ROLE_DEPTNAME_ROLE_FAMILY_DESC
+            - ROLE_DEPTNAME_ROLE_FAMILY
+            - ROLE_DEPTNAME_ROLE_CODE
           tfidf:
             random_seed: 2023
             dim_reduction: 1
             var_explained: 0.2
             targetcol: ACTION
             combine_columns_required: false
-            columns:
-            - ROLE_DEPTNAME
-            - ROLE_FAMILY_DESC
-            - ROLE_CODE
-            - ROLE_ROLLUP_2
-            - ROLE_ROLLUP_1
-            - ROLE_FAMILY
-            - RESOURCE
-            - ROLE_ROLLUP_1_ROLE_ROLLUP_2
-            - ROLE_FAMILY_ROLE_CODE
-            - ROLE_ROLLUP_1_ROLE_FAMILY
-            - ROLE_ROLLUP_2_ROLE_FAMILY
-            - ROLE_ROLLUP_1_ROLE_DEPTNAME
-            - ROLE_ROLLUP_2_ROLE_DEPTNAME
-            - ROLE_ROLLUP_1_ROLE_CODE
-            - ROLE_DEPTNAME_ROLE_FAMILY
-            - ROLE_ROLLUP_2_ROLE_CODE
+            columns: []
             output:
               folder: feature\tfidf
               filename: tfidf.parquet
@@ -123,32 +85,16 @@ stages:
             var_explained: 0.9
             targetcol: ACTION
             combine_columns_required: false
-            columns:
-            - ROLE_DEPTNAME
-            - ROLE_FAMILY_DESC
-            - ROLE_CODE
-            - ROLE_ROLLUP_2
-            - ROLE_ROLLUP_1
-            - ROLE_FAMILY
-            - RESOURCE
-            - ROLE_ROLLUP_1_ROLE_ROLLUP_2
-            - ROLE_FAMILY_ROLE_CODE
-            - ROLE_ROLLUP_1_ROLE_FAMILY
-            - ROLE_ROLLUP_2_ROLE_FAMILY
-            - ROLE_ROLLUP_1_ROLE_DEPTNAME
-            - ROLE_ROLLUP_2_ROLE_DEPTNAME
-            - ROLE_ROLLUP_1_ROLE_CODE
-            - ROLE_DEPTNAME_ROLE_FAMILY
-            - ROLE_ROLLUP_2_ROLE_CODE
+            columns: []
             output:
               folder: feature\cntvector
               filename: count_vectorizer.parquet
         model.decision_tree.pipeline_type:
           KFoldTE: false
           frequency_encoding: true
-          KFold_frequency_encoding: true
+          KFold_frequency_encoding: false
           tfidf_vectorizer_encoding: false
-          count_vectorizer_encoding: true
+          count_vectorizer_encoding: false
         model.extra_decision_tree.pipeline_type:
           KFoldTE: true
           frequency_encoding: false
@@ -161,7 +107,7 @@ stages:
           KFold_frequency_encoding: false
           tfidf_vectorizer_encoding: false
           count_vectorizer_encoding: true
-        model.model_type: logistic_reg
+        model.model_type: xgboost
         model.random_forest.pipeline_type:
           KFoldTE: false
           frequency_encoding: true
@@ -169,11 +115,11 @@ stages:
           tfidf_vectorizer_encoding: true
           count_vectorizer_encoding: false
         model.xgboost.pipeline_type:
-          KFoldTE: true
+          KFoldTE: false
           frequency_encoding: true
           KFold_frequency_encoding: false
           tfidf_vectorizer_encoding: false
-          count_vectorizer_encoding: true
+          count_vectorizer_encoding: false
         train_test_split:
           test_size: 0.01
           random_seed: 45
@@ -181,28 +127,27 @@ stages:
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: 0cf4b370ccd6980c566a45183480da41.dir
-      size: 2553242
+      md5: afc62e26c15ebe4a645984449a9a2159.dir
+      size: 781113
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: 0cf4b370ccd6980c566a45183480da41.dir
-      size: 2553242
+      md5: afc62e26c15ebe4a645984449a9a2159.dir
+      size: 781113
       nfiles: 1
     - path: src\data\train_model.py
-      md5: 9046b9020248591c4be955e35c5af3fa
-      size: 7668
+      md5: a54f609a3c185be2cc334c7a8e55c8fd
+      size: 8372
     params:
       params.yaml:
         model.decision_tree.hyper_params:
-          random_state: 42
-          max_depth: 14
+          random_state: 2034
+          max_depth: 4
           splitter: best
-          min_samples_leaf: 0.001
+          min_samples_leaf: 0.005
           max_features: 0.3
-          class_weight: balanced
         model.extra_decision_tree.hyper_params:
           random_state: 56
           n_estimators: 55
@@ -218,7 +163,7 @@ stages:
           penalty: l2
           solver: liblinear
           C: 11
-        model.model_type: logistic_reg
+        model.model_type: xgboost
         model.random_forest.hyper_params:
           random_state: 42
           n_estimators: 220
@@ -229,7 +174,7 @@ stages:
           min_samples_leaf: 0.005
           class_weight: balanced
         model.xgboost.hyper_params:
-          n_estimators: 5
+          n_estimators: 60
           reg_lambda: 1.1800000000000002
           max_depth: 5
           learning_rate: 0.4299999999999998
@@ -237,7 +182,7 @@ stages:
           colsample_bytree: 0.685
     outs:
     - path: data\model\metrics\metrics.json
-      md5: da23435dab9f018d745ed8fdeafd1109
+      md5: 38f254838e19aedac1abbc1801204d51
       size: 76
   evaluate_model:
     cmd: python src\data\eval.py
