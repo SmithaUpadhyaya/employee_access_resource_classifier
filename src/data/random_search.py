@@ -167,10 +167,10 @@ def run_exp_XBoost():
     #Hyperparamter tunn=ing for Random Forest
     params = {
         "n_estimators": random.choice(range(50, 500, 5)), #random.choice([50, 100, 150, 200]),
-        "max_depth": random.choice([4, 5]),
+        "max_depth": 4, #random.choice([4, 5]),
         "reg_lambda": random.choice(np.arange(1, 2, 0.01)), 
-        "learning_rate": random.choice(np.arange(0.01, 1, 0.01)),
-        "colsample_bytree": random.choice(np.arange(0.6, 1, 0.005)),
+        "learning_rate": 0.01,#random.choice(np.arange(0.01, 1, 0.01)),
+        "colsample_bytree": random.choice(np.arange(0.5, 1, 0.005)),
         "random_state": random.choice(range(50, 500, 30)),
     }
 
@@ -180,7 +180,8 @@ def run_exp_XBoost():
 
                     "--set-param", f"model.xgboost.hyper_params.reg_lambda={params['reg_lambda']}",
                     "--set-param", f"model.xgboost.hyper_params.learning_rate={params['learning_rate']}",
-                    "--set-param", f"model.xgboost.hyper_params.colsample_bytree={params['colsample_bytree']}",                 
+                    "--set-param", f"model.xgboost.hyper_params.colsample_bytree={params['colsample_bytree']}",   
+                    "--set-param", f"model.xgboost.hyper_params.random_state={params['random_state']}",                 
 
                     ]
                   )

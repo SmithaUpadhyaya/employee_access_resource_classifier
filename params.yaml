@@ -62,7 +62,7 @@ featurize:
 
 train_test_split:
   test_size: 0.01
-  random_seed: 45
+  random_seed: 7899
   cv: 5
   train_data: feature\train_data.parquet
 
@@ -171,11 +171,11 @@ model:
       count_vectorizer_encoding: false
 
     hyper_params:
-      n_estimators: 60
+      n_estimators: 300
       reg_lambda: 1.1800000000000002
-      max_depth: 5
-      learning_rate: 0.4299999999999998
-      random_state: 100
+      max_depth: 4
+      learning_rate: 0.01
+      random_state: 2045
       colsample_bytree: 0.685
 
     trained_model: model\xgboost\model.pkl
