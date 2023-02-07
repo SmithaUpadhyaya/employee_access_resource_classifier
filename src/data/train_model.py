@@ -50,7 +50,7 @@ def define_model(param_filepath):
 
     elif model_type == 'xgboost':
 
-        model = XGBClassifier()
+        model = XGBClassifier(objective='binary:logistic')
         model.set_params(**hyper_param) 
     
     else:

@@ -169,7 +169,7 @@ def run_exp_XBoost():
         "n_estimators": random.choice(range(50, 500, 5)), #random.choice([50, 100, 150, 200]),
         "max_depth": random.choice([4, 5]),
         "reg_lambda": random.choice(np.arange(1, 2, 0.01)), 
-        "learning_rate": random.choice(np.arange(0.1, 1, 0.01)),
+        "learning_rate": random.choice(np.arange(0.01, 1, 0.01)),
         "colsample_bytree": random.choice(np.arange(0.6, 1, 0.005)),
         "random_state": random.choice(range(50, 500, 30)),
     }
@@ -234,9 +234,9 @@ for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
     #run_exp_ExtraTreesClassifier()
     
-    run_exp_Decision_Tree()
+    #run_exp_Decision_Tree()
     
-    #run_exp_XBoost()
+    run_exp_XBoost()
 
 print("Queued Experiement to run.")
 #=============================================================
