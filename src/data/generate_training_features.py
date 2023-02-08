@@ -60,9 +60,10 @@ if __name__ == '__main__':
     if pipeline_params['KFold_frequency_encoding'] == True:
         feature_engg.steps.append(('KFold_frequency_encoding', KFoldFrequencyEncoding()))
 
-    feature_engg.steps.append(('Random_Catagory_Encode', RandomCatagoryEncode()))
+    if pipeline_params['random_catagory_encode'] == True:
+        feature_engg.steps.append(('random_catagory_encode', RandomCatagoryEncode()))
 
-    log.write_log(f'generate_training_features: Fit_transform pipeline started...', log.logging.DEBUG)
+    log.write_log(f'generate_training_features: Fit_transform pipeline started...', log.logging.DEBUG)    
     X = feature_engg.fit_transform(db_train) 
     log.write_log(f'generate_training_features: Fit_transform pipeline completed...', log.logging.DEBUG)
     
@@ -80,6 +81,7 @@ if __name__ == '__main__':
     #X.drop(columns = X.columns[:30], inplace = True) 
     #hlpwrite.save_to_parquet(pd.concat([X, Y], axis = 1 ), train_filepath, True)
 
+    X.drop(['ROLE_TITLE', 'MGR_ID'], axis = 1, inplace = True)
     feature_columns = X.select_dtypes(exclude = ['object']).columns #Exclude "object" type columns
     hlpwrite.save_to_parquet(X[feature_columns], train_filepath, True)
 

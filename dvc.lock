@@ -23,11 +23,11 @@ stages:
       size: 591595
       nfiles: 1
     - path: src\data\generate_training_features.py
-      md5: bdae512297b025dd3f109fae99af5818
-      size: 6720
+      md5: 11733fe9de9928e1ccdc4b089031a1c7
+      size: 6823
     - path: src\models\feature_eng
-      md5: 99f75eed641af1c6aaa55614f0024c01.dir
-      size: 46761
+      md5: 6c0485e6982bb4f4e8926ca630433e4a.dir
+      size: 47289
       nfiles: 11
     params:
       params.yaml:
@@ -46,7 +46,7 @@ stages:
           random_catagory_encode:
             random_seed: 2023
             targetcol: ACTION
-            random_cnt: 3
+            random_cnt: 5
             columns:
             - RESOURCE
             - ROLE_ROLLUP_1
@@ -71,11 +71,36 @@ stages:
             - ROLE_DEPTNAME_ROLE_CODE
           tfidf:
             random_seed: 2023
-            dim_reduction: 1
-            var_explained: 0.2
+            pair_columns:
+            - RESOURCE
+            permute_columns:
+            - ROLE_ROLLUP_1
+            - ROLE_ROLLUP_2
+            - ROLE_DEPTNAME
+            - ROLE_FAMILY_DESC
+            - ROLE_FAMILY
+            - ROLE_CODE
+            - ROLE_ROLLUP_1_ROLE_DEPTNAME
+            - ROLE_ROLLUP_2_ROLE_DEPTNAME
+            - ROLE_ROLLUP_2_ROLE_CODE
+            - ROLE_DEPTNAME_ROLE_FAMILY_DESC
+            - ROLE_DEPTNAME_ROLE_FAMILY
+            - ROLE_DEPTNAME_ROLE_CODE
             targetcol: ACTION
             combine_columns_required: false
-            columns: []
+            dim_reduction:
+              ROLE_ROLLUP_1: 27
+              ROLE_ROLLUP_2: 21
+              ROLE_DEPTNAME: 129
+              ROLE_FAMILY_DESC: 328
+              ROLE_FAMILY: 15
+              ROLE_CODE: 60
+              ROLE_ROLLUP_1_ROLE_DEPTNAME: 160
+              ROLE_ROLLUP_2_ROLE_DEPTNAME: 154
+              ROLE_ROLLUP_2_ROLE_CODE: 90
+              ROLE_DEPTNAME_ROLE_FAMILY_DESC: 317
+              ROLE_DEPTNAME_ROLE_FAMILY: 130
+              ROLE_DEPTNAME_ROLE_CODE: 186
             output:
               folder: feature\tfidf
               filename: tfidf.parquet
@@ -93,20 +118,23 @@ stages:
           KFoldTE: false
           frequency_encoding: true
           KFold_frequency_encoding: false
-          tfidf_vectorizer_encoding: false
+          tfidf_vectorizer_encoding: true
           count_vectorizer_encoding: false
+          random_catagory_encode: false
         model.extra_decision_tree.pipeline_type:
           KFoldTE: true
           frequency_encoding: false
           KFold_frequency_encoding: false
           tfidf_vectorizer_encoding: true
           count_vectorizer_encoding: false
+          random_catagory_encode: false
         model.logistic_reg.pipeline_type:
           KFoldTE: true
           frequency_encoding: false
           KFold_frequency_encoding: false
           tfidf_vectorizer_encoding: false
           count_vectorizer_encoding: true
+          random_catagory_encode: false
         model.model_type: xgboost
         model.random_forest.pipeline_type:
           KFoldTE: false
@@ -114,40 +142,42 @@ stages:
           KFold_frequency_encoding: false
           tfidf_vectorizer_encoding: true
           count_vectorizer_encoding: false
+          random_catagory_encode: false
         model.xgboost.pipeline_type:
           KFoldTE: false
           frequency_encoding: true
           KFold_frequency_encoding: false
-          tfidf_vectorizer_encoding: false
+          tfidf_vectorizer_encoding: true
           count_vectorizer_encoding: false
+          random_catagory_encode: false
         train_test_split:
           test_size: 0.01
-          random_seed: 45
+          random_seed: 7899
           cv: 5
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: afc62e26c15ebe4a645984449a9a2159.dir
-      size: 781113
+      md5: a63a99eaa363b6dcca2462fb33aa40e4.dir
+      size: 86939915
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: afc62e26c15ebe4a645984449a9a2159.dir
-      size: 781113
+      md5: a63a99eaa363b6dcca2462fb33aa40e4.dir
+      size: 86939915
       nfiles: 1
     - path: src\data\train_model.py
-      md5: a54f609a3c185be2cc334c7a8e55c8fd
-      size: 8372
+      md5: 006be9b048f7e975c856714cb3489dcc
+      size: 8401
     params:
       params.yaml:
         model.decision_tree.hyper_params:
           random_state: 2034
-          max_depth: 4
+          max_depth: 40
           splitter: best
           min_samples_leaf: 0.005
-          max_features: 0.3
+          max_features: sqrt
         model.extra_decision_tree.hyper_params:
           random_state: 56
           n_estimators: 55
@@ -174,16 +204,16 @@ stages:
           min_samples_leaf: 0.005
           class_weight: balanced
         model.xgboost.hyper_params:
-          n_estimators: 60
+          n_estimators: 50
           reg_lambda: 1.1800000000000002
           max_depth: 5
-          learning_rate: 0.4299999999999998
-          random_state: 100
+          learning_rate: 0.01
+          random_state: 2045
           colsample_bytree: 0.685
     outs:
     - path: data\model\metrics\metrics.json
-      md5: 38f254838e19aedac1abbc1801204d51
-      size: 76
+      md5: c368ba17fc62155867df67f0828dcdb2
+      size: 75
   evaluate_model:
     cmd: python src\data\eval.py
     deps:

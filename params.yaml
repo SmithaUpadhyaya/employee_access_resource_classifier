@@ -38,11 +38,25 @@ featurize:
 
   tfidf:
     random_seed: 2023
-    dim_reduction: 1
-    var_explained: 0.2
+    pair_columns: ['RESOURCE']
+    permute_columns: ['ROLE_ROLLUP_1', 'ROLE_ROLLUP_2', 'ROLE_DEPTNAME', 'ROLE_FAMILY_DESC', 'ROLE_FAMILY', 'ROLE_CODE', 'ROLE_ROLLUP_1_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_CODE', 'ROLE_DEPTNAME_ROLE_FAMILY_DESC', 'ROLE_DEPTNAME_ROLE_FAMILY', 'ROLE_DEPTNAME_ROLE_CODE']
     targetcol: 'ACTION'
     combine_columns_required: false
-    columns: []
+    #dim_reduction: 1
+    #var_explained: 0.2
+    dim_reduction: 
+      ROLE_ROLLUP_1: 27
+      ROLE_ROLLUP_2: 21
+      ROLE_DEPTNAME: 129
+      ROLE_FAMILY_DESC: 328
+      ROLE_FAMILY: 15
+      ROLE_CODE: 60
+      ROLE_ROLLUP_1_ROLE_DEPTNAME: 160
+      ROLE_ROLLUP_2_ROLE_DEPTNAME: 154
+      ROLE_ROLLUP_2_ROLE_CODE: 90
+      ROLE_DEPTNAME_ROLE_FAMILY_DESC: 317
+      ROLE_DEPTNAME_ROLE_FAMILY: 130
+      ROLE_DEPTNAME_ROLE_CODE: 186
     #columns: [ 'ROLE_DEPTNAME', 'ROLE_FAMILY_DESC', 'ROLE_CODE', 'ROLE_ROLLUP_2', 'ROLE_ROLLUP_1', 'ROLE_FAMILY', 'RESOURCE', 'ROLE_ROLLUP_1_ROLE_ROLLUP_2','ROLE_FAMILY_ROLE_CODE', 'ROLE_ROLLUP_1_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_DEPTNAME','ROLE_ROLLUP_2_ROLE_DEPTNAME','ROLE_ROLLUP_1_ROLE_CODE', 'ROLE_DEPTNAME_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_CODE']
     output:
       folder: feature\tfidf
@@ -77,6 +91,7 @@ model:
       KFold_frequency_encoding: false
       tfidf_vectorizer_encoding: false
       count_vectorizer_encoding: true
+      random_catagory_encode: false
 
     hyper_params:
       random_state: 2023
@@ -96,15 +111,16 @@ model:
       KFoldTE: false
       frequency_encoding: true
       KFold_frequency_encoding: false
-      tfidf_vectorizer_encoding: false
+      tfidf_vectorizer_encoding: true
       count_vectorizer_encoding: false
+      random_catagory_encode: false
 
     hyper_params:
       random_state: 2034
-      max_depth: 4
+      max_depth: 40
       splitter: best
       min_samples_leaf: 0.005
-      max_features: 0.3
+      max_features: 'sqrt' #0.3
       #min_samples_split: 0.01
       #class_weight: balanced
 
@@ -120,6 +136,7 @@ model:
       KFold_frequency_encoding: false
       tfidf_vectorizer_encoding: true
       count_vectorizer_encoding: false
+      random_catagory_encode: false
 
     hyper_params:
       random_state: 56
@@ -145,6 +162,7 @@ model:
       KFold_frequency_encoding: false
       tfidf_vectorizer_encoding: true
       count_vectorizer_encoding: false
+      random_catagory_encode: false
 
     hyper_params:
       random_state: 42
@@ -167,13 +185,14 @@ model:
       KFoldTE: false
       frequency_encoding: true
       KFold_frequency_encoding: false
-      tfidf_vectorizer_encoding: false
+      tfidf_vectorizer_encoding: true
       count_vectorizer_encoding: false
+      random_catagory_encode: false
 
     hyper_params:
-      n_estimators: 300
+      n_estimators: 50
       reg_lambda: 1.1800000000000002
-      max_depth: 4
+      max_depth: 5
       learning_rate: 0.01
       random_state: 2045
       colsample_bytree: 0.685
@@ -187,16 +206,18 @@ trained_model:
   feature_eng: model\feature_engg_pipeline.json
 
   params:
-    random_state: 2034
+    n_estimators: 450
+    reg_lambda: 2
     max_depth: 4
-    splitter: best
-    min_samples_leaf: 0.005
-    max_features: 0.3
+    learning_rate: 0.01
+    random_state: 2045
+    colsample_bytree: 0.685  
 
   pipeline_type:
-    KFoldTE: true
-    frequency_encoding: false
-    KFold_frequency_encoding: true
+    KFoldTE: false
+    frequency_encoding: true
+    KFold_frequency_encoding: false
     tfidf_vectorizer_encoding: false
-    count_vectorizer_encoding: true
+    count_vectorizer_encoding: false
+    random_catagory_encode: false
 

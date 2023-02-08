@@ -12,17 +12,19 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
     def __init__(self, concat_result_X = True):  
         
         self.params = read_yaml_key('featurize.tfidf')
-        self.targetcol = self.params['targetcol']
-        self.combine_columns_required = self.params['combine_columns_required']
+        self.targetcol = self.params['targetcol']        
         
         self.merge_result = concat_result_X
 
         self.dict_Vectorizer = {}
         self.dict_dim_reduction = {}
-        
+
+    """   
     def combine_cols(self, dataset):
 
-        if self.combine_columns_required == True:
+        combine_columns_required = self.params['combine_columns_required']
+
+        if combine_columns_required == True:
 
             columns = [x for x in dataset.columns if not x in read_yaml_key('featurize.combine_feat.ignore_columns')] #['ROLE_TITLE', 'MGR_ID']
 
@@ -52,36 +54,42 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
                 dataset[name] = dataset[c1] + " " + dataset[c2]
 
         return dataset
-
+    """
+    
     def get_col_interactions_svd(self, dataset, istraining):
 
         log_code = "TFIDF-"+ "fit" if istraining else "transform"
 
-        colnames = self.params['columns']
+        #colnames = self.params['columns']
+        colnames = self.params['permute_columns']
         if len(colnames) == 0: 
             colnames = [x for x in dataset.columns if (x not in self.targetcol) & ('_Kfold' not in x) & ('_FreqEnc' not in x) & ('_svd' not in x) & ('_rnd_int_enc' not in x) & (x not in read_yaml_key('featurize.combine_feat.ignore_columns'))] #['ROLE_TITLE', 'MGR_ID']
         
         log.write_log(f'{log_code}: Number of features to consider for vectorize: {len(colnames)}...', log.logging.DEBUG)
 
         permutat_cnt = 0
-        for col1, col2 in permutations(colnames, 2): #dataset.columns
         
-            if (col1 == self.targetcol) | (col2 == self.targetcol):
-                continue
+        #for col1, col2 in permutations(colnames, 2): #dataset.columns
+        for col1 in self.params['pair_columns']:
 
-            data = self.extract_col_interaction(dataset, col1, col2, istraining)
+            for col2 in self.params['permute_columns']:
 
-            if type(data) == type(None):
-                continue
+                if (col1 == self.targetcol) | (col2 == self.targetcol):
+                    continue
 
-            #new_dataset will return the encoding for unique value for the combination. 
-            #Will use merge to merge them to the X train dataset.
+                data = self.extract_col_interaction(dataset, col1, col2, istraining)
 
-            #Merge records with main X dataset
-            #Merge the extracted interaction data about col1 to main dataset by joining them with there key.
-            #Reason to do this is we want to merge the calculated interaction data to respective col1 in main dataset
-            dataset = dataset.merge(data, on = col1, how = 'inner')
-            permutat_cnt += 1
+                if type(data) == type(None):
+                    continue
+
+                #new_dataset will return the encoding for unique value for the combination. 
+                #Will use merge to merge them to the X train dataset.
+
+                #Merge records with main X dataset
+                #Merge the extracted interaction data about col1 to main dataset by joining them with there key.
+                #Reason to do this is we want to merge the calculated interaction data to respective col1 in main dataset
+                dataset = dataset.merge(data, on = col1, how = 'inner')
+                permutat_cnt += 1
 
         log.write_log(f'{log_code}: Number of permutations for features: {len(colnames)} is {permutat_cnt}', log.logging.DEBUG)
         
@@ -109,13 +117,22 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
         data_X = vectorizer.transform(data)
 
         if key in self.dict_dim_reduction:
+        
             dim_red = self.dict_dim_reduction[key] 
+        
         else:
-            dim_red = TruncatedSVD(n_components = self.params['dim_reduction'], random_state = self.params['random_seed'])
 
+            #dim_reduction = self.params['dim_reduction']
+            dim_reduction = self.params['dim_reduction'][col2]
+
+            dim_red = TruncatedSVD(n_components = dim_reduction, random_state = self.params['random_seed'])
+
+            self.dict_dim_reduction[key] = dim_red.fit(data_X) 
+
+            """
             #Save the fitted dimension reduction obj, which will be used in the transform stage
             dim_red = dim_red.fit(data_X) 
-
+            
             if dim_red.explained_variance_ratio_[0] >= self.params['var_explained']:
 
                 self.dict_dim_reduction[key] = dim_red.fit(data_X) 
@@ -125,10 +142,11 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
             
                 del [self.dict_Vectorizer[key]]
                 return None
-
+            """
         data_X = dim_red.transform(data_X)
         
-        col_no = self.params['dim_reduction']
+        #col_no = self.params['dim_reduction']
+        col_no = self.params['dim_reduction'][col2]
         col_names = []
 
         if col_no == 1:
@@ -151,7 +169,7 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
 
         log_code = "TFIDF-"+ "fit" if istraining else "transform"       
 
-        X = self.combine_cols(X)
+        #X = self.combine_cols(X)
 
         new_dataset = self.get_col_interactions_svd(X, istraining)
         log.write_log(f'{log_code}: Total number of feature after encode: {len(new_dataset.columns)}...', log.logging.DEBUG)
@@ -160,7 +178,7 @@ class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
 
             #Get all the transformed columns
             col_name = [x for x in new_dataset.columns if "svd" in x]
-            log.write_log(f'{log_code}: Feature to retrun encode: {len(col_name)}...', log.logging.DEBUG) 
+            log.write_log(f'{log_code}: Feature to return encode: {len(col_name)}...', log.logging.DEBUG) 
             return new_dataset[col_name] 
 
         else:
