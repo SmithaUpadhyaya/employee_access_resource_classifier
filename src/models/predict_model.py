@@ -1,5 +1,6 @@
 from src.models.feature_eng.TFIDFVectorizerEncoding import TFIDFVectorizerEncoding
 from src.models.feature_eng.CountVectorizerEncoding import CountVectorizerEncoding
+from src.models.feature_eng.ResourceEncodeByFeature import ResourceEncodeByFeature
 from src.models.feature_eng.RandomCatagoryEncode import RandomCatagoryEncode
 from src.models.feature_eng.KFoldFreqEncoding import KFoldFrequencyEncoding
 from src.models.feature_eng.Combine_feature import CombineFeatures
@@ -59,7 +60,8 @@ class employee_access_resource:
                 self.feature_engg.steps.append(('random_catagory_encode', RandomCatagoryEncode()))
 
             if pipeline_params['resource_catagory_encode'] == True:
-                self.feature_engg.steps.append(("encode_resource_grpby_role_deptname_role_family", FunctionTransformer(encode_resource_by_feature)))
+                self.feature_engg.steps.append(("encode_resource_grpby_role_deptname_role_family", ResourceEncodeByFeature()))
+                #self.feature_engg.steps.append(("encode_resource_grpby_role_deptname_role_family", FunctionTransformer(encode_resource_by_feature)))
 
             #self.feature_engg = Pipeline(steps = [
             #                            ('combine_feature', CombineFeatures()),
@@ -84,8 +86,8 @@ class employee_access_resource:
     def define_model(self, params):
 
         #Define model
-        #model = DecisionTreeClassifier(criterion = 'gini')
-        model = XGBClassifier(objective='binary:logistic')
+        model = DecisionTreeClassifier(criterion = 'gini')
+        #model = XGBClassifier(objective='binary:logistic')
         model.set_params(**params)
 
         return model

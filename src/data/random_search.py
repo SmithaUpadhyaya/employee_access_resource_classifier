@@ -8,7 +8,7 @@ import os
 
 
 # Automated random search experiments
-num_exps = 5 #Number of experiments to run to generate
+num_exps = 10 #Number of experiments to run to generate
 random.seed(42)
 
 
@@ -28,7 +28,7 @@ def run_exp_Decision_Tree():
     
     params = {
         "random_state": random.randint(50, 3000), 
-        "max_depth": random.choice(range(3, 5, 1)),      #random.choice([3,5,7,9])
+        "max_depth": random.choice(range(40, 100, 5)),      #random.choice([3,5,7,9])
         "splitter": 'best', #random.choice(['best', 'random']),
         "min_samples_leaf":  random.choice([0.01, 0.05, 0.001, 0.002, 0.005]),
         "max_features":  random.choice(['sqrt', 'log2', 0.3, 0.5, 0.6, 0.7, 0.8, 0.95, 1]),

@@ -216,19 +216,20 @@ trained_model:
   feature_eng: model\feature_engg_pipeline.json
 
   params:
-    n_estimators: 10
-    reg_lambda: 1.1400000000000001
-    max_depth: 5
-    learning_rate: 0.01
-    random_state: 380
-    colsample_bytree: 0.515  
+    random_state: 2034
+    max_depth: 40
+    splitter: best
+    min_samples_leaf: 0.005
+    max_features: 'sqrt' #0.3
+    #min_samples_split: 0.01
+    #class_weight: balanced
 
   pipeline_type:
     KFoldTE: false
     frequency_encoding: true
     KFold_frequency_encoding: false
-    tfidf_vectorizer_encoding: true
+    tfidf_vectorizer_encoding: false
     count_vectorizer_encoding: false
     random_catagory_encode: false
-    resource_catagory_encode: false
+    resource_catagory_encode: true
 

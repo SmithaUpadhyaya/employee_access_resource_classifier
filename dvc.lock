@@ -23,12 +23,12 @@ stages:
       size: 591595
       nfiles: 1
     - path: src\data\generate_training_features.py
-      md5: 11733fe9de9928e1ccdc4b089031a1c7
-      size: 6823
+      md5: c779bb86eadc47590973579520939454
+      size: 7329
     - path: src\models\feature_eng
-      md5: 6c0485e6982bb4f4e8926ca630433e4a.dir
-      size: 47289
-      nfiles: 11
+      md5: dca79019e246b938cca08f885bd81925.dir
+      size: 44227
+      nfiles: 9
     params:
       params.yaml:
         featurize:
@@ -38,6 +38,9 @@ stages:
             - ROLE_TITLE
             - MGR_ID
             - RESOURCE
+          resource_catagory_encode:
+            column_to_consider:
+            - ROLE_DEPTNAME_ROLE_FAMILY
           ktarget_enc:
             n_fold: 15
             random_seed: 2023
@@ -104,9 +107,10 @@ stages:
           KFoldTE: false
           frequency_encoding: true
           KFold_frequency_encoding: false
-          tfidf_vectorizer_encoding: true
+          tfidf_vectorizer_encoding: false
           count_vectorizer_encoding: false
           random_catagory_encode: false
+          resource_catagory_encode: true
         model.extra_decision_tree.pipeline_type:
           KFoldTE: true
           frequency_encoding: false
@@ -114,6 +118,7 @@ stages:
           tfidf_vectorizer_encoding: true
           count_vectorizer_encoding: false
           random_catagory_encode: false
+          resource_catagory_encode: false
         model.logistic_reg.pipeline_type:
           KFoldTE: true
           frequency_encoding: false
@@ -121,7 +126,8 @@ stages:
           tfidf_vectorizer_encoding: false
           count_vectorizer_encoding: true
           random_catagory_encode: false
-        model.model_type: xgboost
+          resource_catagory_encode: false
+        model.model_type: decision_tree
         model.random_forest.pipeline_type:
           KFoldTE: false
           frequency_encoding: true
@@ -129,6 +135,7 @@ stages:
           tfidf_vectorizer_encoding: true
           count_vectorizer_encoding: false
           random_catagory_encode: false
+          resource_catagory_encode: false
         model.xgboost.pipeline_type:
           KFoldTE: false
           frequency_encoding: true
@@ -136,6 +143,7 @@ stages:
           tfidf_vectorizer_encoding: true
           count_vectorizer_encoding: false
           random_catagory_encode: false
+          resource_catagory_encode: false
         train_test_split:
           test_size: 0.01
           random_seed: 7899
@@ -143,15 +151,15 @@ stages:
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: dbf81279dcf6da1339279a0d5ce7adc2.dir
-      size: 9926788
+      md5: 1a0179c45dfbd06323c240b9fc321686.dir
+      size: 427223
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: dbf81279dcf6da1339279a0d5ce7adc2.dir
-      size: 9926788
+      md5: 1a0179c45dfbd06323c240b9fc321686.dir
+      size: 427223
       nfiles: 1
     - path: src\data\train_model.py
       md5: 006be9b048f7e975c856714cb3489dcc
@@ -179,7 +187,7 @@ stages:
           penalty: l2
           solver: liblinear
           C: 11
-        model.model_type: xgboost
+        model.model_type: decision_tree
         model.random_forest.hyper_params:
           random_state: 42
           n_estimators: 220
@@ -190,15 +198,15 @@ stages:
           min_samples_leaf: 0.005
           class_weight: balanced
         model.xgboost.hyper_params:
-          n_estimators: 70
-          reg_lambda: 1.03
-          max_depth: 5
+          n_estimators: 300
+          reg_lambda: 1.1800000000000002
+          max_depth: 4
           learning_rate: 0.01
-          random_state: 140
-          colsample_bytree: 0.555
+          random_state: 2045
+          colsample_bytree: 0.685
     outs:
     - path: data\model\metrics\metrics.json
-      md5: 7b99f04325185d2bfb90a4348b725e49
+      md5: 5a7638e64a97032832fdbed3e69799f4
       size: 75
   evaluate_model:
     cmd: python src\data\eval.py
