@@ -11,44 +11,61 @@ data_source:
 featurize:
 
   combine_feat:
-    targetcol: 'ACTION'
-    ignore_columns: ['ROLE_TITLE', 'MGR_ID', 'RESOURCE'] #['ROLE_TITLE'] 
-  
+    targetcol: ACTION
+    ignore_columns:                                      #['ROLE_TITLE'] 
+    - ROLE_TITLE
+    - MGR_ID
+    - RESOURCE
   resource_catagory_encode:
-    column_to_consider: ['ROLE_DEPTNAME_ROLE_FAMILY']
-
+    column_to_consider:
+    - ROLE_DEPTNAME_ROLE_FAMILY
   ktarget_enc:
     n_fold: 15
     random_seed: 2023
-    targetcol: 'ACTION'
+    targetcol: ACTION
     columns: []
 
   random_catagory_encode:
     random_seed: 2023
-    targetcol: 'ACTION'
+    targetcol: ACTION
     random_cnt: 5
-    columns: ['RESOURCE', 'ROLE_ROLLUP_1', 'ROLE_ROLLUP_2', 'ROLE_DEPTNAME','ROLE_FAMILY_DESC', 'ROLE_FAMILY', 'ROLE_CODE']
-    #columns: ['RESOURCE_ROLE_ROLLUP_2','ROLE_DEPTNAME_ROLE_FAMILY_DESC', 'ROLE_FAMILY', 'RESOURCE_ROLE_CODE', 'RESOURCE', 'ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_FAMILY', 'ROLE_FAMILY_ROLE_CODE', 'ROLE_CODE', 'ROLE_ROLLUP_1', 'ROLE_ROLLUP_1_ROLE_ROLLUP_2', 'ROLE_DEPTNAME_ROLE_CODE','RESOURCE_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_FAMILY',  'RESOURCE_ROLE_FAMILY_DESC', 'ROLE_ROLLUP_1_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_DEPTNAME','ROLE_ROLLUP_2', 'RESOURCE_ROLE_DEPTNAME']
-
+    columns:
+    - RESOURCE
+    - ROLE_ROLLUP_1
+    - ROLE_ROLLUP_2
+    - ROLE_DEPTNAME
+    - ROLE_FAMILY_DESC
+    - ROLE_FAMILY
+    - ROLE_CODE
   fequency_encode:
     min_group_size: 2
     n_fold: 5
     random_seed: 2023
-    targetcol: 'ACTION'
-    log_transform: True
-    columns: ['ROLE_DEPTNAME', 'ROLE_ROLLUP_1_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_CODE', 'ROLE_DEPTNAME_ROLE_FAMILY_DESC', 'ROLE_DEPTNAME_ROLE_FAMILY', 'ROLE_DEPTNAME_ROLE_CODE']
-    #columns: [ 'ROLE_DEPTNAME_ROLE_FAMILY_DESC', 'ROLE_ROLLUP_2_ROLE_FAMILY_DESC','ROLE_ROLLUP_1_ROLE_FAMILY_DESC', 'ROLE_FAMILY_DESC_ROLE_CODE','ROLE_DEPTNAME_ROLE_CODE', 'ROLE_FAMILY_DESC_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_CODE', 'ROLE_DEPTNAME_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_CODE','ROLE_ROLLUP_2_ROLE_DEPTNAME', 'ROLE_ROLLUP_1_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_ROLLUP_2','ROLE_FAMILY_ROLE_CODE', 'ROLE_DEPTNAME', 'ROLE_FAMILY_DESC', 'ROLE_CODE','ROLE_ROLLUP_2', 'ROLE_ROLLUP_1', 'ROLE_FAMILY','RESOURCE']
-
+    targetcol: ACTION
+    log_transform: true
+    columns:
+    - ROLE_DEPTNAME
+    - ROLE_ROLLUP_1_ROLE_DEPTNAME
+    - ROLE_ROLLUP_2_ROLE_DEPTNAME
+    - ROLE_ROLLUP_2_ROLE_CODE
+    - ROLE_DEPTNAME_ROLE_FAMILY_DESC
+    - ROLE_DEPTNAME_ROLE_FAMILY
+    - ROLE_DEPTNAME_ROLE_CODE
   tfidf:
     random_seed: 2023
-    pair_columns: ['RESOURCE']
-    #'ROLE_DEPTNAME', 'ROLE_FAMILY_DESC', 'ROLE_DEPTNAME_ROLE_FAMILY_DESC',  'ROLE_DEPTNAME_ROLE_CODE','ROLE_ROLLUP_1_ROLE_DEPTNAME', 'ROLE_ROLLUP_2_ROLE_DEPTNAME', 'ROLE_DEPTNAME_ROLE_FAMILY',
-    permute_columns: ['ROLE_ROLLUP_1', 'ROLE_ROLLUP_2',  'ROLE_FAMILY', 'ROLE_CODE', 'ROLE_ROLLUP_2_ROLE_CODE', ]
-    targetcol: 'ACTION'
+    pair_columns:
+    - RESOURCE
+    permute_columns:
+    - ROLE_ROLLUP_1
+    - ROLE_ROLLUP_2
+    - ROLE_FAMILY
+    - ROLE_CODE
+    - ROLE_ROLLUP_2_ROLE_CODE
+    targetcol: ACTION
     combine_columns_required: false
     #dim_reduction: 1
     #var_explained: 0.2
-    dim_reduction: 
+    dim_reduction:
       ROLE_ROLLUP_1: 27
       ROLE_ROLLUP_2: 21
       #ROLE_DEPTNAME: 129
@@ -71,7 +88,7 @@ featurize:
     random_seed: 2023
     dim_reduction: 1
     var_explained: 0.9
-    targetcol: 'ACTION'
+    targetcol: ACTION
     combine_columns_required: false
     columns: []
     #columns: [ 'ROLE_DEPTNAME', 'ROLE_FAMILY_DESC', 'ROLE_CODE', 'ROLE_ROLLUP_2', 'ROLE_ROLLUP_1', 'ROLE_FAMILY', 'RESOURCE', 'ROLE_ROLLUP_1_ROLE_ROLLUP_2','ROLE_FAMILY_ROLE_CODE', 'ROLE_ROLLUP_1_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_DEPTNAME','ROLE_ROLLUP_2_ROLE_DEPTNAME','ROLE_ROLLUP_1_ROLE_CODE', 'ROLE_DEPTNAME_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_CODE']
@@ -123,11 +140,11 @@ model:
       resource_catagory_encode: true
 
     hyper_params:
-      random_state: 2034
-      max_depth: 40
+      random_state: 76
+      max_depth: 50
       splitter: best
-      min_samples_leaf: 0.005
-      max_features: 'sqrt' #0.3
+      min_samples_leaf: 0.002
+      max_features: 0.7    #0.3
       #min_samples_split: 0.01
       #class_weight: balanced
 
@@ -216,20 +233,20 @@ trained_model:
   feature_eng: model\feature_engg_pipeline.json
 
   params:
-    random_state: 2034
-    max_depth: 40
+    random_state: 76
+    max_depth: 50
     splitter: best
-    min_samples_leaf: 0.005
-    max_features: 'sqrt' #0.3
+    min_samples_leaf: 0.002
+    max_features: 0.7    #0.3
     #min_samples_split: 0.01
     #class_weight: balanced
 
   pipeline_type:
     KFoldTE: false
-    frequency_encoding: true
-    KFold_frequency_encoding: false
+    frequency_encoding: false
+    KFold_frequency_encoding: true
     tfidf_vectorizer_encoding: false
-    count_vectorizer_encoding: false
+    count_vectorizer_encoding: true
     random_catagory_encode: false
     resource_catagory_encode: true
 

@@ -52,11 +52,11 @@ def run_exp_Decision_Tree():
                   
 
                     #Select the featurization techinique
-                    "--set-param", f"model.decision_tree.pipeline_type.KFoldTE={params['KFoldTE']}",
-                    "--set-param", f"model.decision_tree.pipeline_type.frequency_encoding={params['frequency_encoding']}",
-                    "--set-param", f"model.decision_tree.pipeline_type.KFold_frequency_encoding={params['KFold_frequency_encoding']}",
-                    "--set-param", f"model.decision_tree.pipeline_type.tfidf_vectorizer_encoding={params['tfidf_vectorizer_encoding']}",
-                    "--set-param", f"model.decision_tree.pipeline_type.count_vectorizer_encoding={params['count_vectorizer_encoding']}",
+                    #"--set-param", f"model.decision_tree.pipeline_type.KFoldTE={params['KFoldTE']}",
+                    #"--set-param", f"model.decision_tree.pipeline_type.frequency_encoding={params['frequency_encoding']}",
+                    #"--set-param", f"model.decision_tree.pipeline_type.KFold_frequency_encoding={params['KFold_frequency_encoding']}",
+                    #"--set-param", f"model.decision_tree.pipeline_type.tfidf_vectorizer_encoding={params['tfidf_vectorizer_encoding']}",
+                    #"--set-param", f"model.decision_tree.pipeline_type.count_vectorizer_encoding={params['count_vectorizer_encoding']}",
 
                     ]
                   #This did not help
