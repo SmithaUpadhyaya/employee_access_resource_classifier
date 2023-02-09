@@ -13,7 +13,10 @@ featurize:
   combine_feat:
     targetcol: 'ACTION'
     ignore_columns: ['ROLE_TITLE', 'MGR_ID', 'RESOURCE'] #['ROLE_TITLE'] 
-    
+  
+  resource_catagory_encode:
+    column_to_consider: ['ROLE_DEPTNAME_ROLE_FAMILY']
+
   ktarget_enc:
     n_fold: 15
     random_seed: 2023
@@ -83,7 +86,7 @@ train_test_split:
   train_data: feature\train_data.parquet
 
 model:
-  model_type: xgboost
+  model_type: decision_tree
 
   logistic_reg:
 
@@ -94,6 +97,7 @@ model:
       tfidf_vectorizer_encoding: false
       count_vectorizer_encoding: true
       random_catagory_encode: false
+      resource_catagory_encode: false
 
     hyper_params:
       random_state: 2023
@@ -113,9 +117,10 @@ model:
       KFoldTE: false
       frequency_encoding: true
       KFold_frequency_encoding: false
-      tfidf_vectorizer_encoding: true
+      tfidf_vectorizer_encoding: false
       count_vectorizer_encoding: false
       random_catagory_encode: false
+      resource_catagory_encode: true
 
     hyper_params:
       random_state: 2034
@@ -139,6 +144,7 @@ model:
       tfidf_vectorizer_encoding: true
       count_vectorizer_encoding: false
       random_catagory_encode: false
+      resource_catagory_encode: false
 
     hyper_params:
       random_state: 56
@@ -165,6 +171,7 @@ model:
       tfidf_vectorizer_encoding: true
       count_vectorizer_encoding: false
       random_catagory_encode: false
+      resource_catagory_encode: false
 
     hyper_params:
       random_state: 42
@@ -190,11 +197,12 @@ model:
       tfidf_vectorizer_encoding: true
       count_vectorizer_encoding: false
       random_catagory_encode: false
+      resource_catagory_encode: false
 
     hyper_params:
-      n_estimators: 50
+      n_estimators: 300
       reg_lambda: 1.1800000000000002
-      max_depth: 5
+      max_depth: 4
       learning_rate: 0.01
       random_state: 2045
       colsample_bytree: 0.685
@@ -208,18 +216,19 @@ trained_model:
   feature_eng: model\feature_engg_pipeline.json
 
   params:
-    n_estimators: 450
-    reg_lambda: 2
-    max_depth: 4
+    n_estimators: 10
+    reg_lambda: 1.1400000000000001
+    max_depth: 5
     learning_rate: 0.01
-    random_state: 2045
-    colsample_bytree: 0.685  
+    random_state: 380
+    colsample_bytree: 0.515  
 
   pipeline_type:
     KFoldTE: false
     frequency_encoding: true
     KFold_frequency_encoding: false
-    tfidf_vectorizer_encoding: false
+    tfidf_vectorizer_encoding: true
     count_vectorizer_encoding: false
     random_catagory_encode: false
+    resource_catagory_encode: false
 

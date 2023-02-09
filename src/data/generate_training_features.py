@@ -5,6 +5,8 @@ import logs.logger as log
 import utils.read_utils as hlpread
 import utils.write_utils as hlpwrite
 from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import FunctionTransformer
 from sklearn.model_selection import StratifiedShuffleSplit
 from src.models.feature_eng.TE_KFold import KFoldTargetEncoder
 from src.models.feature_eng.FreqEncoding import FrequencyEncoding
@@ -13,6 +15,8 @@ from src.models.feature_eng.KFoldFreqEncoding import KFoldFrequencyEncoding
 from src.models.feature_eng.RandomCatagoryEncode import RandomCatagoryEncode
 from src.models.feature_eng.CountVectorizerEncoding import CountVectorizerEncoding
 from src.models.feature_eng.TFIDFVectorizerEncoding import TFIDFVectorizerEncoding
+from src.models.feature_eng.ResourceEncodeByFeature import ResourceEncodeByFeature
+
 
 if __name__ == '__main__':
 
@@ -62,6 +66,11 @@ if __name__ == '__main__':
 
     if pipeline_params['random_catagory_encode'] == True:
         feature_engg.steps.append(('random_catagory_encode', RandomCatagoryEncode()))
+
+    if pipeline_params['resource_catagory_encode'] == True:
+        feature_engg.steps.append(("encode_resource_grpby_role_deptname_role_family", ResourceEncodeByFeature()))
+        #feature_engg.steps.append(("encode_resource_grpby_role_deptname_role_family", FunctionTransformer(encode_resource_by_feature)))
+
 
     log.write_log(f'generate_training_features: Fit_transform pipeline started...', log.logging.DEBUG)    
     X = feature_engg.fit_transform(db_train) 

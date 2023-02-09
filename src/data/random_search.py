@@ -8,7 +8,7 @@ import os
 
 
 # Automated random search experiments
-num_exps = 30 #Number of experiments to run to generate
+num_exps = 5 #Number of experiments to run to generate
 random.seed(42)
 
 
@@ -188,8 +188,6 @@ def run_exp_XBoost():
 
 #===============================================================================================
 
-
-
 def run_exp_Logistic_Reg():
     
     #Hyper paramater tuning for Logistic Regression 
@@ -235,9 +233,9 @@ for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
     #run_exp_ExtraTreesClassifier()
     
-    #run_exp_Decision_Tree()
+    run_exp_Decision_Tree()
     
-    run_exp_XBoost()
+    #run_exp_XBoost()
 
 print("Queued Experiement to run.")
 #=============================================================

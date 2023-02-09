@@ -76,31 +76,17 @@ stages:
             permute_columns:
             - ROLE_ROLLUP_1
             - ROLE_ROLLUP_2
-            - ROLE_DEPTNAME
-            - ROLE_FAMILY_DESC
             - ROLE_FAMILY
             - ROLE_CODE
-            - ROLE_ROLLUP_1_ROLE_DEPTNAME
-            - ROLE_ROLLUP_2_ROLE_DEPTNAME
             - ROLE_ROLLUP_2_ROLE_CODE
-            - ROLE_DEPTNAME_ROLE_FAMILY_DESC
-            - ROLE_DEPTNAME_ROLE_FAMILY
-            - ROLE_DEPTNAME_ROLE_CODE
             targetcol: ACTION
             combine_columns_required: false
             dim_reduction:
               ROLE_ROLLUP_1: 27
               ROLE_ROLLUP_2: 21
-              ROLE_DEPTNAME: 129
-              ROLE_FAMILY_DESC: 328
               ROLE_FAMILY: 15
               ROLE_CODE: 60
-              ROLE_ROLLUP_1_ROLE_DEPTNAME: 160
-              ROLE_ROLLUP_2_ROLE_DEPTNAME: 154
               ROLE_ROLLUP_2_ROLE_CODE: 90
-              ROLE_DEPTNAME_ROLE_FAMILY_DESC: 317
-              ROLE_DEPTNAME_ROLE_FAMILY: 130
-              ROLE_DEPTNAME_ROLE_CODE: 186
             output:
               folder: feature\tfidf
               filename: tfidf.parquet
@@ -157,15 +143,15 @@ stages:
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: a63a99eaa363b6dcca2462fb33aa40e4.dir
-      size: 86939915
+      md5: dbf81279dcf6da1339279a0d5ce7adc2.dir
+      size: 9926788
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: a63a99eaa363b6dcca2462fb33aa40e4.dir
-      size: 86939915
+      md5: dbf81279dcf6da1339279a0d5ce7adc2.dir
+      size: 9926788
       nfiles: 1
     - path: src\data\train_model.py
       md5: 006be9b048f7e975c856714cb3489dcc
@@ -204,15 +190,15 @@ stages:
           min_samples_leaf: 0.005
           class_weight: balanced
         model.xgboost.hyper_params:
-          n_estimators: 50
-          reg_lambda: 1.1800000000000002
+          n_estimators: 70
+          reg_lambda: 1.03
           max_depth: 5
           learning_rate: 0.01
-          random_state: 2045
-          colsample_bytree: 0.685
+          random_state: 140
+          colsample_bytree: 0.555
     outs:
     - path: data\model\metrics\metrics.json
-      md5: c368ba17fc62155867df67f0828dcdb2
+      md5: 7b99f04325185d2bfb90a4348b725e49
       size: 75
   evaluate_model:
     cmd: python src\data\eval.py

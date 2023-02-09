@@ -5,6 +5,7 @@ from src.models.feature_eng.KFoldFreqEncoding import KFoldFrequencyEncoding
 from src.models.feature_eng.Combine_feature import CombineFeatures
 from src.models.feature_eng.FreqEncoding import FrequencyEncoding
 from src.models.feature_eng.TE_KFold import KFoldTargetEncoder
+from sklearn.preprocessing import FunctionTransformer
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.pipeline import Pipeline
 import utils.write_utils as hlpwrite
@@ -57,6 +58,9 @@ class employee_access_resource:
             if pipeline_params['random_catagory_encode'] == True:
                 self.feature_engg.steps.append(('random_catagory_encode', RandomCatagoryEncode()))
 
+            if pipeline_params['resource_catagory_encode'] == True:
+                self.feature_engg.steps.append(("encode_resource_grpby_role_deptname_role_family", FunctionTransformer(encode_resource_by_feature)))
+
             #self.feature_engg = Pipeline(steps = [
             #                            ('combine_feature', CombineFeatures()),
             #                            #('tfidf_vectorizer_encoding', TFIDFVectorizerEncoding()),
@@ -86,8 +90,7 @@ class employee_access_resource:
 
         return model
 
-    def train(self, X):
-        
+    def train(self, X):      
         
 
         self.model = self.define_model(self.training_param['params'])        
