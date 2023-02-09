@@ -105,10 +105,10 @@ stages:
               filename: count_vectorizer.parquet
         model.decision_tree.pipeline_type:
           KFoldTE: false
-          frequency_encoding: false
-          KFold_frequency_encoding: true
+          frequency_encoding: true
+          KFold_frequency_encoding: false
           tfidf_vectorizer_encoding: false
-          count_vectorizer_encoding: true
+          count_vectorizer_encoding: false
           random_catagory_encode: false
           resource_catagory_encode: true
         model.extra_decision_tree.pipeline_type:
@@ -151,15 +151,15 @@ stages:
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: dcc6b041a0ab197ce34b9e7bac9abff9.dir
-      size: 2654503
+      md5: 1a0179c45dfbd06323c240b9fc321686.dir
+      size: 427223
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: dcc6b041a0ab197ce34b9e7bac9abff9.dir
-      size: 2654503
+      md5: 1a0179c45dfbd06323c240b9fc321686.dir
+      size: 427223
       nfiles: 1
     - path: src\data\train_model.py
       md5: 006be9b048f7e975c856714cb3489dcc
@@ -167,11 +167,11 @@ stages:
     params:
       params.yaml:
         model.decision_tree.hyper_params:
-          random_state: 76
-          max_depth: 50
+          random_state: 988
+          max_depth: 40
           splitter: best
-          min_samples_leaf: 0.002
-          max_features: 0.7
+          min_samples_leaf: 0.001
+          max_features: 0.8
         model.extra_decision_tree.hyper_params:
           random_state: 56
           n_estimators: 55
@@ -206,7 +206,7 @@ stages:
           colsample_bytree: 0.685
     outs:
     - path: data\model\metrics\metrics.json
-      md5: bf72b53c9752cf2c58660abfb30ef67f
+      md5: 09b792b3cd0274cd7fd845feac5e5017
       size: 76
   evaluate_model:
     cmd: python src\data\eval.py

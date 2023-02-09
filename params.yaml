@@ -140,11 +140,11 @@ model:
       resource_catagory_encode: true
 
     hyper_params:
-      random_state: 76
-      max_depth: 50
+      random_state: 988
+      max_depth: 40
       splitter: best
-      min_samples_leaf: 0.002
-      max_features: 0.7    #0.3
+      min_samples_leaf: 0.001
+      max_features: 0.8    #0.3
       #min_samples_split: 0.01
       #class_weight: balanced
 
@@ -233,20 +233,18 @@ trained_model:
   feature_eng: model\feature_engg_pipeline.json
 
   params:
-    random_state: 76
-    max_depth: 50
+    random_state: 988
+    max_depth: 40
     splitter: best
-    min_samples_leaf: 0.002
-    max_features: 0.7    #0.3
-    #min_samples_split: 0.01
-    #class_weight: balanced
+    min_samples_leaf: 0.001
+    max_features: 0.8  
 
   pipeline_type:
     KFoldTE: false
-    frequency_encoding: false
-    KFold_frequency_encoding: true
+    frequency_encoding: true
+    KFold_frequency_encoding: false
     tfidf_vectorizer_encoding: false
-    count_vectorizer_encoding: true
+    count_vectorizer_encoding: false
     random_catagory_encode: false
     resource_catagory_encode: true
 

@@ -8,7 +8,7 @@ import os
 
 
 # Automated random search experiments
-num_exps = 10 #Number of experiments to run to generate
+num_exps = 30 #Number of experiments to run to generate
 random.seed(42)
 
 
