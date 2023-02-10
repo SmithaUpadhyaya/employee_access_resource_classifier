@@ -118,8 +118,6 @@ class employee_access_resource:
         if self.model == None:
             self.train(X)
 
-        X = self.generate_feature(X, self.training_param)
-
         if 'ACTION' in X.columns:
             X.drop('ACTION', axis = 1, inplace = True)
 
@@ -128,6 +126,8 @@ class employee_access_resource:
 
         if 'MGR_ID' in X.columns:
             X.drop('MGR_ID', axis = 1, inplace = True)
+
+        X = self.generate_feature(X, self.training_param)
 
         feature_columns = X.select_dtypes(exclude = ['object']).columns
 

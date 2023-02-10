@@ -72,8 +72,14 @@ class FrequencyEncoding(BaseEstimator, TransformerMixin):
             transformed_X[freq_enc_col_name] = X[colname].map(lr_value)
             
             if self.log_transform == True:
-                transformed_X[freq_enc_col_name] = np.log10(transformed_X[freq_enc_col_name])
                 
+                transformed_X[freq_enc_col_name].fillna(10, inplace = True) #Case: where the map value was available in train and in test data set. Fill Frequency as 10 as Log 1 = 0 and Log10 10 = 1
+                transformed_X[freq_enc_col_name] = np.log10(transformed_X[freq_enc_col_name])
+
+            else:
+                
+                transformed_X[freq_enc_col_name].fillna(1, inplace = True) #Case: where the map value was available in train and in test data set. Fill Frequency as 1
+
             #FreqEnc_col.append(freq_enc_col_name)
 
         #return X[FreqEnc_col] #default changes get made in the the origina input param

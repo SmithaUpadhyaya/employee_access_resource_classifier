@@ -27,6 +27,7 @@ class ResourceEncodeByFeature(BaseEstimator, TransformerMixin):
             new_col_name = 'resource_'+ colname.lower() + "_enc"
             transformed_X[new_col_name] = X[colname]
             transformed_X[new_col_name] = X[colname].map(lr_value)
+            transformed_X[new_col_name].fillna(self.learned_max_values[colname] + 1, inplace = True)
 
         log.write_log(f'ResourceEncodeByFeature-transform: Number of feature after encoded: {len(transformed_X.columns)}...', log.logging.DEBUG)
 
@@ -40,6 +41,8 @@ class ResourceEncodeByFeature(BaseEstimator, TransformerMixin):
     def encode_resource_by_feature(self, X):
 
         self.learned_values = {}
+        self.learned_max_values = {} #Used for new value to inferance
+
         column_to_consider = self.params['column_to_consider']
 
         log.write_log(f'ResourceEncodeByFeature-fit: Encode RESOURCE using group by by other feature. Started...', log.logging.DEBUG)
@@ -48,6 +51,7 @@ class ResourceEncodeByFeature(BaseEstimator, TransformerMixin):
             
             log.write_log(f'ResourceEncodeByFeature-fit: Encode RESOURCE features w.r.t to other feature: {col}', log.logging.DEBUG) #EncodeResourceGrpFeature            
             self.learned_values[col] =  X.groupby(col).RESOURCE.nunique()          
+            self.learned_max_values[col] = self.learned_values[col].sort_values(ascending = False)[0]
 
             #new_col_name = 'resource_'+ col.lower() + "_enc"
             #X = X.merge(X.groupby(col).RESOURCE.nunique().reset_index(name = new_col_name), on = col, how = 'inner')
