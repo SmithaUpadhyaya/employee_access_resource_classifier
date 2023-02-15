@@ -238,7 +238,7 @@ trained_model:
     max_depth: 40
     splitter: best
     min_samples_leaf: 0.001
-    max_features: 0.8  
+    max_features: 0.8
 
   pipeline_type:
     KFoldTE: false

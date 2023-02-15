@@ -26,8 +26,8 @@ stages:
       md5: c779bb86eadc47590973579520939454
       size: 7329
     - path: src\models\feature_eng
-      md5: dca79019e246b938cca08f885bd81925.dir
-      size: 44227
+      md5: c8347773ced344bc99493294d605dd4e.dir
+      size: 44914
       nfiles: 9
     params:
       params.yaml:
@@ -41,6 +41,7 @@ stages:
           resource_catagory_encode:
             column_to_consider:
             - ROLE_DEPTNAME_ROLE_FAMILY
+            - ROLE_ROLLUP_1_ROLE_FAMILY
           ktarget_enc:
             n_fold: 15
             random_seed: 2023
@@ -151,15 +152,15 @@ stages:
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: 1a0179c45dfbd06323c240b9fc321686.dir
-      size: 427223
+      md5: e41ebb354e217a83aea1495a021c5fc4.dir
+      size: 455169
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: 1a0179c45dfbd06323c240b9fc321686.dir
-      size: 427223
+      md5: e41ebb354e217a83aea1495a021c5fc4.dir
+      size: 455169
       nfiles: 1
     - path: src\data\train_model.py
       md5: 006be9b048f7e975c856714cb3489dcc
@@ -206,7 +207,7 @@ stages:
           colsample_bytree: 0.685
     outs:
     - path: data\model\metrics\metrics.json
-      md5: 09b792b3cd0274cd7fd845feac5e5017
+      md5: 8870db842a0a15ae13dad803298b8104
       size: 76
   evaluate_model:
     cmd: python src\data\eval.py
