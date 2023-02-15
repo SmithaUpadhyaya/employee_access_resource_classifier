@@ -19,6 +19,7 @@ featurize:
   resource_catagory_encode:
     column_to_consider:
     - ROLE_DEPTNAME_ROLE_FAMILY
+    - ROLE_ROLLUP_1_ROLE_FAMILY
   ktarget_enc:
     n_fold: 15
     random_seed: 2023
