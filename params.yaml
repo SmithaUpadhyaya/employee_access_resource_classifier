@@ -141,11 +141,11 @@ model:
       resource_catagory_encode: true
 
     hyper_params:
-      random_state: 988
-      max_depth: 40
+      random_state: 1907
+      max_depth: 90
       splitter: best
       min_samples_leaf: 0.001
-      max_features: 0.8    #0.3
+      max_features: 0.3    #0.3
       #min_samples_split: 0.01
       #class_weight: balanced
 
@@ -234,11 +234,12 @@ trained_model:
   feature_eng: model\feature_engg_pipeline.json
 
   params:
-    random_state: 988
-    max_depth: 40
+
+    random_state: 1907
+    max_depth: 90
     splitter: best
     min_samples_leaf: 0.001
-    max_features: 0.8
+    max_features: 0.3
 
   pipeline_type:
     KFoldTE: false
