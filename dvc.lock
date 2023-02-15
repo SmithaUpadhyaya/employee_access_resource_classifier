@@ -41,7 +41,6 @@ stages:
           resource_catagory_encode:
             column_to_consider:
             - ROLE_DEPTNAME_ROLE_FAMILY
-            - ROLE_ROLLUP_1_ROLE_FAMILY
           ktarget_enc:
             n_fold: 15
             random_seed: 2023
@@ -152,15 +151,15 @@ stages:
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: e41ebb354e217a83aea1495a021c5fc4.dir
-      size: 455169
+      md5: 1a0179c45dfbd06323c240b9fc321686.dir
+      size: 427223
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: e41ebb354e217a83aea1495a021c5fc4.dir
-      size: 455169
+      md5: 1a0179c45dfbd06323c240b9fc321686.dir
+      size: 427223
       nfiles: 1
     - path: src\data\train_model.py
       md5: 006be9b048f7e975c856714cb3489dcc
@@ -173,6 +172,7 @@ stages:
           splitter: best
           min_samples_leaf: 0.001
           max_features: 0.3
+          ccp_alpha: 2.32864278e-05
         model.extra_decision_tree.hyper_params:
           random_state: 56
           n_estimators: 55
@@ -207,7 +207,7 @@ stages:
           colsample_bytree: 0.685
     outs:
     - path: data\model\metrics\metrics.json
-      md5: 66ff5aff40e94f95553093c9f64fc0fe
+      md5: 177d8dee762fae8c7f6cfdd7f71e9b6f
       size: 76
   evaluate_model:
     cmd: python src\data\eval.py
