@@ -35,6 +35,7 @@ stages:
         - model.model_type
         - model.logistic_reg.pipeline_type
         - model.decision_tree.pipeline_type
+        - model.bagging_decision_tree.pipeline_type
         - model.extra_decision_tree.pipeline_type
         - model.random_forest.pipeline_type
         - model.xgboost.pipeline_type
@@ -54,6 +55,7 @@ stages:
       - model.model_type
       - model.logistic_reg.hyper_params
       - model.decision_tree.hyper_params
+      - model.bagging_decision_tree.hyper_params
       - model.extra_decision_tree.hyper_params
       - model.random_forest.hyper_params
       - model.xgboost.hyper_params

@@ -8,7 +8,7 @@ import os
 
 
 # Automated random search experiments
-num_exps = 30 #Number of experiments to run to generate
+num_exps = 15 #Number of experiments to run to generate
 random.seed(42)
 
 
@@ -22,6 +22,26 @@ while i > 0:
 
 print(f'Working directory: {wrk_dir}')
 """
+
+def run_exp_Bagging_Decision_Tree():
+
+    #Hyper-paramters tuning for Bagging Decision Tree    
+    params = {
+        "random_state": random.randint(50, 3000), 
+        "n_estimators": random.choice(range(5, 25, 1)),      
+        "test_size":  random.choice([0.01, 0.05, 0.06, 0.07]),    
+        }
+
+
+    subprocess.run(["dvc", "exp", "run", #"--queue",
+                    "--set-param", f"model.bagging_decision_tree.hyper_params.bagging.n_estimators={params['n_estimators']}",
+                    "--set-param", f"model.bagging_decision_tree.hyper_params.bagging.test_size={params['test_size']}",
+                    "--set-param", f"model.bagging_decision_tree.hyper_params.bagging.random_seed={params['random_state']}",
+                    ]
+                  )
+
+#===============================================================================================
+
 def run_exp_Decision_Tree():
 
     #Hyper-paramters tuning for Decision Tree
@@ -233,9 +253,11 @@ for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
     #run_exp_ExtraTreesClassifier()
     
-    run_exp_Decision_Tree()
+    #run_exp_Decision_Tree()
     
     #run_exp_XBoost()
+
+    run_exp_Bagging_Decision_Tree()
 
 print("Queued Experiement to run.")
 #=============================================================

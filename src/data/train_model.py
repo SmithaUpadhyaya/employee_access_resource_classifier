@@ -11,6 +11,7 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import roc_auc_score
 #from dvclive.keras import DVCLiveCallback #This will work with keras library and not with model sklearn. Since this require to define Callback 
 from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import BaggingClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import ExtraTreesClassifier
@@ -37,6 +38,19 @@ def define_model(param_filepath):
         
         model = DecisionTreeClassifier(criterion = 'gini')
         model.set_params(**hyper_param)   
+
+    elif model_type == 'bagging_decision_tree':
+
+        base_estimator = DecisionTreeClassifier()
+        base_estimator.set_params(**hyper_param['base_estimator'])   
+
+        bagg_params = hyper_param['bagging']
+        model = BaggingClassifier(estimator = base_estimator,
+                                  n_estimators = bagg_params['n_estimators'], #Lets keep the it same as we have define for cv
+                                  max_samples = 1.0 - bagg_params['test_size'], 
+                                  bootstrap = True,
+                                  random_state = bagg_params['random_seed']
+                                )
 
     elif model_type == 'extra_decision_tree':
 

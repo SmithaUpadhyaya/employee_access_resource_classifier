@@ -103,6 +103,14 @@ stages:
             output:
               folder: feature\cntvector
               filename: count_vectorizer.parquet
+        model.bagging_decision_tree.pipeline_type:
+          KFoldTE: false
+          frequency_encoding: true
+          KFold_frequency_encoding: false
+          tfidf_vectorizer_encoding: false
+          count_vectorizer_encoding: false
+          random_catagory_encode: false
+          resource_catagory_encode: true
         model.decision_tree.pipeline_type:
           KFoldTE: false
           frequency_encoding: true
@@ -127,7 +135,7 @@ stages:
           count_vectorizer_encoding: true
           random_catagory_encode: false
           resource_catagory_encode: false
-        model.model_type: decision_tree
+        model.model_type: bagging_decision_tree
         model.random_forest.pipeline_type:
           KFoldTE: false
           frequency_encoding: true
@@ -162,10 +170,20 @@ stages:
       size: 427223
       nfiles: 1
     - path: src\data\train_model.py
-      md5: 006be9b048f7e975c856714cb3489dcc
-      size: 8401
+      md5: 17369812f5e2d201cb7f8f42396abb77
+      size: 9109
     params:
       params.yaml:
+        model.bagging_decision_tree.hyper_params:
+          base_estimator:
+            random_state: 1907
+            max_depth: 21
+            splitter: best
+            ccp_alpha: 2.4e-05
+          bagging:
+            n_estimators: 10
+            test_size: 0.01
+            random_seed: 7899
         model.decision_tree.hyper_params:
           random_state: 1907
           max_depth: 21
@@ -186,7 +204,7 @@ stages:
           penalty: l2
           solver: liblinear
           C: 11
-        model.model_type: decision_tree
+        model.model_type: bagging_decision_tree
         model.random_forest.hyper_params:
           random_state: 42
           n_estimators: 220
@@ -205,7 +223,7 @@ stages:
           colsample_bytree: 0.685
     outs:
     - path: data\model\metrics\metrics.json
-      md5: d995150b665fb32ad46d6282f90b0a7c
+      md5: 019b2ed2321638f21734027e0f64ce3c
       size: 76
   evaluate_model:
     cmd: python src\data\eval.py

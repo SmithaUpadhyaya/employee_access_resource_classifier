@@ -103,7 +103,7 @@ train_test_split:
   train_data: feature\train_data.parquet
 
 model:
-  model_type: decision_tree
+  model_type: bagging_decision_tree
 
   logistic_reg:
 
@@ -152,6 +152,32 @@ model:
     trained_model: model\decision_tree\model.pkl
     eval_metrics: model\decision_tree\metrics
     eval_plots: model\decision_tree\plots
+
+  bagging_decision_tree:
+
+    pipeline_type:
+      KFoldTE: false
+      frequency_encoding: true
+      KFold_frequency_encoding: false
+      tfidf_vectorizer_encoding: false
+      count_vectorizer_encoding: false
+      random_catagory_encode: false
+      resource_catagory_encode: true
+
+    hyper_params:
+      base_estimator:
+        random_state: 1907
+        max_depth: 21
+        splitter: best     
+        ccp_alpha: 2.4e-05
+      bagging:
+        n_estimators: 10
+        test_size: 0.01
+        random_seed: 7899 
+
+    trained_model: model\bagging_decision_tree\model.pkl
+    eval_metrics: model\bagging_decision_tree\metrics
+    eval_plots: model\bagging_decision_tree\plots   
 
   extra_decision_tree:
 
