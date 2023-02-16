@@ -181,9 +181,9 @@ stages:
             splitter: best
             ccp_alpha: 2.4e-05
           bagging:
-            n_estimators: 10
+            n_estimators: 19
             test_size: 0.01
-            random_seed: 7899
+            random_seed: 227
         model.decision_tree.hyper_params:
           random_state: 1907
           max_depth: 21
@@ -223,8 +223,8 @@ stages:
           colsample_bytree: 0.685
     outs:
     - path: data\model\metrics\metrics.json
-      md5: 019b2ed2321638f21734027e0f64ce3c
-      size: 76
+      md5: 15f38b9b3ffbbd819733a3c5d79a4fa5
+      size: 75
   evaluate_model:
     cmd: python src\data\eval.py
     deps:

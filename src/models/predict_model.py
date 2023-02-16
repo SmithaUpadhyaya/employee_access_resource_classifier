@@ -6,14 +6,15 @@ from src.models.feature_eng.KFoldFreqEncoding import KFoldFrequencyEncoding
 from src.models.feature_eng.Combine_feature import CombineFeatures
 from src.models.feature_eng.FreqEncoding import FrequencyEncoding
 from src.models.feature_eng.TE_KFold import KFoldTargetEncoder
-from sklearn.preprocessing import FunctionTransformer
+#from sklearn.preprocessing import FunctionTransformer
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import BaggingClassifier
 from sklearn.pipeline import Pipeline
 import utils.write_utils as hlpwrite
 import utils.read_utils as hlpread
-from xgboost import XGBClassifier
+#from xgboost import XGBClassifier
 from os.path import exists, join
-import xgboost as xgb
+#import xgboost as xgb
 
 class employee_access_resource:
 
@@ -86,10 +87,19 @@ class employee_access_resource:
     def define_model(self, params):
 
         #Define model
-        model = DecisionTreeClassifier(criterion = 'gini')
+        #model = DecisionTreeClassifier(criterion = 'gini')
         #model = XGBClassifier(objective='binary:logistic')
-        model.set_params(**params)
+        #model.set_params(**params)
+        base_model = DecisionTreeClassifier()
+        base_model.set_params(**params['base_estimator'])   
 
+        bagg_params = params['bagging']
+        model = BaggingClassifier(estimator = base_model,
+                                  n_estimators = bagg_params['n_estimators'], #Lets keep the it same as we have define for cv
+                                  max_samples = 1.0 - bagg_params['test_size'], 
+                                  bootstrap = True,
+                                  random_state = bagg_params['random_seed']
+                                )
         return model
 
     def train(self, X):      

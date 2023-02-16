@@ -168,16 +168,16 @@ model:
       base_estimator:
         random_state: 1907
         max_depth: 21
-        splitter: best     
+        splitter: best
         ccp_alpha: 2.4e-05
       bagging:
-        n_estimators: 10
+        n_estimators: 19
         test_size: 0.01
-        random_seed: 7899 
+        random_seed: 227
 
     trained_model: model\bagging_decision_tree\model.pkl
     eval_metrics: model\bagging_decision_tree\metrics
-    eval_plots: model\bagging_decision_tree\plots   
+    eval_plots: model\bagging_decision_tree\plots
 
   extra_decision_tree:
 
@@ -260,12 +260,15 @@ trained_model:
   feature_eng: model\feature_engg_pipeline.json
 
   params:
-
-    random_state: 1907
-    max_depth: 90
-    splitter: best
-    min_samples_leaf: 0.001
-    max_features: 0.3
+    base_estimator:
+        random_state: 1907
+        max_depth: 21
+        splitter: best
+        ccp_alpha: 2.4e-05
+    bagging:
+      n_estimators: 19
+      test_size: 0.01
+      random_seed: 1907 #1907: gave better score then 227
 
   pipeline_type:
     KFoldTE: false
