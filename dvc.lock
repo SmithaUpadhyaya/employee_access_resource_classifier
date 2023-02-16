@@ -168,11 +168,9 @@ stages:
       params.yaml:
         model.decision_tree.hyper_params:
           random_state: 1907
-          max_depth: 90
+          max_depth: 21
           splitter: best
-          min_samples_leaf: 0.001
-          max_features: 0.3
-          ccp_alpha: 2.32864278e-05
+          ccp_alpha: 2.4e-05
         model.extra_decision_tree.hyper_params:
           random_state: 56
           n_estimators: 55
@@ -207,7 +205,7 @@ stages:
           colsample_bytree: 0.685
     outs:
     - path: data\model\metrics\metrics.json
-      md5: 177d8dee762fae8c7f6cfdd7f71e9b6f
+      md5: d995150b665fb32ad46d6282f90b0a7c
       size: 76
   evaluate_model:
     cmd: python src\data\eval.py

@@ -141,11 +141,11 @@ model:
 
     hyper_params:
       random_state: 1907
-      max_depth: 90
+      max_depth: 21
       splitter: best
-      min_samples_leaf: 0.001
-      max_features: 0.3    #0.3
-      ccp_alpha: 2.32864278e-05
+      #min_samples_leaf: 0.001
+      #max_features: 0.3    #0.3
+      ccp_alpha: 2.4e-05
       #min_samples_split: 0.01
       #class_weight: balanced
 
