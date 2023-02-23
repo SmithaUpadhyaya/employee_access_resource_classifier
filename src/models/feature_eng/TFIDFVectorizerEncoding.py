@@ -9,12 +9,12 @@ import pandas as pd
 
 class TFIDFVectorizerEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, concat_result_X = True):  
+    def __init__(self):  
         
         self.params = read_yaml_key('featurize.tfidf')
         self.targetcol = self.params['targetcol']        
         
-        self.merge_result = concat_result_X
+        self.merge_result = self.params['concat_result_to_input']
 
         self.dict_Vectorizer = {}
         self.dict_dim_reduction = {}

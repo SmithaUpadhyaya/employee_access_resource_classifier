@@ -10,13 +10,13 @@ import pandas as pd
 
 class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, concat_result_X = True):    
+    def __init__(self):    
 
         self.params = read_yaml_key('featurize.count_vector')
 
         self.targetcol = self.params['targetcol']
         self.combine_columns_required = self.params['combine_columns_required']
-        self.merge_result = concat_result_X
+        self.merge_result = self.params['concat_result_to_input']
 
         self.dict_Vectorizer = {}
         self.dict_dim_reduction = {}
@@ -24,44 +24,64 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
     def extract_col_interaction(self, dataset, col1, col2, istraining):
 
         key = col1 + "_" + col2
-        
+
         #params = kwargs['params']
         data = dataset.groupby([col1])[col2].agg(lambda x: " ".join(x))
 
         if key in self.dict_Vectorizer:
+
             vectorizer = self.dict_Vectorizer[key]
+
         else:
+
             if istraining == False:
                 return None
+
             vectorizer = CountVectorizer(lowercase = False)            
             self.dict_Vectorizer[key] = vectorizer.fit(data) #Save the fitted vectorizer obj, which will be used in the transform stage
         
+
+
         data_X = vectorizer.transform(data)
 
         if key in self.dict_dim_reduction:
+
             dim_red = self.dict_dim_reduction[key] 
+
         else:
-            dim_red = TruncatedSVD(n_components = self.params['dim_reduction'], random_state = self.params['random_seed'])
+
+            #dim_reduction = self.params['dim_reduction']
+            dim_reduction = self.params['dim_reduction'][key]
+
+            dim_red = TruncatedSVD(n_components = dim_reduction, random_state = self.params['random_seed'])
             
             #Save the fitted dimension reduction obj, which will be used in the transform stage
             dim_red = dim_red.fit(data_X)             
+            self.dict_dim_reduction[key] = dim_red 
+            
+            """
+            if dim_red.explained_variance_ratio_[0] >= self.params['var_explained']:   
 
-            if dim_red.explained_variance_ratio_[0] >= self.params['var_explained']:            
                 self.dict_dim_reduction[key] = dim_red 
 
             #Save only those combination that explain the varaince more then 90%
-            else:            
+            else: 
+
                 del [self.dict_Vectorizer[key]]
                 return None
-        
+            """
+
         data_X = dim_red.transform(data_X)
         
-        col_no = self.params['dim_reduction']
+        col_no = self.params['dim_reduction'][key]
         col_names = []
 
         if col_no == 1:
+
             col_names.append(col1 + "_svd_{}_{}".format(col2, 'cv'))
+
         else:    
+            
             for i in range(col_no):
                 col_names.append(col1 + "_svd_{}_{}_{}".format(col2, 'cv', i))
         
@@ -94,6 +114,9 @@ class CountVectorizerEncoding(BaseEstimator, TransformerMixin):
             if (col1 == self.targetcol) | (col2 == self.targetcol):
                 continue
             
+            if not (col1 + "_" + col2) in self.params['permute_columns']:
+                continue
+
             #print(col1 + "_{}_svd_{}".format(col2, 'cv'))
             data = self.extract_col_interaction(dataset, col1, col2, istraining)
 

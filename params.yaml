@@ -19,11 +19,13 @@ featurize:
   resource_catagory_encode:
     column_to_consider:
     - ROLE_DEPTNAME_ROLE_FAMILY
+    concat_result_to_input: true
   ktarget_enc:
     n_fold: 15
     random_seed: 2023
     targetcol: ACTION
     columns: []
+    concat_result_to_input: true
 
   random_catagory_encode:
     random_seed: 2023
@@ -43,6 +45,7 @@ featurize:
     random_seed: 2023
     targetcol: ACTION
     log_transform: true
+    concat_result_to_input: true
     columns:
     - ROLE_DEPTNAME
     - ROLE_ROLLUP_1_ROLE_DEPTNAME
@@ -63,6 +66,7 @@ featurize:
     - ROLE_ROLLUP_2_ROLE_CODE
     targetcol: ACTION
     combine_columns_required: false
+    concat_result_to_input: true
     #dim_reduction: 1
     #var_explained: 0.2
     dim_reduction:
@@ -86,12 +90,67 @@ featurize:
 
   count_vector:
     random_seed: 2023
-    dim_reduction: 1
-    var_explained: 0.9
     targetcol: ACTION
     combine_columns_required: false
-    columns: []
-    #columns: [ 'ROLE_DEPTNAME', 'ROLE_FAMILY_DESC', 'ROLE_CODE', 'ROLE_ROLLUP_2', 'ROLE_ROLLUP_1', 'ROLE_FAMILY', 'RESOURCE', 'ROLE_ROLLUP_1_ROLE_ROLLUP_2','ROLE_FAMILY_ROLE_CODE', 'ROLE_ROLLUP_1_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_FAMILY', 'ROLE_ROLLUP_1_ROLE_DEPTNAME','ROLE_ROLLUP_2_ROLE_DEPTNAME','ROLE_ROLLUP_1_ROLE_CODE', 'ROLE_DEPTNAME_ROLE_FAMILY', 'ROLE_ROLLUP_2_ROLE_CODE']
+    concat_result_to_input: true
+    columns: 
+    - RESOURCE
+    - ROLE_ROLLUP_1
+    - ROLE_ROLLUP_2
+    - ROLE_DEPTNAME
+    - ROLE_FAMILY_DESC
+    - ROLE_FAMILY
+    - ROLE_CODE
+    permute_columns:
+    - RESOURCE_ROLE_ROLLUP_1
+    - ROLE_ROLLUP_1_ROLE_ROLLUP_2
+    - ROLE_ROLLUP_1_ROLE_FAMILY_DESC
+    - ROLE_ROLLUP_1_ROLE_FAMILY
+    - ROLE_ROLLUP_1_ROLE_CODE
+    - ROLE_FAMILY_DESC_ROLE_FAMILY
+    - ROLE_FAMILY_ROLE_ROLLUP_2
+    - ROLE_ROLLUP_2_ROLE_FAMILY_DESC
+    - ROLE_FAMILY_DESC_ROLE_CODE
+
+    - ROLE_ROLLUP_1_RESOURCE
+    - ROLE_ROLLUP_2_ROLE_ROLLUP_1
+    - ROLE_FAMILY_DESC_ROLE_ROLLUP_1
+    - ROLE_FAMILY_ROLE_ROLLUP_1
+    - ROLE_CODE_ROLE_ROLLUP_1
+    - ROLE_FAMILY_ROLE_FAMILY_DESC
+    - ROLE_ROLLUP_2_ROLE_FAMILY
+    - ROLE_FAMILY_DESC_ROLE_ROLLUP_2
+    - ROLE_CODE_ROLE_FAMILY_DESC
+
+    - ROLE_ROLLUP_1_ROLE_DEPTNAME
+    - ROLE_DEPTNAME_ROLE_ROLLUP_1
+
+    dim_reduction:
+      RESOURCE_ROLE_ROLLUP_1: 1
+      ROLE_ROLLUP_1_ROLE_ROLLUP_2: 1
+      ROLE_ROLLUP_1_ROLE_FAMILY_DESC: 1
+      ROLE_ROLLUP_1_ROLE_FAMILY: 1
+      ROLE_ROLLUP_1_ROLE_CODE: 1
+      ROLE_FAMILY_DESC_ROLE_FAMILY: 1
+      ROLE_FAMILY_ROLE_ROLLUP_2: 3
+      ROLE_ROLLUP_2_ROLE_FAMILY_DESC: 4
+      ROLE_FAMILY_DESC_ROLE_CODE: 5
+
+      ROLE_ROLLUP_1_RESOURCE: 1
+      ROLE_ROLLUP_2_ROLE_ROLLUP_1: 1
+      ROLE_FAMILY_DESC_ROLE_ROLLUP_1: 1
+      ROLE_FAMILY_ROLE_ROLLUP_1: 1
+      ROLE_CODE_ROLE_ROLLUP_1: 1
+      ROLE_FAMILY_ROLE_FAMILY_DESC: 1
+      ROLE_ROLLUP_2_ROLE_FAMILY: 3
+      ROLE_FAMILY_DESC_ROLE_ROLLUP_2: 4
+      ROLE_CODE_ROLE_FAMILY_DESC: 5
+
+      ROLE_ROLLUP_1_ROLE_DEPTNAME: 5
+      ROLE_DEPTNAME_ROLE_ROLLUP_1: 7
+    
+    #dim_reduction: 1
+    #var_explained: 0.9
     output:
       folder: feature\cntvector
       filename: count_vectorizer.parquet
@@ -103,7 +162,7 @@ train_test_split:
   train_data: feature\train_data.parquet
 
 model:
-  model_type: bagging_decision_tree
+  model_type: decision_tree
 
   logistic_reg:
 
@@ -132,10 +191,10 @@ model:
 
     pipeline_type:
       KFoldTE: false
-      frequency_encoding: true
+      frequency_encoding: false
       KFold_frequency_encoding: false
       tfidf_vectorizer_encoding: false
-      count_vectorizer_encoding: false
+      count_vectorizer_encoding: true
       random_catagory_encode: false
       resource_catagory_encode: true
 

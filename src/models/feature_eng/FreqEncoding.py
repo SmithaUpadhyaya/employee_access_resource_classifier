@@ -8,7 +8,7 @@ import numpy as np
 #Frequency/Count Encoder
 class FrequencyEncoding(BaseEstimator, TransformerMixin):
 
-    def __init__(self, concat_result_X = True):
+    def __init__(self):
         
         self.params = read_yaml_key('featurize.fequency_encode')
         self.colnames = self.params['columns']
@@ -16,7 +16,7 @@ class FrequencyEncoding(BaseEstimator, TransformerMixin):
         self.min_group_size = self.params['min_group_size']
         self.log_transform  = self.params['log_transform']
 
-        self.merge_result = concat_result_X
+        self.merge_result = self.params['concat_result_to_input']
         self.learned_values = {}
 
     def fit(self, X, y = None):

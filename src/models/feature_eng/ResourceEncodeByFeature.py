@@ -10,7 +10,7 @@ class ResourceEncodeByFeature(BaseEstimator, TransformerMixin):
     def __init__(self): #, concat_result_X = True
 
         self.params = read_yaml_key('featurize.resource_catagory_encode')
-        self.merge_result = True
+        self.merge_result = self.params['concat_result_to_input']
         self.learned_values = {}
 
     def encode_resource(self, X):

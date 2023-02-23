@@ -12,7 +12,7 @@ import numpy as np
 
 class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
     
-    def __init__(self, concat_result_X = True):
+    def __init__(self):
 
         self.params = read_yaml_key('featurize.ktarget_enc')
         self.colnames = self.params['columns']
@@ -20,7 +20,7 @@ class KFoldTargetEncoder(BaseEstimator, TransformerMixin):
         self.seed = self.params['random_seed']
         self.n_fold = self.params['n_fold']
 
-        self.merge_result = concat_result_X
+        self.merge_result = self.params['concat_result_to_input']
         
         self.global_mean_of_target = 0.0
         self.learned_values = {}  
