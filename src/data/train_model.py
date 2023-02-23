@@ -47,8 +47,10 @@ def define_model(param_filepath):
         bagg_params = hyper_param['bagging']
         model = BaggingClassifier(estimator = base_estimator,
                                   n_estimators = bagg_params['n_estimators'], #Lets keep the it same as we have define for cv
-                                  max_samples = 1.0 - bagg_params['test_size'], 
+                                  max_samples = bagg_params['max_samples'], #1.0 - bagg_params['test_size'], 
+                                  max_features = bagg_params['max_features'],
                                   bootstrap = True,
+                                  bootstrap_features = True,
                                   random_state = bagg_params['random_seed']
                                 )
 

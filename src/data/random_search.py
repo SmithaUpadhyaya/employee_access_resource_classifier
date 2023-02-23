@@ -28,15 +28,20 @@ def run_exp_Bagging_Decision_Tree():
     #Hyper-paramters tuning for Bagging Decision Tree    
     params = {
         "random_state": random.randint(50, 3000), 
-        "n_estimators": random.choice(range(5, 25, 1)),      
-        "test_size":  random.choice([0.01, 0.05, 0.06, 0.07]),    
+        "n_estimators": random.choice(range(5, 30, 2)),      
+        "max_samples":  random.choice(np.arange(0.4, 0.9, 0.05)),  #[0.01, 0.05, 0.07, 0.1]
+        "max_features": random.choice(np.arange(0.2, 0.8, 0.1)),
+        "max_depth": random.choice([4, 5, 6])  
         }
 
 
     subprocess.run(["dvc", "exp", "run", #"--queue",
-                    "--set-param", f"model.bagging_decision_tree.hyper_params.bagging.n_estimators={params['n_estimators']}",
-                    "--set-param", f"model.bagging_decision_tree.hyper_params.bagging.test_size={params['test_size']}",
                     "--set-param", f"model.bagging_decision_tree.hyper_params.bagging.random_seed={params['random_state']}",
+                    "--set-param", f"model.bagging_decision_tree.hyper_params.bagging.n_estimators={params['n_estimators']}",
+                    "--set-param", f"model.bagging_decision_tree.hyper_params.bagging.max_samples={params['max_samples']}",
+                    "--set-param", f"model.bagging_decision_tree.hyper_params.bagging.max_features={params['max_features']}",
+
+                    "--set-param", f"model.bagging_decision_tree.hyper_params.base_estimator.max_depth={params['max_depth']}",
                     ]
                   )
 
