@@ -93,7 +93,7 @@ featurize:
     targetcol: ACTION
     combine_columns_required: false
     concat_result_to_input: true
-    columns: 
+    columns:
     - RESOURCE
     - ROLE_ROLLUP_1
     - ROLE_ROLLUP_2
@@ -111,7 +111,6 @@ featurize:
     - ROLE_FAMILY_ROLE_ROLLUP_2
     - ROLE_ROLLUP_2_ROLE_FAMILY_DESC
     - ROLE_FAMILY_DESC_ROLE_CODE
-
     - ROLE_ROLLUP_1_RESOURCE
     - ROLE_ROLLUP_2_ROLE_ROLLUP_1
     - ROLE_FAMILY_DESC_ROLE_ROLLUP_1
@@ -121,10 +120,8 @@ featurize:
     - ROLE_ROLLUP_2_ROLE_FAMILY
     - ROLE_FAMILY_DESC_ROLE_ROLLUP_2
     - ROLE_CODE_ROLE_FAMILY_DESC
-
     - ROLE_ROLLUP_1_ROLE_DEPTNAME
     - ROLE_DEPTNAME_ROLE_ROLLUP_1
-
     dim_reduction:
       RESOURCE_ROLE_ROLLUP_1: 1
       ROLE_ROLLUP_1_ROLE_ROLLUP_2: 1
@@ -148,7 +145,7 @@ featurize:
 
       ROLE_ROLLUP_1_ROLE_DEPTNAME: 5
       ROLE_DEPTNAME_ROLE_ROLLUP_1: 7
-    
+
     #dim_reduction: 1
     #var_explained: 0.9
     output:
@@ -226,15 +223,15 @@ model:
     hyper_params:
       base_estimator:
         random_state: 1907
-        max_depth: 5
+        max_depth: 6
         splitter: best
         #ccp_alpha: 2.4e-05
       bagging:
-        random_seed: 227
-        n_estimators: 19
-        max_samples: 0.01
-        max_features: 0.4
-        
+        random_seed: 2444
+        n_estimators: 74
+        max_samples: 0.8200000000000001
+        max_features: 0.6000000000000001
+
 
     trained_model: model\bagging_decision_tree\model.pkl
     eval_metrics: model\bagging_decision_tree\metrics
@@ -322,10 +319,10 @@ trained_model:
 
   params:
     base_estimator:
-        random_state: 1907
-        max_depth: 21
-        splitter: best
-        ccp_alpha: 2.4e-05
+      random_state: 1907
+      max_depth: 21
+      splitter: best
+      ccp_alpha: 2.4e-05
     bagging:
       n_estimators: 19
       test_size: 0.01

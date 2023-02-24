@@ -28,10 +28,10 @@ def run_exp_Bagging_Decision_Tree():
     #Hyper-paramters tuning for Bagging Decision Tree    
     params = {
         "random_state": random.randint(50, 3000), 
-        "n_estimators": random.choice(range(5, 50, 2)),      
-        "max_samples":  random.choice(np.arange(0.4, 0.9, 0.05)),  #[0.01, 0.05, 0.07, 0.1]
+        "n_estimators": random.choice(range(50, 100, 1)),      
+        "max_samples":  random.choice(np.arange(0.8, 0.99, 0.01)),  #[0.01, 0.05, 0.07, 0.1] #np.arange(0.4, 0.9, 0.05)
         "max_features": random.choice(np.arange(0.2, 0.8, 0.1)),
-        "max_depth": random.choice([4, 5])  
+        "max_depth": random.choice([5, 6])  
         }
 
 
