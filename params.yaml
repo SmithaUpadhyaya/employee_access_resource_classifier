@@ -159,26 +159,27 @@ train_test_split:
   train_data: feature\train_data.parquet
 
 model:
-  model_type: bagging_decision_tree
+  model_type: xgboost
 
   logistic_reg:
 
     pipeline_type:
-      KFoldTE: true
-      frequency_encoding: false
+
+      KFoldTE: false
+      frequency_encoding: true
       KFold_frequency_encoding: false
       tfidf_vectorizer_encoding: false
       count_vectorizer_encoding: true
       random_catagory_encode: false
-      resource_catagory_encode: false
+      resource_catagory_encode: true
 
     hyper_params:
       random_state: 2023
-      max_iter: 40
+      max_iter: 2000
       penalty: l2
       solver: liblinear
       C: 11
-      #class_weight: balanced
+      class_weight: balanced
 
     trained_model: model\logistic_reg\model.pkl
     eval_metrics: model\logistic_reg\metrics
@@ -216,21 +217,21 @@ model:
       frequency_encoding: true
       KFold_frequency_encoding: false
       tfidf_vectorizer_encoding: false
-      count_vectorizer_encoding: true
+      count_vectorizer_encoding: false
       random_catagory_encode: false
       resource_catagory_encode: true
 
     hyper_params:
       base_estimator:
         random_state: 1907
-        max_depth: 6
+        max_depth: 21
         splitter: best
-        #ccp_alpha: 2.4e-05
+        ccp_alpha: 2.4e-05
       bagging:
-        random_seed: 2444
-        n_estimators: 74
-        max_samples: 0.8200000000000001
-        max_features: 0.6000000000000001
+        random_seed: 1907
+        n_estimators: 19
+        #max_samples: 0.8200000000000001
+        #max_features: 0.6000000000000001
 
 
     trained_model: model\bagging_decision_tree\model.pkl
@@ -296,16 +297,16 @@ model:
       KFoldTE: false
       frequency_encoding: true
       KFold_frequency_encoding: false
-      tfidf_vectorizer_encoding: true
-      count_vectorizer_encoding: false
+      tfidf_vectorizer_encoding: false
+      count_vectorizer_encoding: true
       random_catagory_encode: false
-      resource_catagory_encode: false
+      resource_catagory_encode: true
 
     hyper_params:
       n_estimators: 300
       reg_lambda: 1.1800000000000002
       max_depth: 4
-      learning_rate: 0.01
+      learning_rate: 0.07
       random_state: 2045
       colsample_bytree: 0.685
 

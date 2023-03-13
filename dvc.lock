@@ -160,7 +160,7 @@ stages:
           frequency_encoding: true
           KFold_frequency_encoding: false
           tfidf_vectorizer_encoding: false
-          count_vectorizer_encoding: true
+          count_vectorizer_encoding: false
           random_catagory_encode: false
           resource_catagory_encode: true
         model.decision_tree.pipeline_type:
@@ -180,14 +180,14 @@ stages:
           random_catagory_encode: false
           resource_catagory_encode: false
         model.logistic_reg.pipeline_type:
-          KFoldTE: true
-          frequency_encoding: false
+          KFoldTE: false
+          frequency_encoding: true
           KFold_frequency_encoding: false
           tfidf_vectorizer_encoding: false
           count_vectorizer_encoding: true
           random_catagory_encode: false
-          resource_catagory_encode: false
-        model.model_type: bagging_decision_tree
+          resource_catagory_encode: true
+        model.model_type: xgboost
         model.random_forest.pipeline_type:
           KFoldTE: false
           frequency_encoding: true
@@ -200,10 +200,10 @@ stages:
           KFoldTE: false
           frequency_encoding: true
           KFold_frequency_encoding: false
-          tfidf_vectorizer_encoding: true
-          count_vectorizer_encoding: false
+          tfidf_vectorizer_encoding: false
+          count_vectorizer_encoding: true
           random_catagory_encode: false
-          resource_catagory_encode: false
+          resource_catagory_encode: true
         train_test_split:
           test_size: 0.01
           random_seed: 7899
@@ -229,13 +229,12 @@ stages:
         model.bagging_decision_tree.hyper_params:
           base_estimator:
             random_state: 1907
-            max_depth: 6
+            max_depth: 21
             splitter: best
+            ccp_alpha: 2.4e-05
           bagging:
-            random_seed: 2444
-            n_estimators: 74
-            max_samples: 0.8200000000000001
-            max_features: 0.6000000000000001
+            random_seed: 1907
+            n_estimators: 19
         model.decision_tree.hyper_params:
           random_state: 1907
           max_depth: 21
@@ -252,11 +251,12 @@ stages:
           class_weight: balanced
         model.logistic_reg.hyper_params:
           random_state: 2023
-          max_iter: 40
+          max_iter: 2000
           penalty: l2
           solver: liblinear
           C: 11
-        model.model_type: bagging_decision_tree
+          class_weight: balanced
+        model.model_type: xgboost
         model.random_forest.hyper_params:
           random_state: 42
           n_estimators: 220
@@ -270,13 +270,13 @@ stages:
           n_estimators: 300
           reg_lambda: 1.1800000000000002
           max_depth: 4
-          learning_rate: 0.01
+          learning_rate: 0.07
           random_state: 2045
           colsample_bytree: 0.685
     outs:
     - path: data\model\metrics\metrics.json
-      md5: cfc66f6086e1feb0cc931a4e5b6006b5
-      size: 75
+      md5: be2cc4404f9733450e35cc67a9db36df
+      size: 76
   evaluate_model:
     cmd: python src\data\eval.py
     deps:
