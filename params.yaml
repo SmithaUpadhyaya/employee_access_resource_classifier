@@ -314,6 +314,41 @@ model:
     eval_metrics: model\xgboost\metrics
     eval_plots: model\xgboost\plots
 
+  gbdt_embedding:
+
+    pipeline_type:
+      KFoldTE: false
+      frequency_encoding: true
+      KFold_frequency_encoding: false
+      tfidf_vectorizer_encoding: false
+      count_vectorizer_encoding: false
+      random_catagory_encode: false
+      resource_catagory_encode: true
+
+    hyper_params:
+      rf_estimator:
+        random_state: 1907
+        max_depth: 21
+        ccp_alpha: 2.4e-05
+        n_estimators: 19
+        bootstrap: true
+        max_features: None
+        max_samples: 0.99
+
+      gbdt_embed_estimator:
+        feature_col: 
+        - RESOURCE
+        - ROLE_ROLLUP_1
+        - ROLE_ROLLUP_2
+        - ROLE_DEPTNAME
+        - ROLE_FAMILY_DESC
+        - ROLE_FAMILY
+        - ROLE_CODE
+        n_estimators: 19
+        max_depth: 2
+        random_state: 10
+
+
 trained_model:
   model_path: model\model.pkl
   feature_eng: model\feature_engg_pipeline.json

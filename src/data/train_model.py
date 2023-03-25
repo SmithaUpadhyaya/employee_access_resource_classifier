@@ -12,13 +12,18 @@ from sklearn.metrics import roc_auc_score
 #from dvclive.keras import DVCLiveCallback #This will work with keras library and not with model sklearn. Since this require to define Callback 
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import BaggingClassifier
+from sklearn.ensemble import StackingClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import FunctionTransformer
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import StratifiedShuffleSplit
+
+
 
 
 def define_model(param_filepath):
@@ -66,13 +71,67 @@ def define_model(param_filepath):
 
     elif model_type == 'xgboost':
 
-        model = XGBClassifier(objective='binary:logistic')
+        model = XGBClassifier(objective ='binary:logistic')
         model.set_params(**hyper_param) 
     
+    elif model_type == 'gbdt_embedding':
+
+        model = None       
+
     else:
         raise Exception('Unsupported model_type.')
         
     return model, model_param
+
+def define_model(hyper_param, X_train, Y_train):
+
+    #Random Forest model
+    rf_hyper_param = hyper_param['rf_estimator']
+    RF_model = RandomForestClassifier()
+    RF_model.set_params(**rf_hyper_param)
+
+    #GBDT Embedding based mode
+    #feature_columns = ['RESOURCE', 'ROLE_ROLLUP_1', 'ROLE_ROLLUP_2', 'ROLE_DEPTNAME', 'ROLE_FAMILY_DESC', 'ROLE_FAMILY', 'ROLE_CODE',]
+    #n_estimators = len(feature_columns) #Let's create features for the catagory featues
+    #max_depth = 2
+
+    gbdt_hyper_param = hyper_param['gbdt_embed_estimator']
+    feature_columns = gbdt_hyper_param['feature_col']
+    del gbdt_hyper_param['feature_col']
+    gradient_boosting = GradientBoostingClassifier(**gbdt_hyper_param)
+
+    gradient_boosting.fit(X_train[feature_columns], Y_train)
+
+
+    def gbdt_apply(X, model):
+        return model.apply(X)[:, :, 0]
+
+
+    gbdt_leaves_yielder = FunctionTransformer(
+        gbdt_apply, kw_args = {"model": gradient_boosting}
+    )
+
+    gbdt_pipeline = Pipeline(steps = [
+        ('gbdt_leaf_indices', gbdt_leaves_yielder),
+        ('On_hot_encoded_leaf_index' , OneHotEncoder(handle_unknown = "ignore")),
+        ('LR_model' ,LogisticRegression(max_iter = 1000)),
+        ])
+
+
+    #Final Stacking Classifier model
+    estimators = [
+              ('rf', RF_model),
+              ('gbdt', gbdt_pipeline)
+             ]
+
+    model = StackingClassifier(
+                                estimators = estimators, 
+                                final_estimator = LogisticRegression(),
+                                cv = 5,
+                                stack_method = 'predict_proba',
+                            )
+
+    return model
 
 if __name__ == '__main__':
 
@@ -146,7 +205,10 @@ if __name__ == '__main__':
         X_train.drop('ACTION', axis = 1, inplace = True)
         X_test.drop('ACTION', axis = 1, inplace = True)
 
-        model.fit(X_train, Y_train ) 
+        if model_param['model_type'] == 'gbdt_embedding':
+
+            model = define_model(model_param, X_train, Y_train)
+            model.fit(X_train, Y_train ) 
 
         Y_test_pred = model.predict_proba(X_test).astype(float)
         auc_score = roc_auc_score(Y_test.astype(float), Y_test_pred[:,1])
