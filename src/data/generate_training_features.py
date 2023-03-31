@@ -5,6 +5,7 @@ import logs.logger as log
 import utils.read_utils as hlpread
 import utils.write_utils as hlpwrite
 from sklearn.pipeline import Pipeline
+from category_encoders import BinaryEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.model_selection import StratifiedShuffleSplit
@@ -71,6 +72,8 @@ if __name__ == '__main__':
         feature_engg.steps.append(("encode_resource_grpby_role_deptname_role_family", ResourceEncodeByFeature()))
         #feature_engg.steps.append(("encode_resource_grpby_role_deptname_role_family", FunctionTransformer(encode_resource_by_feature)))
 
+    if pipeline_params['binary_encode'] == True:
+        feature_engg.steps.append(("binary_encoder", BinaryEncoder(cols = hlpread.read_yaml_key('featurize.binary_encoder.columns', train_params_file) , base = 2)))
 
     log.write_log(f'generate_training_features: Fit_transform pipeline started...', log.logging.DEBUG)    
     X = feature_engg.fit_transform(db_train) 

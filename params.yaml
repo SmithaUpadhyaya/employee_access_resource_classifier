@@ -10,6 +10,16 @@ data_source:
 
 featurize:
 
+  binary_encoder:
+    columns:
+    - RESOURCE
+    - ROLE_ROLLUP_1
+    - ROLE_ROLLUP_2
+    - ROLE_DEPTNAME
+    - ROLE_FAMILY_DESC
+    - ROLE_FAMILY
+    - ROLE_CODE
+
   combine_feat:
     targetcol: ACTION
     ignore_columns:                                      #['ROLE_TITLE'] 
@@ -153,13 +163,13 @@ featurize:
       filename: count_vectorizer.parquet
 
 train_test_split:
-  test_size: 0.01
+  test_size: 0.1
   random_seed: 7899
-  cv: 5
+  cv: 3
   train_data: feature\train_data.parquet
 
 model:
-  model_type: xgboost
+  model_type: logistic_reg
 
   logistic_reg:
 
@@ -169,17 +179,20 @@ model:
       frequency_encoding: true
       KFold_frequency_encoding: false
       tfidf_vectorizer_encoding: false
-      count_vectorizer_encoding: true
+      count_vectorizer_encoding: false
       random_catagory_encode: false
       resource_catagory_encode: true
+      binary_encode: true
 
     hyper_params:
       random_state: 2023
       max_iter: 2000
       penalty: l2
-      solver: liblinear
-      C: 11
+      solver: lbfgs
+      fit_intercept: false
+      C: 0.02
       class_weight: balanced
+      n_jobs: -1
 
     trained_model: model\logistic_reg\model.pkl
     eval_metrics: model\logistic_reg\metrics
@@ -195,6 +208,7 @@ model:
       count_vectorizer_encoding: true
       random_catagory_encode: false
       resource_catagory_encode: true
+      binary_encode: false
 
     hyper_params:
       random_state: 1907
@@ -220,6 +234,7 @@ model:
       count_vectorizer_encoding: false
       random_catagory_encode: false
       resource_catagory_encode: true
+      binary_encode: false
 
     hyper_params:
       base_estimator:
@@ -248,6 +263,7 @@ model:
       count_vectorizer_encoding: false
       random_catagory_encode: false
       resource_catagory_encode: false
+      binary_encode: false
 
     hyper_params:
       random_state: 56
@@ -275,6 +291,7 @@ model:
       count_vectorizer_encoding: false
       random_catagory_encode: false
       resource_catagory_encode: false
+      binary_encode: false
 
     hyper_params:
       random_state: 42
@@ -301,6 +318,7 @@ model:
       count_vectorizer_encoding: true
       random_catagory_encode: false
       resource_catagory_encode: true
+      binary_encode: false
 
     hyper_params:
       n_estimators: 300
@@ -324,6 +342,7 @@ model:
       count_vectorizer_encoding: false
       random_catagory_encode: false
       resource_catagory_encode: true
+      binary_encode: false
 
     hyper_params:
       rf_estimator:
@@ -372,4 +391,5 @@ trained_model:
     count_vectorizer_encoding: false
     random_catagory_encode: false
     resource_catagory_encode: true
+    binary_encode: false
 

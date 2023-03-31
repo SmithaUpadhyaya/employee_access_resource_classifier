@@ -8,7 +8,7 @@ import os
 
 
 # Automated random search experiments
-num_exps = 25 #Number of experiments to run to generate
+num_exps = 30 #Number of experiments to run to generate
 random.seed(42)
 
 
@@ -217,25 +217,42 @@ def run_exp_Logistic_Reg():
     
     #Hyper paramater tuning for Logistic Regression 
     params = {
-        "max_iter": random.choice(range(5,100,5)),#random.choice([500, 600, 700, 800, 900, 1000]),
-        "penalty": random.choice(['l2']), #'l1': 
-        "C": random.choice(range(1,100,1)), #random.choice([10**-4, 10**-2, 10**0, 10**1, 10**4]),
+        "max_iter": random.choice(range(100,2000,20)),#random.choice([500, 600, 700, 800, 900, 1000]),
+        "penalty": random.choice(['l2', 'l1', 'elasticnet']),  
+        "C": random.choice([10**-4, 10**-2, 10**0, 10**2, 10**4]),
+        "class_weight": random.choice(['balanced','None']),
+        "fit_intercept": random.choice([True,False]),
 
         #Select the featurization techinique
-        "KFoldTE": True, #random.choice([True, False]), 
-        "frequency_encoding": False, #random.choice([True, False]),
+        "KFoldTE": False,#random.choice([True, False]), 
+        "frequency_encoding": random.choice([True, False]),
         "KFold_frequency_encoding": False, #random.choice([True, False]),
         "tfidf_vectorizer_encoding": False, #random.choice([True, False]),
-        "count_vectorizer_encoding": True, #random.choice([True, False]),
+        "count_vectorizer_encoding": False,#random.choice([True, False]),
+        "random_catagory_encode": False,
+        "resource_catagory_encode": random.choice([True, False]),
+        "binary_encode": True
     }
+
+    penalty = params['penalty']
+    if penalty == 'l1':
+        solver = random.choice(['liblinear','saga'])
+    elif penalty == 'elasticnet':
+        solver = 'saga'
+    else:
+        solver =  random.choice(['liblinear','saga', 'lbfgs'])
+
 
     #This will generate the experiment and wait for instruction to execute 
     #--temp : did not help. Continue to run from ".dvc\tmp\exps\"
     # Initial thought to use --queue, since they will run ".dvc\tmp\exps\" environment it alwasy gave error when finding the data file. This is usefull when using remort storage systems
     subprocess.run(["dvc", "exp", "run", #"--queue",
                     "--set-param", f"model.logistic_reg.hyper_params.max_iter={params['max_iter']}",
-                    "--set-param", f"model.logistic_reg.hyper_params.penalty={params['penalty']}",
+                    "--set-param", f"model.logistic_reg.hyper_params.penalty={penalty}",#params['penalty']
+                    "--set-param", f"model.logistic_reg.hyper_params.solver={solver}",
                     "--set-param", f"model.logistic_reg.hyper_params.C={params['C']}",
+                    "--set-param", f"model.logistic_reg.hyper_params.class_weight={params['class_weight']}",
+                    "--set-param", f"model.logistic_reg.hyper_params.fit_intercept={params['fit_intercept']}",
 
                     #Select the featurization techinique
                     "--set-param", f"model.logistic_reg.pipeline_type.KFoldTE={params['KFoldTE']}",
@@ -243,6 +260,10 @@ def run_exp_Logistic_Reg():
                     "--set-param", f"model.logistic_reg.pipeline_type.KFold_frequency_encoding={params['KFold_frequency_encoding']}",
                     "--set-param", f"model.logistic_reg.pipeline_type.tfidf_vectorizer_encoding={params['tfidf_vectorizer_encoding']}",
                     "--set-param", f"model.logistic_reg.pipeline_type.count_vectorizer_encoding={params['count_vectorizer_encoding']}",
+
+                    "--set-param", f"model.logistic_reg.pipeline_type.random_catagory_encode={params['random_catagory_encode']}",
+                    "--set-param", f"model.logistic_reg.pipeline_type.resource_catagory_encode={params['resource_catagory_encode']}",
+                    "--set-param", f"model.logistic_reg.pipeline_type.binary_encode={params['binary_encode']}",
 
                     ]
                   #This did not help

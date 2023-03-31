@@ -83,7 +83,7 @@ def define_model(param_filepath):
         
     return model, model_param
 
-def define_model(hyper_param, X_train, Y_train):
+def define_model_gbdt(hyper_param, X_train, Y_train):
 
     #Random Forest model
     rf_hyper_param = hyper_param['rf_estimator']
@@ -191,7 +191,10 @@ if __name__ == '__main__':
     cv_f1_score = {}
 
     split_params = hlpread.read_yaml_key('train_test_split', train_params_file)
-    split_s = StratifiedShuffleSplit(n_splits = split_params['cv'], test_size = split_params['test_size'], random_state = split_params['random_seed'])
+    split_s = StratifiedShuffleSplit(n_splits = split_params['cv'], 
+                                     test_size = split_params['test_size'], 
+                                     random_state = split_params['random_seed']
+                                     )
 
     fold = 0
     for train_index, test_index in split_s.split(X, X.ACTION):
@@ -206,9 +209,9 @@ if __name__ == '__main__':
         X_test.drop('ACTION', axis = 1, inplace = True)
 
         if model_param['model_type'] == 'gbdt_embedding':
-
-            model = define_model(model_param, X_train, Y_train)
-            model.fit(X_train, Y_train ) 
+            model = define_model_gbdt(model_param, X_train, Y_train)
+        
+        model.fit(X_train, Y_train ) 
 
         Y_test_pred = model.predict_proba(X_test).astype(float)
         auc_score = roc_auc_score(Y_test.astype(float), Y_test_pred[:,1])
