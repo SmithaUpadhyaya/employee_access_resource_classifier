@@ -273,7 +273,7 @@ def run_exp_Logistic_Reg():
     
 for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
 
-    #run_exp_Logistic_Reg()
+    run_exp_Logistic_Reg()
     
     #run_exp_Random_Forest()
 
@@ -283,7 +283,7 @@ for _ in tqdm (range(num_exps), desc = "Generating dvc exp..."):
     
     #run_exp_XBoost()
 
-    run_exp_Bagging_Decision_Tree()
+    #run_exp_Bagging_Decision_Tree()
 
 print("Queued Experiement to run.")
 #=============================================================
