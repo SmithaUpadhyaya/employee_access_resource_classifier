@@ -19,7 +19,6 @@ featurize:
     - ROLE_FAMILY_DESC
     - ROLE_FAMILY
     - ROLE_CODE
-
   combine_feat:
     targetcol: ACTION
     ignore_columns:                                      #['ROLE_TITLE'] 
@@ -176,21 +175,21 @@ model:
     pipeline_type:
 
       KFoldTE: false
-      frequency_encoding: true
+      frequency_encoding: false
       KFold_frequency_encoding: false
       tfidf_vectorizer_encoding: false
       count_vectorizer_encoding: false
       random_catagory_encode: false
-      resource_catagory_encode: true
+      resource_catagory_encode: false
       binary_encode: true
 
     hyper_params:
       random_state: 2023
-      max_iter: 2000
+      max_iter: 370
       penalty: l2
-      solver: lbfgs
-      fit_intercept: false
-      C: 0.02
+      solver: liblinear
+      fit_intercept: true
+      C: 0.01
       class_weight: balanced
       n_jobs: -1
 
@@ -355,7 +354,7 @@ model:
         max_samples: 0.99
 
       gbdt_embed_estimator:
-        feature_col: 
+        feature_col:
         - RESOURCE
         - ROLE_ROLLUP_1
         - ROLE_ROLLUP_2
@@ -373,23 +372,23 @@ trained_model:
   feature_eng: model\feature_engg_pipeline.json
 
   params:
-    base_estimator:
-      random_state: 1907
-      max_depth: 21
-      splitter: best
-      ccp_alpha: 2.4e-05
-    bagging:
-      n_estimators: 19
-      test_size: 0.01
-      random_seed: 1907 #1907: gave better score then 227
+    random_state: 2023
+    max_iter: 370
+    penalty: l2
+    solver: liblinear
+    fit_intercept: true
+    C: 0.01
+    class_weight: balanced
+    #n_jobs: -1
 
   pipeline_type:
+    combine_feature: false
     KFoldTE: false
-    frequency_encoding: true
+    frequency_encoding: false
     KFold_frequency_encoding: false
     tfidf_vectorizer_encoding: false
     count_vectorizer_encoding: false
     random_catagory_encode: false
-    resource_catagory_encode: true
-    binary_encode: false
+    resource_catagory_encode: false
+    binary_encode: true
 

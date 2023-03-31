@@ -193,12 +193,12 @@ stages:
           binary_encode: false
         model.logistic_reg.pipeline_type:
           KFoldTE: false
-          frequency_encoding: true
+          frequency_encoding: false
           KFold_frequency_encoding: false
           tfidf_vectorizer_encoding: false
-          count_vectorizer_encoding: true
+          count_vectorizer_encoding: false
           random_catagory_encode: false
-          resource_catagory_encode: true
+          resource_catagory_encode: false
           binary_encode: true
         model.model_type: logistic_reg
         model.random_forest.pipeline_type:
@@ -220,25 +220,25 @@ stages:
           resource_catagory_encode: true
           binary_encode: false
         train_test_split:
-          test_size: 0.05
+          test_size: 0.1
           random_seed: 7899
-          cv: 5
+          cv: 3
           train_data: feature\train_data.parquet
     outs:
     - path: data\feature\
-      md5: bd68f8b14e5b31021f9306d9c676946f.dir
-      size: 1135318
+      md5: 83a8e2f3fec8358e256fe5aa94fa7043.dir
+      size: 481071
       nfiles: 1
   train_model:
     cmd: python -W ignore src\data\train_model.py
     deps:
     - path: data\feature\
-      md5: bd68f8b14e5b31021f9306d9c676946f.dir
-      size: 1135318
+      md5: 83a8e2f3fec8358e256fe5aa94fa7043.dir
+      size: 481071
       nfiles: 1
     - path: src\data\train_model.py
-      md5: 7d92035cde078da5f632b91a743cf70e
-      size: 11365
+      md5: e1b9ed673e1583069ce9b5d161c65931
+      size: 11482
     params:
       params.yaml:
         model.bagging_decision_tree.hyper_params:
@@ -266,10 +266,11 @@ stages:
           class_weight: balanced
         model.logistic_reg.hyper_params:
           random_state: 2023
-          max_iter: 2000
+          max_iter: 370
           penalty: l2
-          fit_intercept: false
-          C: 0.02
+          solver: liblinear
+          fit_intercept: true
+          C: 0.01
           class_weight: balanced
           n_jobs: -1
         model.model_type: logistic_reg
@@ -291,7 +292,7 @@ stages:
           colsample_bytree: 0.685
     outs:
     - path: data\model\metrics\metrics.json
-      md5: e5dfc8275abeec222b557038a5fd5058
+      md5: 3dc13ddeb43be83e4b69ac401c6fdb9c
       size: 76
   evaluate_model:
     cmd: python src\data\eval.py

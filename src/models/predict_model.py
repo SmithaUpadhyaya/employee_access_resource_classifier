@@ -7,8 +7,10 @@ from src.models.feature_eng.Combine_feature import CombineFeatures
 from src.models.feature_eng.FreqEncoding import FrequencyEncoding
 from src.models.feature_eng.TE_KFold import KFoldTargetEncoder
 #from sklearn.preprocessing import FunctionTransformer
+from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import BaggingClassifier
+from category_encoders import BinaryEncoder
 from sklearn.pipeline import Pipeline
 import utils.write_utils as hlpwrite
 import utils.read_utils as hlpread
@@ -38,9 +40,11 @@ class employee_access_resource:
         if self.feature_engg == None:
 
             self.feature_engg = Pipeline(steps = [
-                                        ('combine_feature', CombineFeatures()), #This step is always required
+                                        #('combine_feature', CombineFeatures()), #This step is always required
                                     ]) 
 
+            if pipeline_params['combine_feature'] == True:
+                self.feature_engg.steps.append(('combine_feature', CombineFeatures()))
 
             if pipeline_params['tfidf_vectorizer_encoding'] == True:
                 self.feature_engg.steps.append(('tfidf_vectorizer_encoding', TFIDFVectorizerEncoding()))
@@ -63,6 +67,9 @@ class employee_access_resource:
             if pipeline_params['resource_catagory_encode'] == True:
                 self.feature_engg.steps.append(("encode_resource_grpby_role_deptname_role_family", ResourceEncodeByFeature()))
                 #self.feature_engg.steps.append(("encode_resource_grpby_role_deptname_role_family", FunctionTransformer(encode_resource_by_feature)))
+
+            if pipeline_params['binary_encode'] == True:
+                self.feature_engg.steps.append(("binary_encoder", BinaryEncoder(cols = hlpread.read_yaml_key('featurize.binary_encoder.columns') , base = 2)))
 
             #self.feature_engg = Pipeline(steps = [
             #                            ('combine_feature', CombineFeatures()),
@@ -87,9 +94,11 @@ class employee_access_resource:
     def define_model(self, params):
 
         #Define model
+        model = LogisticRegression()
         #model = DecisionTreeClassifier(criterion = 'gini')
         #model = XGBClassifier(objective='binary:logistic')
-        #model.set_params(**params)
+        model.set_params(**params)
+        """
         base_model = DecisionTreeClassifier()
         base_model.set_params(**params['base_estimator'])   
 
@@ -100,20 +109,22 @@ class employee_access_resource:
                                   bootstrap = True,
                                   random_state = bagg_params['random_seed']
                                 )
+        """
         return model
 
     def train(self, X):      
         
-
         self.model = self.define_model(self.training_param['params'])        
 
         #Generate features
         X.drop(['ROLE_TITLE', 'MGR_ID'], axis = 1, inplace = True)
-        X = self.generate_feature(X, self.training_param['pipeline_type'])
 
-        #Train model
+        #Train model. Moved it for BinaryEncoder Pipeline
         Y = X.ACTION
         X.drop('ACTION', axis = 1, inplace = True)
+
+        X = self.generate_feature(X, self.training_param['pipeline_type'])
+                
         feature_columns = X.select_dtypes(exclude = ['object']).columns #Exclude "object" type columns   
 
         self.model.fit(X[feature_columns], Y)
