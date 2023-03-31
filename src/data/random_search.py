@@ -217,31 +217,34 @@ def run_exp_Logistic_Reg():
     
     #Hyper paramater tuning for Logistic Regression 
     params = {
-        "max_iter": random.choice(range(100,2000,20)),#random.choice([500, 600, 700, 800, 900, 1000]),
-        "penalty": random.choice(['l2', 'l1', 'elasticnet']),  
-        "C": random.choice([10**-4, 10**-2, 10**0, 10**2, 10**4]),
-        "class_weight": random.choice(['balanced','None']),
-        "fit_intercept": random.choice([True,False]),
+        "max_iter": random.choice(range(370,2000,20)),#random.choice([500, 600, 700, 800, 900, 1000]),
+        "penalty": 'l2', #random.choice(['l2', 'l1', 'elasticnet']),  
+        "C": random.choice([10**-4, 10**-2, 10**0, 10**2, 10**4]),# 0.01 
+        "class_weight": 'balanced',# random.choice(['balanced','None']),
+        "fit_intercept": True, #random.choice([True,False]),
 
         #Select the featurization techinique
         "KFoldTE": False,#random.choice([True, False]), 
-        "frequency_encoding": random.choice([True, False]),
+        "frequency_encoding": False, #random.choice([True, False]),
         "KFold_frequency_encoding": False, #random.choice([True, False]),
         "tfidf_vectorizer_encoding": False, #random.choice([True, False]),
         "count_vectorizer_encoding": False,#random.choice([True, False]),
         "random_catagory_encode": False,
-        "resource_catagory_encode": random.choice([True, False]),
+        "resource_catagory_encode": False, #random.choice([True, False]),
         "binary_encode": True
     }
 
+    solver = 'liblinear'    
     penalty = params['penalty']
+    
+    """
     if penalty == 'l1':
         solver = random.choice(['liblinear','saga'])
     elif penalty == 'elasticnet':
         solver = 'saga'
     else:
         solver =  random.choice(['liblinear','saga', 'lbfgs'])
-
+    """
 
     #This will generate the experiment and wait for instruction to execute 
     #--temp : did not help. Continue to run from ".dvc\tmp\exps\"
