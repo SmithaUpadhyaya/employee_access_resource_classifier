@@ -16,6 +16,7 @@ fastparquet==0.8.1
 #xgboost==1.7.3
 uvicorn==0.16.0
 fastapi==0.70.1
+Jinja2
 tqdm
 #dvclive==1.3.3 #It is use when we are working with large data and expirement is taking time we want live update of the metric as the recorsd are evaluated
 #ipykernel #Used for jupiter notebook

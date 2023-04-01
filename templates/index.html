@@ -186,16 +186,18 @@
 
   <body>
     <div class="testbox">
-      <form action="/">
+      <form action="/employee_resource_access/check_access_to_resource" method = 'post'>
 
         <div class="banner">
           <h1>Employee Access to Resource</h1>
-        </div>      
+        </div>     
        
+  
+
         <div class="item">
           <p>Select the Resouce, whose access needs to be checked:</p>
           <div class="city-item">           
-            <select>
+            <select name = 'resource'>
               <option value = ''>RESOURCE</option>
               <option value = '39353'>39353</option>
               <option value = '17183'>17183</option>
@@ -7719,7 +7721,7 @@
             </select>
           </div>          
         </div>       
-       
+      
         <div class="item">
           <p>Select the Roles details:</p>
 
@@ -7730,7 +7732,7 @@
 
               <!--<input type="text" name="name" placeholder="City" />-->            
 
-              <select>
+              <select name = 'role_rollup_1'>
                 <option value = ''>ROLE_ROLLUP_1</option>
                 <option value = '117961'>117961</option>
                 <option value = '118219'>118219</option>
@@ -7860,10 +7862,10 @@
                 <option value = '311178'>311178</option>
                 <option value = '133430'>133430</option>
                 <option value = '120354'>120354</option>
-         
+        
               </select>
 
-              <select>
+              <select name = 'role_rollup_2'>
                 <option value = ''>ROLE_ROLLUP_2</option>
                 <option value = '118300'>118300</option>
                 <option value = '118343'>118343</option>
@@ -8055,7 +8057,7 @@
 
             <div class="city-item">
 
-              <select>
+              <select name = 'role_family'>
                 <option value = ''>ROLE_FAMILY</option>
                 <option value = '290919'>290919</option>
                 <option value = '308574'>308574</option>
@@ -8126,7 +8128,7 @@
                 <option value = '127957'>127957</option>                
               </select>
 
-              <select>
+              <select name = 'role_family_desc'> 
                 <option value = ''>ROLE_FAMILY_DESC</option>
                 <option value = '117906'>117906</option>
                 <option value = '118536'>118536</option>
@@ -10488,7 +10490,7 @@
                 <option value = '197783'>197783</option>                                
               </select>
 
-              <select>
+              <select name = 'role_deptname'>
                 <option value = ''>ROLE_DEPTNAME</option>
                 <option value = '123472'>123472</option>
                 <option value = '123125'>123125</option>
@@ -10942,7 +10944,7 @@
                 
               </select>
 
-              <select>
+              <select name = 'role_code'>
                 <option value = ''>ROLE_CODE</option>
                 <option value = '117908'>117908</option>
                 <option value = '118539'>118539</option>
@@ -11294,14 +11296,14 @@
         </div>
 
         <div class="btn-block">
-          <button type="submit" href="/">SUBMIT</button>
+          <button type="submit" id = 'id_submit' href="/">SUBMIT</button>
         </div>
-
-        <!--
+  
+        
         <div class="item">
           <p>Result: {{ result }}</p>
         </div>
-        -->
+        
       </form>
     </div>
   </body>

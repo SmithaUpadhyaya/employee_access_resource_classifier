@@ -162,12 +162,12 @@ class employee_access_resource:
 
     def predict(self, X):
 
-        score = self.predict_score(X)
+        score = self.predict_score(X)[0][1]
 
         if score < self.threshold:
-            return 0
+            return score, 0
         else:
-            return 1
+            return score, 1
 
     def check_access(self, 
                      resource: str, 
@@ -177,7 +177,7 @@ class employee_access_resource:
                     ):
 
         
-        X = pd.DataFrame( [resource, role_rollup_1, role_rollup_2, role_deptname, role_family_desc, role_family, role_code], 
+        X = pd.DataFrame( [[resource, role_rollup_1, role_rollup_2, role_deptname, role_family_desc, role_family, role_code]], 
                          columns = ['RESOURCE', 
                                     'ROLE_ROLLUP_1', 
                                     'ROLE_ROLLUP_2', 
