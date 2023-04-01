@@ -16,6 +16,7 @@ import utils.write_utils as hlpwrite
 import utils.read_utils as hlpread
 #from xgboost import XGBClassifier
 from os.path import exists, join
+import pandas as pd
 #import xgboost as xgb
 
 class employee_access_resource:
@@ -33,6 +34,8 @@ class employee_access_resource:
       self.feature_eng_object_path = feature_eng_object_path
       if exists(feature_eng_object_path) == True:
         self.feature_engg = hlpread.read_object(feature_eng_object_path)
+
+      self.threshold = 0.9364837895388629
 
 
     def generate_feature(self, X, pipeline_params):
@@ -134,7 +137,7 @@ class employee_access_resource:
 
         return self
 
-    def predict(self, X):
+    def predict_score(self, X):
 
         if self.model == None:
             self.train(X)
@@ -156,6 +159,34 @@ class employee_access_resource:
         #y_hat =  y_hat.argmax(-1)  
         
         return y_hat
+
+    def predict(self, X):
+
+        score = self.predict_score(X)
+
+        if score < self.threshold:
+            return 0
+        else:
+            return 1
+
+    def check_access(self, 
+                     resource: str, 
+                     role_rollup_1: str, role_rollup_2: str, 
+                     role_family: str, role_family_desc: str, 
+                     role_deptname: str, role_code: str
+                    ):
+
+        
+        X = pd.DataFrame( [resource, role_rollup_1, role_rollup_2, role_deptname, role_family_desc, role_family, role_code], 
+                         columns = ['RESOURCE', 
+                                    'ROLE_ROLLUP_1', 
+                                    'ROLE_ROLLUP_2', 
+                                    'ROLE_DEPTNAME', 
+                                    'ROLE_FAMILY_DESC',	
+                                    'ROLE_FAMILY',	
+                                    'ROLE_CODE']
+                        )
+        return self.predict(X)
 
 if __name__ == '__main__':
     
