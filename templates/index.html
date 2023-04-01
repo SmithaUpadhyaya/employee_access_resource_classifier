@@ -41,7 +41,7 @@
       .banner {
       position: relative;
       height: 210px;
-      background-image: url("./references/gate.png");      background-size: cover;
+      background-image: url("gate.png");      background-size: cover;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -186,7 +186,8 @@
 
   <body>
     <div class="testbox">
-      <form action="/employee_resource_access/check_access_to_resource" method = 'post'>
+
+      <form action="/employee_resource_access/predict_access" method = 'post'>
 
         <div class="banner">
           <h1>Employee Access to Resource</h1>
@@ -11301,7 +11302,7 @@
   
         
         <div class="item">
-          <p>Result: {{ result }}</p>
+          <p><b>{{ predict_result }}</b></p>
         </div>
         
       </form>
