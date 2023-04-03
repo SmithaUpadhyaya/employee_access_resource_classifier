@@ -372,23 +372,24 @@ trained_model:
   feature_eng: model\feature_engg_pipeline.json
 
   params:
-    random_state: 2023
-    max_iter: 370
-    penalty: l2
-    solver: liblinear
-    fit_intercept: true
-    C: 0.01
-    class_weight: balanced
-    #n_jobs: -1
+    base_estimator:
+      random_state: 1907
+      max_depth: 21
+      splitter: best
+      ccp_alpha: 2.4e-05
+    bagging:
+      n_estimators: 19
+      test_size: 0.01
+      random_seed: 1907 
 
   pipeline_type:
-    combine_feature: false
+    combine_feature: true
     KFoldTE: false
-    frequency_encoding: false
+    frequency_encoding: true
     KFold_frequency_encoding: false
     tfidf_vectorizer_encoding: false
     count_vectorizer_encoding: false
     random_catagory_encode: false
-    resource_catagory_encode: false
-    binary_encode: true
+    resource_catagory_encode: true
+    binary_encode: false
 

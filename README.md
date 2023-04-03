@@ -4,8 +4,11 @@ When an employee at any company starts work, they first need to obtain the compu
 
 ## Objective ##
 
-The objective is to build a model, learned using historical data, that will determine an employee's access needs. So model will take an employee's role information and a resource code and will return whether or not access should be granted. This is a binary classification task.
-Resource access may allow an employee to read/manipulate resources through various applications or web portals. So its crucial that employee does not get access to Resource they should not have. Recall would be good metric to evaluate false negative.Therefore F1-score is a good metric to evaluate the performance of this dataset as it weights recall and precision equally, and a good retrieval algorithm will maximize both precision and recall simultaneously.
+The objective is to build a model, learned using historical data, that will determine an employee's access needs. So model will take an employee's role information and a resource code and will return whether or not access should be granted. 
+<br>
+This is a binary classification task.
+<br>
+Resource access may allow an employee to read/manipulate resources through various applications or web portals. So its crucial that employee does not get access to Resource they should not have. Recall would be good metric to evaluate false negative. Therefore F1-score is a good metric to evaluate the performance of this dataset as it weights recall and precision equally, and a good retrieval algorithm will maximize both precision and recall simultaneously.
 
 ## Dataset ##
 
@@ -61,11 +64,36 @@ Creating a virtual environment and install all the requirements
 
     Download and extract zip "amazon-employee-access-challenge.zip" and place the data files in "data/training" folder
 
-### Step 7: Train model ###
+### Step 7: Run the application ###
+<br>
 
-    1. Run to train. Script will output model.pkl and the 
+#### -> Run from local environment ####
+<br>
+    1. Open terminal and execute. 
 
-        python src\models\predict_model.py
+        uvicorn app:app --reload
+
+    2. Open any web browser and type in URL:  
+
+        http://127.0.0.1:8000/employee_resource_access
+
+<br>
+
+#### -> Run from Docker image ####
+
+    1. Build the Docker image
+
+        docker build -t employee_access_check .
+
+    2. Run the Docker image
+
+        docker run -d --name cp_employee_access_check -p 80:80 employee_access_check
+
+    3. Open any web browser and type in URL:
+
+        http://127.0.0.1:8000/employee_resource_access
+
+<br>
 
 # DVC pipeline #
 
@@ -85,5 +113,17 @@ Creating a virtual environment and install all the requirements
     Change/Define the paramaters for the model in 'src\data\random_search.py'
 
         python src\data\random_search.py
+
+# **Tech Stack Used** #
+</br>
+1) Python 3.9.8 </br>
+2) Random Forest - Ensemble Technique</br>
+3) DVC - Pipeline and Track experiments </br>
+4) FastAPI </br>
+5) Docker </br>
+</br>
+
+# **Demo** #
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="references\demo.gif" />
 
 

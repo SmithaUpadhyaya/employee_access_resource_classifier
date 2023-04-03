@@ -4,8 +4,12 @@ from fastapi import FastAPI, HTTPException, Request, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
+from pathlib import Path
 import uvicorn 
 
+
+#Path inside the docker container can be tricky
+#BASE_DIR = Path(__file__).resolve(strict=True).parent
 
 model_path = read_yaml_key('trained_model.model_path') #'./model/model.pkl'
 feature_pipeline = read_yaml_key('trained_model.feature_eng') #'./model/feature_engg_pipeline.json'
@@ -98,9 +102,9 @@ def predict(data: ResourceDetails):
     return {'prediction_score': score, 'prediction': result}
 
 if __name__ == '__main__':
+    app.run(debug=True)
+    #uvicorn.run(app, host = '127.0.0.1', port = 80, debug = True)
 
-    uvicorn.run(app, host = '127.0.0.1', port = 4000, debug = True)
-
-
+#uvicorn app:app --reload
 
 

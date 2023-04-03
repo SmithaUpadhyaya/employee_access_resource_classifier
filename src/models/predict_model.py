@@ -97,11 +97,11 @@ class employee_access_resource:
     def define_model(self, params):
 
         #Define model
-        model = LogisticRegression()
+        #model = LogisticRegression()
         #model = DecisionTreeClassifier(criterion = 'gini')
         #model = XGBClassifier(objective='binary:logistic')
-        model.set_params(**params)
-        """
+        #model.set_params(**params)
+        
         base_model = DecisionTreeClassifier()
         base_model.set_params(**params['base_estimator'])   
 
@@ -112,7 +112,7 @@ class employee_access_resource:
                                   bootstrap = True,
                                   random_state = bagg_params['random_seed']
                                 )
-        """
+        
         return model
 
     def train(self, X):      
